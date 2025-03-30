@@ -1,0 +1,11 @@
+<div class="auction-container" *ngIf="auction">
+  <h1>{{ auction.artefact.name }}</h1>
+  <img [src]="auction.artefact.image" alt="Artefact" class="artefact-image" />
+  <p>{{ auction.artefact.description }}</p>
+  <p><strong>Prix actuel :</strong> {{ auction.currentBid }} couronnes</p>
+
+  <div class="bid-box">
+    <input type="number" [(ngModel)]="bidAmount" min="{{ auction.currentBid + 1 }}" />
+    <button (click)="placeBid()">Enchérir</button>
+  </div>
+</div>

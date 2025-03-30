@@ -22,7 +22,8 @@ export class LoginService {
     return this.http.post<LoginResponseInterface>(this.apiUrl, loginData);
   }
 
-  loginResource = httpResource<LoginRequestInterface>('/auth/login', {
+  loginResource = httpResource<LoginRequestInterface>({
     method: 'POST',
+    url: '/auth/login',
   });
 }

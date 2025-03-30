@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { AuctionDetailComponent } from './routes/auction/auction-detail.componant';
 import { HomePageComponent } from './routes/home-page/home-page.component';
 import { NotFoundPageComponent } from './routes/not-found-page/not-found-page.component';
 import { authRoutes } from './routes/auth/auth.routes';
@@ -18,6 +19,11 @@ export const routes: Routes = [
     path: 'auth',
     title: 'all auth routes',
     children: authRoutes,
+  },
+  {
+    path: 'auction/:id',
+    title: 'Lootopia Auction page',
+    component: AuctionDetailComponent,
   },
   {
     path: '**',

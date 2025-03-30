@@ -36,6 +36,9 @@ export class ProfileEntity {
   @Column({ type: 'timestamp', default: null })
   expiredOPT: Date;
 
+  @Column({ type: 'int', default: 0 })
+  balance: number;
+
   @ManyToOne(() => UsersEntity)
   user: UsersEntity;
 }

@@ -27,4 +27,25 @@ export class ProfileService {
       );
     }
   }
+async creditUser(userId: number, amount: number): Promise<void> {
+  try {
+    await this.profileRepository.creditBalance(userId, amount);
+  } catch (error) {
+    throw new HttpException(
+      `Erreur lors du crédit du solde : ${error.message}`,
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    );
+    }
+  }
+
+  async debitUser(userId: number, amount: number): Promise<void> {
+  try {
+    await this.profileRepository.debitBalance(userId, amount);
+  } catch (error) {
+    throw new HttpException(
+      `Erreur lors du débit du solde : ${error.message}`,
+      HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 }
