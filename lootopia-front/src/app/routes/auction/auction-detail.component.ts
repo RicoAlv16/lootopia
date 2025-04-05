@@ -1,11 +1,15 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { AuctionService } from '../../shared/services/auction/auction.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-auction-detail',
   templateUrl: './auction-detail.component.html',
-  styleUrls: ['./auction-detail.component.scss']
+  //styleUrls: ['./auction-detail.component.css'],
+  standalone: true,
+  imports: [CommonModule, FormsModule],
 })
 export class AuctionDetailComponent implements OnInit {
   auction: any;

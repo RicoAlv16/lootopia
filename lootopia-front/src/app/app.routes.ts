@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { AuctionDetailComponent } from './routes/auction/auction-detail.componant';
+import { AuctionDetailComponent } from './routes/auction/auction-detail.component';
 import { HomePageComponent } from './routes/home-page/home-page.component';
 import { NotFoundPageComponent } from './routes/not-found-page/not-found-page.component';
 import { authRoutes } from './routes/auth/auth.routes';
