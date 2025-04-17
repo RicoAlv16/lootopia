@@ -1,0 +1,513 @@
+<div class="bg-surface-50 dark:bg-surface-950">
+  <section id="topbar">
+    <div
+      class="flex justify-between items-center z-30 px-8 bg-black/40 top-0 w-full fixed"
+      style="height: 68px; backdrop-filter: blur(17px)">
+      <div>
+        <img
+          src="icons/lootopia_icon.webp"
+          alt="logo"
+          class="w-17 h-17 rounded-full"
+          draggable="false" />
+      </div>
+      <a
+        pstyleclass="@next"
+        enterfromclass="hidden"
+        leavetoclass="hidden"
+        class="cursor-pointer block lg:hidden text-white"
+        ><i class="pi pi-bars !text-4xl"></i
+      ></a>
+      <div
+        id="menu"
+        class="items-center grow hidden lg:flex absolute lg:static w-full lg:px-0 z-30 shadow lg:shadow-none animate-fadein bg-surface-0 lg:!bg-transparent"
+        style="top: 68px; right: 0%">
+        <ul
+          class="list-none p-4 lg:p-0 m-0 ml-auto flex lg:items-center select-none flex-col lg:flex-row cursor-pointer">
+          <li>
+            <a
+              pstyleclass="#menu"
+              enterfromclass="hidden"
+              leavetoclass="hidden"
+              class="flex m-0 md:ml-8 px-0 py-4 lg:!text-surface-0 text-surface-900 leading-normal"
+              ><span>Accueil</span></a
+            >
+          </li>
+          <li>
+            <a
+              pstyleclass="#menu"
+              enterfromclass="hidden"
+              leavetoclass="hidden"
+              class="flex m-0 md:ml-8 px-0 py-4 lg:!text-surface-0 text-surface-900 leading-normal"
+              ><span>Pariticipation</span></a
+            >
+          </li>
+          <li>
+            <a
+              pstyleclass="#menu"
+              enterfromclass="hidden"
+              leavetoclass="hidden"
+              class="flex m-0 md:ml-8 px-0 py-4 lg:!text-surface-0 text-surface-900 leading-normal"
+              ><span>Organisation</span></a
+            >
+          </li>
+          <li>
+            <a
+              pstyleclass="#menu"
+              enterfromclass="hidden"
+              leavetoclass="hidden"
+              class="flex m-0 md:ml-8 px-0 py-4 lg:!text-surface-0 text-surface-900 leading-normal"
+              ><span>Prix</span></a
+            >
+          </li>
+          <li>
+            <a
+              pstyleclass="#menu"
+              enterfromclass="hidden"
+              leavetoclass="hidden"
+              class="flex m-0 md:ml-8 px-0 py-4 lg:!text-surface-0 text-surface-900 leading-normal"
+              ><span>Support</span></a
+            >
+          </li>
+          <li>
+            <button
+              type="button"
+              class="mx-4 rounded-md bg-green-500 px-3 py-2 text-white font-semibold shadow-xs ring-1 ring-green-300 ring-inset hover:bg-green-600 sm:mt-0 sm:w-auto">
+              Connexion
+            </button>
+          </li>
+          <li>
+            <button
+              type="button"
+              class="rounded-md bg-green-500 px-3 py-2 text-white font-semibold shadow-xs ring-1 ring-gray-300 ring-inset hover:bg-green-600 sm:mt-0 sm:w-auto">
+              Inscription
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  <div class="h-screen">
+    <div
+      class="h-screen overflow-x-hidden overflow-y-auto absolute top-0 left-0 right-0 bottom-0"
+      style="perspective: 101px">
+      <div style="display: contents">
+        <div
+          class="hidden lg:block absolute top-0 right-0 bottom-0 left-0 parallax__layer__0">
+          <img
+            src="images/lootopia_banniere.jpeg"
+            class="w-full h-full block absolute bottom-0"
+            alt="landing"
+            draggable="false" />
+        </div>
+
+        <div
+          class="hidden lg:flex absolute right-0 bottom-0 left-0 parallax__layer__3 justify-center"
+          style="top: 27%">
+          <div>
+            <h1 class="m-0 -mb-6 text-3xl text-white">C'EST PARTI POUR</h1>
+            <h1 class="m-0 text-white" style="font-size: 14rem">LA CHASSE</h1>
+            <div class="flex -mt-6 justify-end">
+              <h1 class="m-0 text-white text-3xl">AUX TRÉSORES</h1>
+            </div>
+          </div>
+        </div>
+        <div
+          class="hidden lg:block absolute top-0 right-0 bottom-0 left-0 parallax__layer__2">
+          <img
+            src="images/lootp-bann-2.png"
+            class="w-full block absolute bottom-0"
+            alt="landing 2"
+            draggable="false" />
+        </div>
+        <div
+          class="absolute flex justify-center items-center w-full h-full parallax__layer__3"
+          style="top: 112px">
+          <button
+            pbutton=""
+            pripple=""
+            label="GET STARTED"
+            text=""
+            class="p-ripple text-surface-0 bg-white/20 text-lg px-8 py-4 font-semibold hover:bg-green-600 hover:text-white rounded-xl border-green/30 border p-button p-component p-button-text"
+            style="backdrop-filter: blur(7px)"
+            pc4=""
+            pc5="">
+            <span class="p-ink" aria-hidden="true" role="presentation"></span
+            ><span class="p-button-label">Commençons</span>
+          </button>
+        </div>
+        <div
+          class="block lg:hidden h-[28rem] bg-center bg-no-repeat bg-cover"
+          style="
+            top: 68px;
+            background: url(/images/landing/landing-hero-image.jpg);
+          ">
+          <div class="flex justify-center items-center h-full">
+            <div class="flex flex-col">
+              <span class="m-0 text-base text-white font-semibold">LET'S</span
+              ><span class="m-0 text-4xl text-white font-semibold"
+                >EXPLORE</span
+              >
+              <div class="flex justify-end">
+                <span class="m-0 text-white text-sm font-semibold"
+                  >TO ULTIMA</span
+                >
+              </div>
+              <div class="flex justify-center mt-2">
+                <button
+                  pbutton=""
+                  pripple=""
+                  label="GET STARTED"
+                  text=""
+                  class="p-ripple !text-surface-0 !bg-white/20 !text-xs !font-semibold hover:!bg-white hover:!text-surface-900 !rounded-xl !border-white/30 border p-button p-component p-button-text"
+                  style="backdrop-filter: blur(7px)"
+                  pc6=""
+                  pc7="">
+                  <span
+                    class="p-ink"
+                    aria-hidden="true"
+                    role="presentation"></span
+                  ><span class="p-button-label">GET STARTED</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        _ngcontent-ng-c2082431407=""
+        id="parallaxBody"
+        class="lg:top-full block absolute left-0 right-0 h-full z-20">
+        <div _ngcontent-ng-c2082431407="">
+          <div id="features" class="pt-8" style="background-color: #000">
+            <div class="flex flex-col items-center gap-4">
+              <span class="text-white text-2xl uppercase">Compétences</span>
+              <p class="text-center text-surface-500 text-md uppercase">
+                Découvrez les compétences qui font de Lootopia la meilleure
+                plateforme pour les chasseurs de trésors.
+              </p>
+              <h1
+                class="m-0 text-6xl"
+                style="
+                  background: linear-gradient(
+                    110.43deg,
+                    #ffd700 0.04%,
+                    #228b22 100.11%
+                  );
+                  background-clip: text;
+                  -webkit-background-clip: text;
+                  color: transparent;
+                ">
+                LOOTOPIA
+              </h1>
+            </div>
+            <div class="flex flex-col items-center">
+              <div
+                class="grid grid-cols-12 gap-4 pt-12 p-6"
+                style="max-width: 1200px">
+                <div class="col-span-6 lg:col-span-4">
+                  <div
+                    class="flex justify-center flex-col gap-4 border border-surface-50 dark:border-surface-800 rounded-2xl p-8 cursor-pointer h-full">
+                    <i
+                      class="pi pi-map text-white"
+                      style="font-size: 2.5rem"></i
+                    ><span class="font-semibold text-white"
+                      >Cartographie et Orientation</span
+                    ><span class="text-white"
+                      >Maîtrise des outils de navigation pour vous guider dans
+                      vos aventures.</span
+                    >
+                  </div>
+                </div>
+                <div class="col-span-6 lg:col-span-4">
+                  <div
+                    class="flex justify-center flex-col gap-4 border border-surface-50 dark:border-surface-800 rounded-2xl p-8 cursor-pointer h-full">
+                    <i
+                      class="pi pi-mobile text-white"
+                      style="font-size: 2.5rem"></i
+                    ><span class="font-semibold text-white"
+                      >Création de Quêtes</span
+                    ><span class="text-white"
+                      >Conception de scénarios captivants pour des chasses au
+                      trésor mémorables.</span
+                    >
+                  </div>
+                </div>
+                <div class="col-span-6 lg:col-span-4">
+                  <div
+                    class="flex justify-center flex-col gap-4 border border-surface-50 dark:border-surface-800 rounded-2xl p-8 cursor-pointer h-full">
+                    <i
+                      class="pi pi-users text-white"
+                      style="font-size: 2.5rem"></i
+                    ><span class="font-semibold text-white"
+                      >Communauté Engagée</span
+                    ><span class="text-white"
+                      >Fédérer une communauté passionnée autour de défis et de
+                      découvertes.</span
+                    >
+                  </div>
+                </div>
+                <div class="col-span-6 lg:col-span-4">
+                  <div
+                    class="flex justify-center flex-col gap-4 border border-surface-50 dark:border-surface-800 rounded-2xl p-8 cursor-pointer h-full">
+                    <i
+                      class="pi pi-th-large text-white"
+                      style="font-size: 2.5rem"></i
+                    ><span class="font-semibold text-white"
+                      >Technologie Innovante</span
+                    ><span class="text-white"
+                      >Utilisation d'outils modernes pour enrichir l'expérience
+                      utilisateur.</span
+                    >
+                  </div>
+                </div>
+                <div class="col-span-6 lg:col-span-4">
+                  <div
+                    class="flex justify-center flex-col gap-4 border border-surface-50 dark:border-surface-800 rounded-2xl text-white p-8 cursor-pointer h-full">
+                    <i
+                      class="pi pi-discord text-white"
+                      style="font-size: 2.5rem"></i
+                    ><span class="font-semibold text-white">Gamification</span
+                    ><span class="text-white"
+                      >Transformation des chasses au trésor en aventures
+                      interactives et immersives.</span
+                    >
+                  </div>
+                </div>
+                <div class="col-span-6 lg:col-span-4">
+                  <div
+                    class="flex justify-center flex-col gap-4 border border-surface-50 dark:border-surface-800 rounded-2xl text-white p-8 cursor-pointer h-full">
+                    <i
+                      class="pi pi-headphones text-white"
+                      style="font-size: 2.5rem"></i
+                    ><span class="font-semibold">Support client</span
+                    ><span
+                      >Assistance dédiée pour garantir une expérience fluide et
+                      agréable.</span
+                    >
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div
+                  id="collaboration"
+                  class="flex flex-col lg:flex-row gap-20 mt-12 py-12 px-6 w-full"
+                  style="max-width: 1200px">
+                  <div class="flex flex-col items-end justify-center">
+                    <span
+                      class="text-sm p-2 rounded-lg mb-6 text-surface-0 bg-white/20 font-semibold"
+                      style="backdrop-filter: blur(7px)">
+                      <span>Lootopia à Votre Service</span>
+                    </span>
+                    <div>
+                      <h1
+                        class="m-0 text-6xl font-bold text-right"
+                        style="
+                          background: linear-gradient(
+                            110.43deg,
+                            #ffd700 0.04%,
+                            #228b22 100.11%
+                          );
+                          background-clip: text;
+                          -webkit-background-clip: text;
+                          color: transparent;
+                        ">
+                        PARTICIPER
+                      </h1>
+                      <p class="text-white text-right mt-4">
+                        Embaquez dans la plus belle aventure imersive de
+                        découverte de trésors cachés, amusez-vous et faites
+                        l'expérience d'une nouvelle façon de jeu et de gains.
+                      </p>
+                    </div>
+                  </div>
+                  <img
+                    src="images/lootp-hunt.jpeg"
+                    class="w-2/3 h-1/2 rounded-lg shadow-lg shadow-green-500"
+                    alt="Participer" />
+                </div>
+              </div>
+              <div>
+                <div
+                  id="events"
+                  class="flex flex-col lg:flex-row gap-20 mt-2 py-8 px-6 w-full"
+                  style="max-width: 1200px">
+                  <img
+                    src="images/lootp-hunt-2.avif"
+                    class="rounded-lg shadow-lg shadow-gray-500"
+                    alt="Organiser" />
+                  <div class="flex flex-col items-start justify-center">
+                    <div
+                      class="text-sm p-2 rounded-lg mb-6 text-surface-0 bg-white/20 font-semibold"
+                      style="backdrop-filter: blur(7px)">
+                      Transformez Votre Aventure
+                    </div>
+                    <div>
+                      <h1
+                        class="m-0 text-6xl font-bold"
+                        style="
+                          background: linear-gradient(
+                            110.43deg,
+                            #ffd700 0.04%,
+                            #228b22 100.11%
+                          );
+                          background-clip: text;
+                          -webkit-background-clip: text;
+                          color: transparent;
+                        ">
+                        ORGANISER
+                      </h1>
+                      <p class="text-white mt-2">
+                        Lootopia vous offre des outils et des ressources pour
+                        organiser vos propres chasses au trésor. Rejoignez une
+                        communauté passionnée et partagez vos découvertes avec
+                        d'autres aventuriers.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                _ngcontent-ng-c2082431407=""
+                class="py-12 px-6 mt-12 w-full flex justify-center">
+                <div
+                  class="p-8 flex flex-col gap-4 items-start justify-between lg:flex-row lg:items-center rounded-2xl w-full"
+                  style="
+                    background: linear-gradient(
+                      110.43deg,
+                      #eee19b 0.04%,
+                      #409340 100.11%
+                    );
+                    max-width: 1200px;
+                  ">
+                  <div class="flex flex-col gap-2">
+                    <h1 class="m-0 text-white font-bold text-2xl">
+                      A vous de jouer
+                    </h1>
+                    <p class="m-0 text-white">
+                      Revivez des moments forts des chasses au trésor et
+                      plongez-vous pour votre prochaine aventure
+                    </p>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <button
+                      type="button"
+                      class="mx-4 rounded-md bg-green-500 px-3 py-2 text-white font-semibold shadow-xs ring-1 ring-green-300 ring-inset hover:bg-green-600 sm:mt-0 sm:w-auto">
+                      On y va
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <footer
+                _ngcontent-ng-c2082431407=""
+                class="w-full px-6"
+                style="max-width: 1200px">
+                <div
+                  class="grid grid-cols-12 gap-4 lg:gap-0 lg:grid-nogutter pb-12">
+                  <div class="col-span-12 lg:col-span-3">
+                    <div class="w-full text-white flex flex-col gap-4">
+                      <h1
+                        class="m-0 font-medium text-sm text-surface-500 dark:text-surface-300">
+                        CONTACTER NOUS
+                      </h1>
+                      <div class="flex gap-8">
+                        <a href="#"
+                          ><i class="pi pi-github text-white !text-2xl"></i></a
+                        ><a href="#"
+                          ><i class="pi pi-twitter text-white !text-2xl"></i></a
+                        ><a href="#"
+                          ><i class="pi pi-linkedin text-white !text-2xl"></i
+                        ></a>
+                      </div>
+                      <p class="m-0 text-base lg:text-sm">
+                        (+33) 6 16 24 79 <br />
+                        Paris, Frances
+                      </p>
+                      <span class="text-base lg:text-sm"> 2025</span>
+                    </div>
+                  </div>
+                  <div class="col-span-12 lg:col-span-3">
+                    <div class="w-full text-white flex flex-col gap-4">
+                      <h1
+                        class="m-0 font-medium text-sm text-surface-500 dark:text-surface-300">
+                        A PROPOS DE NOUS
+                      </h1>
+                      <a href="#"
+                        ><span class="text-base lg:text-sm block text-white"
+                          >Nos valeurs</span
+                        ></a
+                      ><a href="#"
+                        ><span class="text-base lg:text-sm block text-white"
+                          >Notre équipe</span
+                        ></a
+                      ><a href="#"
+                        ><span class="text-base lg:text-sm block text-white"
+                          >Notre histoire</span
+                        ></a
+                      ><a href="#"
+                        ><span class="text-base lg:text-sm block text-white"
+                          >Carrières &amp; Rejoigner nous</span
+                        ></a
+                      >
+                    </div>
+                  </div>
+                  <div class="col-span-12 lg:col-span-3">
+                    <div class="w-full text-white flex flex-col gap-4">
+                      <h1
+                        class="m-0 font-medium text-sm text-surface-500 dark:text-surface-300">
+                        SITE MAP
+                      </h1>
+                      <a href="#"
+                        ><span class="text-base lg:text-sm block text-white"
+                          >Accueil</span
+                        ></a
+                      ><a href="#"
+                        ><span class="text-base lg:text-sm block text-white"
+                          >Participer</span
+                        ></a
+                      ><a href="#"
+                        ><span class="text-base lg:text-sm block text-white"
+                          >Organiser</span
+                        ></a
+                      ><a href="#"
+                        ><span class="text-base lg:text-sm block text-white"
+                          >Support
+                        </span></a
+                      >
+                    </div>
+                  </div>
+                  <div class="col-span-12 lg:col-span-3">
+                    <div class="w-full text-white flex flex-col gap-4">
+                      <h1
+                        class="m-0 font-medium text-sm text-surface-500 dark:text-surface-300">
+                        POLITIQUE
+                      </h1>
+                      <a href="#"
+                        ><span class="text-base lg:text-sm block text-white"
+                          >RGPD</span
+                        ></a
+                      ><a href="#"
+                        ><span class="text-base lg:text-sm block text-white"
+                          >Confidentialité</span
+                        ></a
+                      >
+                      <a href="#"
+                        ><span class="text-base lg:text-sm block text-white"
+                          >Legalité</span
+                        ></a
+                      ><a href="#"
+                        ><span class="text-base lg:text-sm block text-white"
+                          >Documentation</span
+                        ></a
+                      >
+                    </div>
+                  </div>
+                </div>
+              </footer>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
