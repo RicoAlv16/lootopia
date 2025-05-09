@@ -1,12 +1,15 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
+
 
 import { Auction } from 'src/shared/entities/auction.entity';
 import { Bid } from 'src/shared/entities/bid.entity';
 import { UsersEntity } from 'src/shared/entities/users.entity';
 import { PlaceBidDto } from 'src/shared/dto/place-bid.dto';
 import { ProfileService } from 'src/modules/profile/profile.service';
+import { CreateAuctionDto } from 'src/shared/dto/create-auction.dto';
+import { Artefact } from 'src/shared/entities/artefact.entity';
 
 @Injectable()
 export class AuctionService {
@@ -21,6 +24,8 @@ export class AuctionService {
     private userRepo: Repository<UsersEntity>,
 
     private profileService: ProfileService,
+
+    private dataSource: DataSource
   ) {}
 
   async placeBid(userId: number, dto: PlaceBidDto): Promise<Bid> {
@@ -72,5 +77,46 @@ export class AuctionService {
     await this.auctionRepo.save(auction);
 
     return bid;
+  }
+
+  async createAuction(userId: number, dto: CreateAuctionDto): Promise<Auction> {
+    const artefact = await this.dataSource.getRepository(Artefact).findOne({
+      where: { id: dto.artefactId },
+      relations: ['owner'],
+    });
+
+    if (!artefact) {
+      throw new HttpException('Artéfact introuvable', HttpStatus.NOT_FOUND);
+    }
+
+    if (artefact.owner.id !== userId) {
+      throw new HttpException('Vous ne possédez pas cet artéfact', HttpStatus.FORBIDDEN);
+    }
+
+    if (artefact.isInAuction) {
+      throw new HttpException('Cet artéfact est déjà aux enchères', HttpStatus.BAD_REQUEST);
+    }
+
+    const now = new Date();
+    const end = new Date(now.getTime() + dto.durationInMinutes * 60000);
+
+    const auction = this.auctionRepo.create({
+      artefact,
+      seller: artefact.owner,
+      startingPrice: dto.startingPrice,
+      currentBid: 0,
+      status: 'active',
+      startTime: now,
+      endTime: end,
+    });
+
+    artefact.isInAuction = true;
+
+    await this.dataSource.transaction(async (manager) => {
+      await manager.save(auction);
+      await manager.save(artefact);
+    });
+
+    return auction;
   }
 }

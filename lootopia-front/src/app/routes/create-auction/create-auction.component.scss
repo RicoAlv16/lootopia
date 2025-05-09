@@ -1,0 +1,64 @@
+:host {
+  display: block;
+  padding: 2rem;
+  max-width: 600px;
+  margin: 0 auto;
+  background: #0d0d0d;
+  color: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+}
+
+h2 {
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #ffd700;
+  text-transform: uppercase;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+label {
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+  display: block;
+  color: #ddd;
+}
+
+select,
+input[type='number'] {
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border-radius: 0.5rem;
+  border: none;
+  background: #1c1c1c;
+  color: #fff;
+  transition: border 0.3s ease;
+  width: 100%;
+
+  &:focus {
+    outline: none;
+    border: 1px solid #ffd700;
+  }
+}
+
+button {
+  background: #228b22;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  font-size: 1.1rem;
+  border-radius: 0.5rem;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+
+  &:hover {
+    background: #2faa2f;
+  }
+}

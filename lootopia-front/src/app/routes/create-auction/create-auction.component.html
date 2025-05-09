@@ -1,0 +1,22 @@
+<h2>Créer une nouvelle enchère</h2>
+
+<div>
+  <label>Artéfact :</label>
+  <select [(ngModel)]="selectedArtefactId">
+    <option *ngFor="let artefact of artefacts" [value]="artefact.id">
+      {{ artefact.name }}
+    </option>
+  </select>
+</div>
+
+<div>
+  <label>Prix de départ :</label>
+  <input type="number" [(ngModel)]="startingPrice" />
+</div>
+
+<div>
+  <label>Durée (en minutes) :</label>
+  <input type="number" [(ngModel)]="durationInMinutes" />
+</div>
+
+<button (click)="createAuction()">Créer l’enchère</button>

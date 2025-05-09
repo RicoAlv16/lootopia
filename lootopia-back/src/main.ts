@@ -30,7 +30,7 @@ async function bootstrap() {
 
   // Configuration de CORS (vous pouvez ajuster ces paramètres selon vos besoins)
   app.enableCors({
-    origin: process.env.FRONTEND_URL || process.env.AUTH0_AUDIENCE, // Restreignez au domaine de votre frontend si possible
+    origin: 'http://localhost:4200',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });

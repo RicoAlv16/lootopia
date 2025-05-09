@@ -15,4 +15,12 @@ export class AuctionService {
   placeBid(auctionId: number, amount: number): Observable<any> {
     return this.http.post(`${this.baseUrl}/bid`, { auctionId, amount });
   }
+
+  createAuction(data: {
+    artefactId: number;
+    startingPrice: number;
+    durationInMinutes: number;
+  }): Observable<any> {
+    return this.http.post(`${this.baseUrl}/create`, data);
+  }
 }
