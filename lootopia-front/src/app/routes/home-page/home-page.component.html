@@ -1,3 +1,4 @@
+<app-login [(visible)]="visible"></app-login>
 <div class="bg-surface-50 dark:bg-surface-950">
   <section id="topbar">
     <div
@@ -70,8 +71,9 @@
           </li>
           <li>
             <button
-              type="button"
-              class="mx-4 rounded-md bg-green-500 px-3 py-2 text-white font-semibold shadow-xs ring-1 ring-green-300 ring-inset hover:bg-green-600 sm:mt-0 sm:w-auto">
+              (click)="showDialog()"
+              class="mx-4 rounded-md bg-green-500 px-3 py-2 text-white font-semibold shadow-xs ring-1 ring-green-300 ring-inset hover:bg-green-600 sm:mt-0 sm:w-auto"
+              style="cursor: pointer">
               Connexion
             </button>
           </li>

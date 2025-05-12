@@ -1,0 +1,108 @@
+<p-dialog
+  maskStyleClass="backdrop-blur-sm"
+  [(visible)]="visible"
+  styleClass="!border-0 !bg-transparent">
+  <ng-template #headless>
+    <div
+      class="flex flex-col px-8 py-8 gap-6 rounded-2xl"
+      style="
+        border-radius: 12px;
+        background-image: radial-gradient(
+          circle at left top,
+          var(--p-primary-400),
+          var(--p-primary-700)
+        );
+      ">
+      <h1 class="text-center text-xl">Connexion</h1>
+      <img
+        src="icons/lootopia_icon.webp"
+        alt="logo"
+        class="block mx-auto w-17 h-17 rounded-full"
+        draggable="false" />
+
+      <form [formGroup]="loginForm" (ngSubmit)="login()">
+        <p-floatlabel variant="on" class="my-6">
+          <p-iconfield>
+            <p-inputicon class="pi pi-user text-white text-xl" />
+            <input
+              pInputText
+              formControlName="email"
+              id="email"
+              type="email"
+              class="!bg-white/20 !border-0 !p-4 !text-surface-700 w-80 text-lg"
+              [style.text-indent]="'1.5rem'" />
+          </p-iconfield>
+          <label
+            for="email"
+            [style.background]="'transparent'"
+            [style.color]="'white'"
+            [style.boxShadow]="'none'"
+            class="text-lg ml-2"
+            >Email</label
+          >
+        </p-floatlabel>
+        <p-floatlabel variant="on" class="my-6">
+          <p-iconfield>
+            <p-inputicon class="pi pi-key text-white text-xl" />
+            <p-password
+              formControlName="password"
+              inputIid="password"
+              [toggleMask]="true"
+              [feedback]="false"
+              class="ng-dirty ng-invalid"
+              styleClass="my-password"
+              inputStyleClass="bg-white/20 border-0 p-4 text-surface-700 w-80 text-lg indent-7" />
+          </p-iconfield>
+          <label
+            for="mot de pass"
+            [style.background]="'transparent'"
+            [style.color]="'white'"
+            [style.boxShadow]="'none'"
+            class="text-lg ml-2"
+            >Mot de pass</label
+          >
+        </p-floatlabel>
+        <div class="flex items-center gap-4">
+          <p-button
+            label="Annuler"
+            (click)="closeDialog()"
+            [text]="true"
+            styleClass="!p-4 w-full !text-primary-50 !border !border-white/30 hover:!bg-white/10"
+            class="w-full" />
+          <p-button
+            type="submit"
+            label="Se connecter"
+            [text]="true"
+            styleClass="!p-4 w-full !text-primary-50 !border !border-white/30 hover:!bg-white/10"
+            class="w-full" />
+        </div>
+      </form>
+      <span class="text-end mb-4"
+        ><a class="font-medium no-underline ml-2 cursor-pointer"
+          >Mot de pass oublié?</a
+        ></span
+      >
+      <span class="text-color-secondary text-center mb-4"
+        >ou inscrivez-vous avec</span
+      >
+      <div class="flex items-center justify-center gap-4">
+        <a
+          class="inline-flex flex-shrink-0 w-3rem h-3rem justify-content-center align-items-center surface-ground border-circle"
+          ><i class="pi pi-facebook text-2xl text-color"></i
+        ></a>
+        <a
+          class="inline-flex flex-shrink-0 w-3rem h-3rem justify-content-center align-items-center surface-ground border-circle"
+          ><i class="pi pi-twitter text-2xl text-color"></i
+        ></a>
+        <a
+          class="inline-flex flex-shrink-0 w-3rem h-3rem justify-content-center align-items-center surface-ground border-circle"
+          ><i class="pi pi-google text-2xl text-color"></i
+        ></a>
+        <a
+          class="inline-flex flex-shrink-0 w-3rem h-3rem justify-content-center align-items-center surface-ground border-circle"
+          ><i class="pi pi-github text-2xl text-color"></i
+        ></a>
+      </div>
+    </div>
+  </ng-template>
+</p-dialog>
