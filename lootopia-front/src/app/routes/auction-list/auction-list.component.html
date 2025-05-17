@@ -1,0 +1,18 @@
+<div class="filters">
+  <input type="text" placeholder="Recherche par nom" [(ngModel)]="searchName" (input)="filter()" />
+  <input type="number" placeholder="Prix min" [(ngModel)]="priceMin" (input)="filter()" />
+  <input type="number" placeholder="Prix max" [(ngModel)]="priceMax" (input)="filter()" />
+  <select [(ngModel)]="rarity" (change)="filter()">
+    <option value="">Toutes raretés</option>
+    <option *ngFor="let r of rarities" [value]="r">{{ r }}</option>
+  </select>
+</div>
+
+<div class="auction-grid">
+  <div class="auction-card" *ngFor="let auction of filteredAuctions">
+    <div class="auction-title">{{ auction.artefact.name }}</div>
+    <div>Prix actuel : {{ auction.currentBid }} couronnes</div>
+    <div class="rarity {{ auction.artefact.rarity.toLowerCase() }}">{{ auction.artefact.rarity }}</div>
+    <div class="auction-endtime">Fin : {{ auction.endTime | date: 'short' }}</div>
+  </div>
+</div>

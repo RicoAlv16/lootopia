@@ -1,0 +1,72 @@
+/* Conteneur principal de la grille */
+.auction-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 colonnes fixes */
+  gap: 2rem;
+  padding: 2rem;
+  max-width: 80%;
+}
+
+/* Chaque carte d’enchère */
+.auction-card {
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
+  color: black;
+}
+
+.auction-card:hover {
+  transform: scale(1.02);
+}
+
+.auction-title {
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.auction-bid {
+  font-weight: bold;
+  margin-top: 1rem;
+}
+
+.auction-endtime {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.rarity {
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-top: 0.5rem;
+}
+
+/* Couleurs des raretés */
+.rarity.commun {
+  color: #228b22; /* vert */
+}
+.rarity.rare {
+  color: #1e90ff; /* bleu */
+}
+.rarity.épique {
+  color: #800080; /* violet */
+}
+.rarity.légendaire {
+  color: #ffa500; /* jaune-orange */
+}
+
+/* Responsive : passe à 1 colonne sur mobile, 2 en tablette */
+@media screen and (max-width: 1024px) {
+  .auction-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .auction-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -4,6 +4,7 @@ import { HomePageComponent } from './routes/home-page/home-page.component';
 import { NotFoundPageComponent } from './routes/not-found-page/not-found-page.component';
 import { authRoutes } from './routes/auth/auth.routes';
 import { CreateAuctionComponent } from './routes/create-auction/create-auction.component';
+import { AuctionListComponent } from './routes/auction-list/auction-list.component'
 
 export const routes: Routes = [
   {
@@ -30,6 +31,11 @@ export const routes: Routes = [
     path: 'create/auction',
     title: 'Lootopia Create Auction page',
     component: CreateAuctionComponent, 
+  },
+  {
+    path: 'auctions',
+    title: 'Lootopia Auctions page',
+    component: AuctionListComponent,
   },
   {
     path: '**',
