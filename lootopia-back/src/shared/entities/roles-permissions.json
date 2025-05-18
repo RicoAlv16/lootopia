@@ -1,0 +1,166 @@
+{
+  "roles": [
+    {
+      "role": "admin",
+      "description": "Administrateur système avec accès complet",
+      "permissions": [
+        {
+          "permission": "create_treasure_hunt",
+          "description": "Créer une nouvelle chasse au trésor"
+        },
+        {
+          "permission": "edit_treasure_hunt",
+          "description": "Modifier une chasse existante"
+        },
+        {
+          "permission": "delete_treasure_hunt",
+          "description": "Supprimer une chasse"
+        },
+        {
+          "permission": "join_treasure_hunt",
+          "description": "Rejoindre une chasse"
+        },
+        {
+          "permission": "manage_users",
+          "description": "Gérer les comptes utilisateurs"
+        },
+        {
+          "permission": "moderate_content",
+          "description": "Modérer les contenus utilisateurs"
+        },
+        {
+          "permission": "view_statistics",
+          "description": "Voir les statistiques des chasses"
+        },
+        {
+          "permission": "manage_rewards",
+          "description": "Gérer les récompenses"
+        },
+        {
+          "permission": "access_admin_panel",
+          "description": "Accéder au panneau d'administration"
+        },
+        {
+          "permission": "publish_sponsored_hunts",
+          "description": "Publier des chasses sponsorisées"
+        },
+        {
+          "permission": "ban_users",
+          "description": "Bannir des utilisateurs"
+        },
+        {
+          "permission": "edit_profile",
+          "description": "Modifier son profil utilisateur"
+        },
+        {
+          "permission": "view_all_hunts",
+          "description": "Voir toutes les chasses (y compris privées)"
+        },
+        {
+          "permission": "create_private_hunts",
+          "description": "Créer des chasses privées"
+        },
+        {
+          "permission": "manage_artifacts",
+          "description": "Gérer les artefacts virtuels"
+        }
+      ]
+    },
+    {
+      "role": "moderateur",
+      "description": "Utilisateur qui modère le contenu et les interactions",
+      "permissions": [
+        {
+          "permission": "moderate_content",
+          "description": "Modérer les contenus utilisateurs"
+        },
+        {
+          "permission": "ban_users",
+          "description": "Bannir des utilisateurs"
+        },
+        {
+          "permission": "edit_profile",
+          "description": "Modifier son profil utilisateur"
+        }
+      ]
+    },
+    {
+      "role": "organisateur",
+      "description": "Utilisateur qui crée et gère des chasses au trésor",
+      "permissions": [
+        {
+          "permission": "create_treasure_hunt",
+          "description": "Créer une nouvelle chasse au trésor"
+        },
+        {
+          "permission": "edit_treasure_hunt",
+          "description": "Modifier une chasse existante"
+        },
+        {
+          "permission": "delete_treasure_hunt",
+          "description": "Supprimer une chasse"
+        },
+        {
+          "permission": "join_treasure_hunt",
+          "description": "Rejoindre une chasse"
+        },
+        {
+          "permission": "view_statistics",
+          "description": "Voir les statistiques des chasses"
+        },
+        {
+          "permission": "manage_rewards",
+          "description": "Gérer les récompenses"
+        },
+        {
+          "permission": "create_private_hunts",
+          "description": "Créer des chasses privées"
+        },
+        {
+          "permission": "edit_profile",
+          "description": "Modifier son profil utilisateur"
+        }
+      ]
+    },
+    {
+      "role": "partenaire",
+      "description": "Entreprise ou organisation qui sponsorise des chasses",
+      "permissions": [
+        {
+          "permission": "join_treasure_hunt",
+          "description": "Rejoindre une chasse"
+        },
+        {
+          "permission": "view_statistics",
+          "description": "Voir les statistiques des chasses"
+        },
+        {
+          "permission": "publish_sponsored_hunts",
+          "description": "Publier des chasses sponsorisées"
+        },
+        {
+          "permission": "create_private_hunts",
+          "description": "Créer des chasses privées"
+        },
+        {
+          "permission": "edit_profile",
+          "description": "Modifier son profil utilisateur"
+        }
+      ]
+    },
+    {
+      "role": "participant",
+      "description": "Utilisateur standard qui participe aux chasses au trésor",
+      "permissions": [
+        {
+          "permission": "join_treasure_hunt",
+          "description": "Rejoindre une chasse"
+        },
+        {
+          "permission": "edit_profile",
+          "description": "Modifier son profil utilisateur"
+        }
+      ]
+    }
+  ]
+}
