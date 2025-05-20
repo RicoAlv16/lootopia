@@ -1,4 +1,4 @@
-export interface MinterInterface {
+export interface UserInterface {
   email: string;
   password: string;
 }

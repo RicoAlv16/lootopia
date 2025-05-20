@@ -7,7 +7,7 @@ import { UsersEntity } from 'src/shared/entities/users.entity';
 export class UsersController {
   private readonly logger = new Logger(UsersController.name);
   constructor(private readonly usersService: UsersService) {}
-  @Post()
+  @Post('/sigin')
   async createUser(@Body() userData: CreateUserDto): Promise<UsersEntity> {
     this.logger.verbose(`Creating user: ${JSON.stringify(userData)}`);
     return await this.usersService.creatUser(userData);

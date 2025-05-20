@@ -1,3 +1,3 @@
-export interface NftsInterface {
+export interface PermissionInterface {
   permission: string;
 }

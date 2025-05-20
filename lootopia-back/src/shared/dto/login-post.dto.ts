@@ -1,5 +1,4 @@
 import {
-  IsArray,
   IsNotEmpty,
   IsString,
   Matches,
@@ -8,12 +7,7 @@ import {
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateUserDto {
-  @IsString()
-  @IsNotEmpty()
-  @ApiProperty({ type: String })
-  nickname: string;
-
+export class LoginPostDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty({ type: String })
@@ -28,9 +22,4 @@ export class CreateUserDto {
   })
   @ApiProperty({ type: String })
   password: string;
-
-  @IsArray()
-  @IsString({ each: true })
-  @ApiProperty({ type: [String], description: 'Liste des noms de rôles' })
-  roles: string[];
 }

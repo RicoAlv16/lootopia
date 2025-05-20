@@ -1,14 +1,12 @@
-import {
-  IsArray,
-  IsNotEmpty,
-  IsString,
-  Matches,
-  MaxLength,
-  MinLength,
-} from 'class-validator';
+import { IsArray, IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateUserDto {
+export class LoginRespDto {
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ type: String })
+  access_token: string;
+
   @IsString()
   @IsNotEmpty()
   @ApiProperty({ type: String })
@@ -18,16 +16,6 @@ export class CreateUserDto {
   @IsNotEmpty()
   @ApiProperty({ type: String })
   email: string;
-
-  @IsString()
-  @IsNotEmpty()
-  @MinLength(8)
-  @MaxLength(20)
-  @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
-    message: 'password too weak',
-  })
-  @ApiProperty({ type: String })
-  password: string;
 
   @IsArray()
   @IsString({ each: true })

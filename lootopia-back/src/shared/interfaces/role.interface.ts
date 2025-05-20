@@ -1,3 +1,3 @@
-export interface NftsInterface {
+export interface RoleInterface {
   role: string;
 }

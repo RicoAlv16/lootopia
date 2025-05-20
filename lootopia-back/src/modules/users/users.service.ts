@@ -28,4 +28,15 @@ export class UsersService {
       );
     }
   }
+
+  async getUserByMail(email: string): Promise<UsersEntity> {
+    try {
+      return this.usersRepository.findUserByMail(email);
+    } catch (error) {
+      throw new HttpException(
+        `Error getting user by mail: ${error.message}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 }

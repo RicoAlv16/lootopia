@@ -1,10 +1,20 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToMany,
+  OneToMany,
+} from 'typeorm';
 import { RolesEntity } from './roles.entity';
+import { ProfileEntity } from './profile.entity';
 
-@Entity('UsersGet')
+@Entity('Users')
 export class UsersEntity {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column({ default: '' })
+  nickname: string;
 
   @Column({ default: '' })
   email: string;
@@ -12,6 +22,12 @@ export class UsersEntity {
   @Column({ default: '' })
   password: string;
 
+  @Column({ default: false })
+  isVerified: boolean;
+
   @ManyToMany(() => RolesEntity, (role) => role.user)
   roles: RolesEntity[];
+
+  @OneToMany(() => ProfileEntity, (profile) => profile.user)
+  profile: ProfileEntity[];
 }
