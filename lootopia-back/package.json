@@ -35,12 +35,14 @@
     "class-validator": "^0.14.2",
     "cookie-parser": "^1.4.7",
     "crypto": "^1.0.1",
+    "nestjs-stripe": "^1.0.0",
     "nodemailer": "^7.0.3",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "pg": "^8.16.0",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
+    "stripe": "^18.1.1",
     "typeorm": "^0.3.23"
   },
   "devDependencies": {

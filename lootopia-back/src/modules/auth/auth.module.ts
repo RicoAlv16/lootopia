@@ -10,6 +10,7 @@ import { ProfileEntity } from 'src/shared/entities/profile.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MailModule } from '../mail/mail.module';
 import { ProfileModule } from '../profile/profile.module';
+import { SmsModule } from '../sms/sms.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { ProfileModule } from '../profile/profile.module';
     }),
     TypeOrmModule.forFeature([ProfileEntity]),
     MailModule,
+    SmsModule,
     ProfileModule,
   ],
   providers: [AuthService, JwtStrategy],

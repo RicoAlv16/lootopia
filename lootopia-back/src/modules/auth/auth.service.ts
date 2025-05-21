@@ -14,6 +14,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { MailService } from '../mail/mail.service';
 import { ProfileService } from '../profile/profile.service';
+import { SmsService } from '../sms/sms.service';
 
 @Injectable()
 export class AuthService {
@@ -22,6 +23,7 @@ export class AuthService {
     private jwtService: JwtService,
     private mailService: MailService,
     private profileService: ProfileService,
+    private smsService: SmsService,
     @InjectRepository(ProfileEntity)
     private profileRepository: Repository<ProfileEntity>,
   ) {}
@@ -40,7 +42,7 @@ export class AuthService {
         await this.profileRepository.save(profile);
 
         if (profile.acceptMFA && profile.telephone) {
-          // Implémenter l'envoi SMS ici
+          await this.smsService.sendVerificationSMS(profile.telephone);
         }
         if (profileEmail) {
           await this.mailService.sendOPTCode(profileEmail, otpCode);
@@ -59,12 +61,12 @@ export class AuthService {
     try {
       const user = await this.usersService.getUserByMail(userData.email);
 
-      if (!user.isVerified) {
-        throw new HttpException(
-          "Veuillez vérifier votre compte avant d'accéder à la plateforme",
-          HttpStatus.FORBIDDEN,
-        );
-      }
+      //   if (!user.isVerified) {
+      //     throw new HttpException(
+      //       "Veuillez vérifier votre compte avant d'accéder à la plateforme",
+      //       HttpStatus.FORBIDDEN,
+      //     );
+      //   }
 
       if (user && (await bcrypt.compare(userData.password, user.password))) {
         const sendOPT = await this.sendOTPCode(user.email);

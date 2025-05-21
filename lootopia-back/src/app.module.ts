@@ -8,6 +8,7 @@ import { UsersModule } from './modules/users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './modules/auth/auth.module';
 import { ProfileModule } from './modules/profile/profile.module';
+import { StripeModule } from './modules/stripe/stripe.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { ProfileModule } from './modules/profile/profile.module';
     PermissionsModule,
     AuthModule,
     ProfileModule,
+    StripeModule,
   ],
   controllers: [AppController],
   providers: [AppService],
