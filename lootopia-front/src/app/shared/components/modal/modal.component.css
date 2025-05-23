@@ -1,0 +1,13 @@
+tr:hover {
+  background-color: #262d36;
+  cursor: pointer;
+}
+.modal-content {
+  border-radius: 12px;
+  background-image: radial-gradient(
+    circle at left top,
+    var(--color-prim-dark),
+    var(--color-secon-dark)
+  );
+  color: white;
+}

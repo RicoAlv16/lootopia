@@ -1,0 +1,94 @@
+@if (isPaymentMethode) {
+  <ng-container>
+    <p-dialog
+      maskStyleClass="backdrop-blur-sm"
+      [(visible)]="visible"
+      styleClass="!border-0 !bg-transparent">
+      <ng-template #headless>
+        <div class="flex flex-col px-8 py-8 gap-6 rounded-2xl modal-content">
+          <h1 class="text-center text-xl">Mode de paiement</h1>
+          <table>
+            @if (paymentMethods_S()) {
+              <tbody>
+                @for (item of paymentMethods_S(); track item.keyword) {
+                  <tr (click)="onClickPaymentMode(item.keyword)">
+                    <td class="py-3 px-3">
+                      <img
+                        src="{{ item.logo }}"
+                        alt="Card Logo"
+                        class="w-20 h-15 rounded-md" />
+                    </td>
+                    <td class="px-8">{{ item.name }}</td>
+                    <td class="px-3">
+                      <img
+                        src="{{ item.flag }}"
+                        alt="France Flag"
+                        class="w-10 h-10 rounded-md" />
+                    </td>
+                    <td class="hidden">{{ item.keyword }}</td>
+                  </tr>
+                }
+              </tbody>
+            }
+          </table>
+        </div>
+      </ng-template>
+    </p-dialog>
+  </ng-container>
+}
+
+@if (isPaymentSucces) {
+  <ng-container>
+    <p-dialog
+      maskStyleClass="backdrop-blur-sm"
+      [(visible)]="visible"
+      styleClass="!border-0 !bg-transparent">
+      <ng-template #headless>
+        <div
+          class="flex flex-col px-8 py-8 gap-6 rounded-2xl"
+          style="
+            border-radius: 12px;
+            background-image: radial-gradient(
+              circle at left top,
+              var(--p-primary-400),
+              var(--p-primary-700)
+            );
+          ">
+          <h1 class="text-center text-xl">Connexion</h1>
+          <img
+            src="icons/lootopia_icon.webp"
+            alt="logo"
+            class="block mx-auto w-17 h-17 rounded-full"
+            draggable="false" />
+
+          <span class="text-end mb-4"
+            ><a class="font-medium no-underline ml-2 cursor-pointer"
+              >Mot de pass oublié?</a
+            ></span
+          >
+          <span class="text-color-secondary text-center mb-4"
+            >ou inscrivez-vous avec</span
+          >
+          <div class="flex items-center justify-center gap-4">
+            <a
+              class="inline-flex flex-shrink-0 w-3rem h-3rem justify-content-center align-items-center surface-ground border-circle"
+              ><i class="pi pi-facebook text-2xl text-color"></i
+            ></a>
+            <a
+              class="inline-flex flex-shrink-0 w-3rem h-3rem justify-content-center align-items-center surface-ground border-circle"
+              ><i class="pi pi-twitter text-2xl text-color"></i
+            ></a>
+            <a
+              class="inline-flex flex-shrink-0 w-3rem h-3rem justify-content-center align-items-center surface-ground border-circle"
+              ><i class="pi pi-google text-2xl text-color"></i
+            ></a>
+            <a
+              class="inline-flex flex-shrink-0 w-3rem h-3rem justify-content-center align-items-center surface-ground border-circle"
+              ><i class="pi pi-github text-2xl text-color"></i
+            ></a>
+          </div>
+        </div>
+      </ng-template>
+    </p-dialog>
+  </ng-container>
+}

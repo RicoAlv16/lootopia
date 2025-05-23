@@ -80,11 +80,6 @@ export class LoginComponent {
   }
 
   login() {
-    const { email, password } = this.loginForm.value;
-    this.loginService
-      .login(email, password)
-      .subscribe(response => console.log(response.token));
-
     this.loginForm.reset();
     this.closeDialog();
   }
