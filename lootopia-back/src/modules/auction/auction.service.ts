@@ -9,6 +9,7 @@ import { UsersEntity } from 'src/shared/entities/users.entity';
 import { PlaceBidDto } from 'src/shared/dto/place-bid.dto';
 import { ProfileService } from 'src/modules/profile/profile.service';
 import { CreateAuctionDto } from 'src/shared/dto/create-auction.dto';
+import { FilterAuctionDto } from 'src/shared/dto/filter-auction.dto';
 import { Artefact } from 'src/shared/entities/artefact.entity';
 
 @Injectable()
@@ -119,4 +120,32 @@ export class AuctionService {
 
     return auction;
   }
+
+  async getFilteredAuctions(filter: FilterAuctionDto): Promise<Auction[]> {
+    const query = this.auctionRepo
+      .createQueryBuilder('auction')
+      .leftJoinAndSelect('auction.artefact', 'artefact')
+      .where('auction.status = :status', { status: 'active' });
+
+    if (filter.name) {
+      query.andWhere('LOWER(artefact.name) LIKE :name', {
+        name: `%${filter.name.toLowerCase()}%`,
+      });
+    }
+
+    if (filter.minPrice !== undefined) {
+      query.andWhere('auction.currentBid >= :minPrice', { minPrice: filter.minPrice });
+    }
+
+    if (filter.maxPrice !== undefined) {
+      query.andWhere('auction.currentBid <= :maxPrice', { maxPrice: filter.maxPrice });
+    }
+
+    if (filter.rarity) {
+      query.andWhere('artefact.rarity = :rarity', { rarity: filter.rarity });
+    }
+
+    return query.getMany();
+  }
+
 }
