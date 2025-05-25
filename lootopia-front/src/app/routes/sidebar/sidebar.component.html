@@ -91,8 +91,12 @@
 
     <!-- le corps des composents -->
     <div id="all-contents" class="flex-auto">
-      <app-pricing></app-pricing>
-      <!-- <div class="bg-blue-700 h-50">TEST</div> -->
+      @if (itemToShow === 'pricing') {
+        <app-pricing></app-pricing>
+      }
+      @if (itemToShow === 'dashboard') {
+        <app-home-page></app-home-page>
+      }
     </div>
     <!-- FIN du corps des composents -->
   </div>

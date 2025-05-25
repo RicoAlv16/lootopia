@@ -8,7 +8,7 @@ export class AuthController {
   private readonly logger = new Logger(AuthController.name);
   constructor(private authService: AuthService) {}
 
-  @Post('/Verify-credentials')
+  @Post('/verify-credentials')
   async VerifyCredentials(@Body() verifData: LoginPostDto): Promise<boolean> {
     this.logger.verbose(
       `credentials verification and OPT code sending: ${JSON.stringify(verifData)}`,

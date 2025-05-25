@@ -92,3 +92,70 @@
     </p-dialog>
   </ng-container>
 }
+
+@if (isSuccessModal) {
+  <ng-container>
+    <p-dialog
+      maskStyleClass="backdrop-blur-sm"
+      [(visible)]="visible"
+      styleClass="!border-0 !bg-transparent">
+      <ng-template #headless>
+        <div class="flex flex-col px-8 py-8 gap-6 rounded-2xl modal-content">
+          <h1 class="text-center text-xl">Bien jouer!</h1>
+          <span class="p-text-secondary block mb-2">{{
+            messageSiginSuccess
+          }}</span>
+          <span class="p-text-secondary block mb-8">{{
+            messageSiginValidate
+          }}</span>
+          <div class="flex justify-center">
+            <p-button
+              label="Fermer"
+              (click)="visible = false"
+              [text]="true"
+              styleClass="!p-4 w-full !text-primary-50 !border !border-white/30
+            hover:!bg-white/10"
+              class="w-full" />
+          </div>
+        </div>
+      </ng-template>
+    </p-dialog>
+  </ng-container>
+}
+
+@if (isOPTModal) {
+  <ng-container>
+    <p-toast />
+    <p-dialog
+      maskStyleClass="backdrop-blur-sm"
+      [(visible)]="visible"
+      styleClass="!border-0 !bg-transparent">
+      <ng-template #headless>
+        <div class="flex flex-col px-8 py-8 gap-6 rounded-2xl modal-content">
+          <div class="font-bold text-xl mb-2">Validation MFA</div>
+          <p class="text-muted-color block mb-8">
+            Entrez le code de validation
+          </p>
+
+          <p-inputotp
+            [(ngModel)]="codeOPT"
+            [integerOnly]="true"
+            [length]="6"
+            size="large"
+            (ngModelChange)="codeOPTChange.emit($event)" />
+          <div class="flex justify-between mt-8 self-stretch">
+            <p-button
+              label="Renvoyer Code"
+              (click)="resendCode()"
+              [link]="true"
+              class="p-0" />
+            <p-button
+              label="Valider Code"
+              (click)="onClickValidateCode()"
+              [disabled]="!codeOPT || codeOPT.toString().length !== 6" />
+          </div>
+        </div>
+      </ng-template>
+    </p-dialog>
+  </ng-container>
+}
