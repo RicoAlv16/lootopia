@@ -148,4 +148,28 @@ export class AuctionService {
     return query.getMany();
   }
 
+  async getMyAuctions(userId: number): Promise<Auction[]> {
+  return this.auctionRepo.find({
+    where: { seller: { id: userId } },
+    relations: ['artefact'],
+    order: { endTime: 'DESC' },
+  });
+}
+
+  async getFollowedAuctions(userId: number): Promise<Auction[]> {
+    const bids = await this.bidRepo.find({
+      where: { bidder: { id: userId } },
+      relations: ['auction', 'auction.artefact'],
+    });
+
+    const uniqueAuctions = new Map<number, Auction>();
+    bids.forEach(bid => {
+      if (bid.auction) {
+        uniqueAuctions.set(bid.auction.id, bid.auction);
+      }
+    });
+
+    return Array.from(uniqueAuctions.values());
+  }
+
 }

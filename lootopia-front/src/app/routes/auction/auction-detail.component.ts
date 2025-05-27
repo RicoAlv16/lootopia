@@ -1,40 +1,32 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
-import { AuctionService } from '../../shared/services/auction/auction.service';
 import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-auction-detail',
-  templateUrl: './auction-detail.component.html',
-  //styleUrls: ['./auction-detail.component.css'],
   standalone: true,
   imports: [CommonModule, FormsModule],
+  templateUrl: './auction-detail.component.html',
+  styleUrls: ['./auction-detail.component.css']
 })
-export class AuctionDetailComponent implements OnInit {
-  auction: any;
+export class AuctionDetailComponent {
+  @Input() auction: any;
+  @Output() close = new EventEmitter<void>();
+
   bidAmount: number = 0;
 
-  constructor(
-    private route: ActivatedRoute,
-    private auctionService: AuctionService
-  ) {}
-
-  ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.auctionService.getAuction(id).subscribe((data) => {
-      this.auction = data;
-      this.bidAmount = data.currentBid + 1;
-    });
+  ngOnChanges(): void {
+    if (this.auction) {
+      this.bidAmount = this.auction.currentBid + 1;
+    }
   }
 
   placeBid(): void {
-    this.auctionService.placeBid(this.auction.id, this.bidAmount).subscribe({
-      next: () => {
-        alert('Enchère réussie !');
-        this.ngOnInit();
-      },
-      error: (err) => alert(err.error?.message || 'Erreur lors de l’enchère'),
-    });
+    alert(`Tu veux enchérir ${this.bidAmount} sur l’enchère #${this.auction.id}`);
+    this.close.emit(); // fermeture après enchère fictive
+  }
+
+  closeDetail(): void {
+    this.close.emit();
   }
 }

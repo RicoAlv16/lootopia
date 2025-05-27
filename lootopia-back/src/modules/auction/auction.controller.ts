@@ -19,4 +19,14 @@ export class AuctionController {
     return this.auctionService.getFilteredAuctions(filter);
   }
 
+  @Get('my')
+  async getMyAuctions(@Query('userId') userId: number) {
+    return this.auctionService.getMyAuctions(userId);
+  }
+
+  @Get('followed')
+  async getFollowedAuctions(@Query('userId') userId: number) {
+    return this.auctionService.getFollowedAuctions(userId);
+  }
+
 }

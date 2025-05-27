@@ -1,11 +1,19 @@
-<div class="auction-container" *ngIf="auction">
-  <h1>{{ auction.artefact.name }}</h1>
-  <img [src]="auction.artefact.image" alt="Artefact" class="artefact-image" />
-  <p>{{ auction.artefact.description }}</p>
-  <p><strong>Prix actuel :</strong> {{ auction.currentBid }} couronnes</p>
-
-  <div class="bid-box">
-    <input type="number" [(ngModel)]="bidAmount" min="{{ auction.currentBid + 1 }}" />
-    <button (click)="placeBid()">Enchérir</button>
+<div class="overlay">
+  <div class="auction-card">
+    <button class="close-btn" (click)="closeDetail()">×</button>
+    <h2 class="title">{{ auction.artefact.name }}</h2>
+    <img [src]="auction.artefact.image" alt="Artefact" class="image" />
+    <p class="description">{{ auction.artefact.description }}</p>
+    <div class="rarity-label" [ngClass]="auction.artefact.rarity.toLowerCase()">
+      {{ auction.artefact.rarity }}
+    </div>
+    <div class="info">
+      <p><strong>Prix actuel :</strong> {{ auction.currentBid }} couronnes</p>
+      <p><strong>Fin :</strong> {{ auction.endTime | date: 'short' }}</p>
+    </div>
+    <div class="bid-section">
+      <input type="number" [(ngModel)]="bidAmount" [min]="auction.currentBid + 1" />
+      <button (click)="placeBid()">Enchérir</button>
+    </div>
   </div>
 </div>

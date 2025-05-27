@@ -1,3 +1,13 @@
+<!-- Onglets -->
+<div class="tabs">
+  <button *ngFor="let tab of tabs"
+          [class.active]="activeTab === tab.key"
+          (click)="setTab(tab.key)">
+    {{ tab.label }}
+  </button>
+</div>
+
+<!-- Filtres -->
 <div class="filters">
   <input type="text" placeholder="Recherche par nom" [(ngModel)]="searchName" (input)="filter()" />
   <input type="number" placeholder="Prix min" [(ngModel)]="priceMin" (input)="filter()" />
@@ -8,11 +18,19 @@
   </select>
 </div>
 
+<!-- Grille des enchères -->
 <div class="auction-grid">
-  <div class="auction-card" *ngFor="let auction of filteredAuctions">
+  <div class="auction-card" *ngFor="let auction of filteredAuctions" (click)="openAuctionDetail(auction)">
     <div class="auction-title">{{ auction.artefact.name }}</div>
     <div>Prix actuel : {{ auction.currentBid }} couronnes</div>
     <div class="rarity {{ auction.artefact.rarity.toLowerCase() }}">{{ auction.artefact.rarity }}</div>
     <div class="auction-endtime">Fin : {{ auction.endTime | date: 'short' }}</div>
   </div>
 </div>
+
+<!-- Modale des détails -->
+<app-auction-detail
+  *ngIf="selectedAuction"
+  [auction]="selectedAuction"
+  (close)="closeAuctionDetail()">
+</app-auction-detail>
