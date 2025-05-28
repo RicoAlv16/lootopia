@@ -122,3 +122,12 @@
 .bid-section button:hover {
   background-color: #1a6d1a;
 }
+
+.follow-button {
+  margin-top: 1rem;
+  background: none;
+  border: none;
+  color: #ffaa00;
+  font-size: 1.2rem;
+  cursor: pointer;
+}

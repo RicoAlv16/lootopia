@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuctionService } from '../../shared/services/auction/auction.service';
@@ -13,11 +13,13 @@ import { AuctionService } from '../../shared/services/auction/auction.service';
 export class AuctionDetailComponent implements OnInit, OnDestroy {
   @Input() auction: any;
   @Output() close = new EventEmitter<void>();
+  @Output() updated = new EventEmitter<void>(); // 🔥 nouveau
 
   bidAmount: number = 0;
   countdown: string = '';
   intervalId: any;
   endTimeFormatted: string = '';
+  isFollowed: boolean = false;
 
   constructor(private auctionService: AuctionService) {}
 
@@ -25,12 +27,7 @@ export class AuctionDetailComponent implements OnInit, OnDestroy {
     this.updateBidAmount();
     this.formatEndDate();
     this.startCountdown();
-  }
-
-  ngOnChanges(): void {
-    this.updateBidAmount();
-    this.formatEndDate();
-    this.startCountdown();
+    this.checkIfFollowed();
   }
 
   ngOnDestroy(): void {
@@ -69,23 +66,36 @@ export class AuctionDetailComponent implements OnInit, OnDestroy {
   }
 
   placeBid(): void {
-    console.log("📤 Envoi d'enchère", this.bidAmount);
-
-    const userId = 2; // À remplacer avec authentification réelle
+    const userId = 2; // à remplacer
     this.auctionService.placeBid(this.auction.id, this.bidAmount).subscribe({
-      next: (res) => {
-        console.log('✅ Enchère réussie', res);
-        alert('Enchère placée avec succès !');
-        this.close.emit();
+      next: () => {
+        this.updated.emit(); // 🔥 informer le parent
+        this.close.emit();   // optionnel si tu veux fermer après
       },
-      error: (err) => {
-        console.error('❌ Erreur enchère', err);
-        alert(err?.error?.message || 'Erreur lors de l’enchère');
-      }
+      error: err => alert("Erreur d'enchère : " + err.message)
     });
   }
 
   closeDetail(): void {
     this.close.emit();
+  }
+
+  toggleFollow(): void {
+    const userId = 2;
+    const observable = this.isFollowed
+      ? this.auctionService.unfollowAuction(userId, this.auction.id)
+      : this.auctionService.followAuction(userId, this.auction.id);
+
+    observable.subscribe(() => {
+      this.isFollowed = !this.isFollowed;
+      this.updated.emit(); // 🔥 informer le parent
+    });
+  }
+
+  checkIfFollowed(): void {
+    const userId = 2;
+    this.auctionService.getFollowedAuctions(userId).subscribe((followed) => {
+      this.isFollowed = followed.some((a: any) => a.id === this.auction.id);
+    });
   }
 }

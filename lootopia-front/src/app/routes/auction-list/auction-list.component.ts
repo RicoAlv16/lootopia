@@ -33,17 +33,36 @@ export class AuctionListComponent {
 
   selectedAuction: any = null;
 
-  ngOnInit(): void {
-    this.auctionService.getAllAuctions().subscribe({
-      next: (data) => {
-        this.auctions = data;
-        this.filteredAuctions = data;
-      },
-      error: (err) => {
-        console.error('Erreur lors du chargement des enchères', err);
-      }
-    });
-  }
+ngOnInit(): void {
+  const userId = 2; // à remplacer avec userService ou authService si nécessaire
+
+  this.auctionService.getAllAuctions().subscribe({
+    next: (allAuctions) => {
+      this.auctionService.getFollowedAuctions(userId).subscribe({
+        next: (followedAuctions) => {
+          const followedIds = new Set(followedAuctions.map(a => a.id));
+          
+          this.auctions = allAuctions.map(a => ({
+            ...a,
+            isFollowed: followedIds.has(a.id),
+            isMine: a.seller?.id === userId // si nécessaire pour le tab "mine"
+          }));
+
+          this.filter();
+        },
+        error: (err) => {
+          console.error('Erreur lors du chargement des enchères suivies', err);
+          this.auctions = allAuctions;
+          this.filter();
+        }
+      });
+    },
+    error: (err) => {
+      console.error('Erreur lors du chargement des enchères', err);
+    }
+  });
+}
+
 
   setTab(tab: 'all' | 'mine' | 'followed'): void {
     this.activeTab = tab;
@@ -74,4 +93,31 @@ export class AuctionListComponent {
   closeAuctionDetail(): void {
     this.selectedAuction = null;
   }
+
+  refreshAuctions(): void {
+    const userId = 2;
+    this.auctionService.getAllAuctions().subscribe({
+      next: (allAuctions) => {
+        this.auctionService.getFollowedAuctions(userId).subscribe({
+          next: (followedAuctions) => {
+            const followedIds = new Set(followedAuctions.map(a => a.id));
+
+            this.auctions = allAuctions.map(a => ({
+              ...a,
+              isFollowed: followedIds.has(a.id),
+              isMine: a.seller?.id === userId
+            }));
+
+            this.filter();
+          },
+          error: () => {
+            this.auctions = allAuctions;
+            this.filter();
+          }
+        });
+      },
+      error: (err) => console.error('Erreur refresh', err)
+    });
+  }
+
 }

@@ -41,5 +41,7 @@
 <app-auction-detail
   *ngIf="selectedAuction"
   [auction]="selectedAuction"
-  (close)="closeAuctionDetail()">
-</app-auction-detail>
+  (close)="closeAuctionDetail()"
+  (updated)="refreshAuctions()"
+></app-auction-detail>
+

@@ -12,6 +12,7 @@ import { RolesEntity } from './shared/entities/roles.entity';
 import { PermissionsEntity } from './shared/entities/permissions.entity';
 import { ProfileEntity } from './shared/entities/profile.entity';
 import { LootTable } from './shared/entities/loot-table.entity';
+import { FollowedAuction } from './shared/entities/followed-auction.entity';
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
@@ -30,7 +31,8 @@ export const AppDataSource = new DataSource({
     RolesEntity,
     PermissionsEntity,
     ProfileEntity,
-    LootTable
+    LootTable,
+    FollowedAuction,
 
   ],
   migrations: ['src/migrations/*.ts'],

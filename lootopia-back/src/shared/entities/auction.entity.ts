@@ -9,6 +9,7 @@ import {
 import { UsersEntity } from './users.entity';
 import { Artefact } from './artefact.entity';
 import { Bid } from './bid.entity';
+import { FollowedAuction } from './followed-auction.entity';
 
 @Entity()
 export class Auction {
@@ -44,4 +45,7 @@ export class Auction {
 
   @OneToMany(() => Bid, bid => bid.auction)
   bids: Bid[];
+
+  @OneToMany(() => FollowedAuction, follow => follow.auction)
+  followers: FollowedAuction[];
 }

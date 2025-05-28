@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { RolesEntity } from './roles.entity';
 import { ProfileEntity } from './profile.entity';
+import { FollowedAuction } from './followed-auction.entity';
 
 @Entity('Users')
 export class UsersEntity {
@@ -30,4 +31,8 @@ export class UsersEntity {
 
   @OneToMany(() => ProfileEntity, (profile) => profile.user)
   profile: ProfileEntity[];
+
+  @OneToMany(() => FollowedAuction, follow => follow.user)
+  followedAuctions: FollowedAuction[];
+
 }

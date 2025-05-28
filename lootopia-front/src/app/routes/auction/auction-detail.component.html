@@ -3,6 +3,11 @@
     <button class="close-btn" (click)="closeDetail()">×</button>
 
     <h2 class="title">{{ auction.artefact.loot.name }}</h2>
+    <!-- Suivi / Désuivi -->
+    <button (click)="toggleFollow()" class="follow-button">
+      {{ isFollowed ? '★ Suivi' : '☆ Suivre' }}
+    </button>
+
 
     <img
       [src]="'http://localhost:3000' + auction.artefact.loot.image"
