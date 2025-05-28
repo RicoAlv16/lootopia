@@ -30,24 +30,28 @@ export class CreateAuctionComponent implements OnInit {
     });
   }
 
-  createAuction(): void {
-    if (!this.selectedArtefactId || this.startingPrice <= 0) {
-      alert('Veuillez remplir tous les champs.');
-      return;
-    }
-
-    this.auctionService
-      .createAuction({
-        artefactId: this.selectedArtefactId,
-        startingPrice: this.startingPrice,
-        durationInMinutes: this.durationInMinutes,
-      })
-      .subscribe({
-        next: () => {
-          alert('Enchère créée avec succès !');
-          this.router.navigate(['/']); // à adapter selon ta navigation
-        },
-        error: (err) => alert(err.error?.message || 'Erreur'),
-      });
+createAuction(): void {
+  if (!this.selectedArtefactId || this.startingPrice <= 0) {
+    alert('Veuillez remplir tous les champs.');
+    return;
   }
+
+  const userId = 1; // 👤 mock utilisateur (à remplacer plus tard par un AuthService)
+
+  this.auctionService
+    .createAuction({
+      artefactId: this.selectedArtefactId,
+      startingPrice: this.startingPrice,
+      durationInMinutes: this.durationInMinutes,
+      userId, // ajout requis
+    })
+    .subscribe({
+      next: () => {
+        alert('Enchère créée avec succès !');
+        this.router.navigate(['/']); // à adapter
+      },
+      error: (err) => alert(err.error?.message || 'Erreur'),
+    });
+}
+
 }

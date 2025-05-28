@@ -4,7 +4,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -12,34 +12,113 @@
 }
 
 .auction-card {
-  background: white;
+  background: #fff;
   padding: 2rem;
-  border-radius: 12px;
-  max-width: 500px;
+  border-radius: 16px;
+  max-width: 550px;
   width: 90%;
   position: relative;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  color: black;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  color: #333;
+  text-align: center;
 }
 
 .close-btn {
   position: absolute;
-  top: 10px;
-  right: 15px;
-  font-size: 1.5rem;
+  top: 12px;
+  right: 16px;
+  font-size: 1.6rem;
   border: none;
   background: none;
   cursor: pointer;
+  color: #999;
+}
+
+.title {
+  font-size: 1.6rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
 }
 
 .image {
-  width: 100%;
-  height: auto;
-  margin: 1rem 0;
+  width: 65%;
+  max-height: 65%;
+  object-fit: contain;
+  border-radius: 16px;
+  background: #f9f9f9;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  margin: auto;
+}
+
+.description {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  color: #555;
+}
+
+.rarity-label {
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+}
+
+/* Couleurs rareté */
+.rarity-label.commun {
+  color: #228b22;
+}
+.rarity-label.rare {
+  color: #1e90ff;
+}
+.rarity-label.épique {
+  color: #800080;
+}
+.rarity-label.légendaire {
+  color: #ffa500;
+}
+
+.info {
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+  background: #f5f5f5;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  text-align: left;
+  max-width: 85%;
+  margin: auto;
+}
+
+.info p {
+  margin: 0.4rem 0;
 }
 
 .bid-section {
   display: flex;
   gap: 1rem;
-  margin-top: 1rem;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1.5rem;
+}
+
+.bid-section input {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  width: 100px;
+  text-align: center;
+}
+
+.bid-section button {
+  padding: 0.5rem 1rem;
+  background-color: #228b22;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.bid-section button:hover {
+  background-color: #1a6d1a;
 }

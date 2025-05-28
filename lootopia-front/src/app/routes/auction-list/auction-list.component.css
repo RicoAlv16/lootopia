@@ -42,7 +42,7 @@
 
 .auction-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 2rem;
   padding: 2rem;
   max-width: 1200px;
@@ -98,4 +98,13 @@
 }
 .rarity.légendaire {
   color: #ffa500;
+}
+
+.artefact-img {
+  max-width: 100%;
+  max-height: 100%;
+  display: block;
+  margin: 0 auto 1rem;
+  object-fit: contain;
+  border-radius: 12px;
 }

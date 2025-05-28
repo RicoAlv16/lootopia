@@ -9,6 +9,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './modules/auth/auth.module';
 import { ProfileModule } from './modules/profile/profile.module';
 import { StripeModule } from './modules/stripe/stripe.module';
+import { AuctionModule } from './modules/auction/auction.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -32,6 +34,8 @@ import { StripeModule } from './modules/stripe/stripe.module';
     AuthModule,
     ProfileModule,
     StripeModule,
+    AuctionModule,
+    ScheduleModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,18 +1,42 @@
 <div class="overlay">
   <div class="auction-card">
     <button class="close-btn" (click)="closeDetail()">×</button>
-    <h2 class="title">{{ auction.artefact.name }}</h2>
-    <img [src]="auction.artefact.image" alt="Artefact" class="image" />
-    <p class="description">{{ auction.artefact.description }}</p>
-    <div class="rarity-label" [ngClass]="auction.artefact.rarity.toLowerCase()">
-      {{ auction.artefact.rarity }}
+
+    <h2 class="title">{{ auction.artefact.loot.name }}</h2>
+
+    <img
+      [src]="'http://localhost:3000' + auction.artefact.loot.image"
+      alt="{{ auction.artefact.loot.name }}"
+      class="image"
+    />
+
+    <p class="description">{{ auction.artefact.loot.description }}</p>
+
+    <div
+      class="rarity-label"
+      [ngClass]="auction.artefact.loot.rarity.toLowerCase()"
+    >
+      {{ auction.artefact.loot.rarity }}
     </div>
+
     <div class="info">
-      <p><strong>Prix actuel :</strong> {{ auction.currentBid }} couronnes</p>
-      <p><strong>Fin :</strong> {{ auction.endTime | date: 'short' }}</p>
+      <p><strong>Prix de départ :</strong> {{ auction.startingPrice }} couronnes</p>
+      <p>
+        <strong>Prix actuel :</strong>
+        {{ auction.currentBid > 0 ? (auction.currentBid + ' couronnes') : 'Aucune offre' }}
+      </p>
+      <p><strong>Fin :</strong> {{ endTimeFormatted }}</p>
+      <p><strong>Temps restant :</strong> {{ countdown }}</p>
+
     </div>
+
+
     <div class="bid-section">
-      <input type="number" [(ngModel)]="bidAmount" [min]="auction.currentBid + 1" />
+      <input
+        type="number"
+        [(ngModel)]="bidAmount"
+        [min]="auction.currentBid + 1"
+      />
       <button (click)="placeBid()">Enchérir</button>
     </div>
   </div>

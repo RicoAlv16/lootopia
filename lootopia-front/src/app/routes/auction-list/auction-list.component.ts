@@ -52,10 +52,10 @@ export class AuctionListComponent {
 
   filter(): void {
     this.filteredAuctions = this.auctions.filter(a => {
-      const nameMatch = a.artefact.name.toLowerCase().includes(this.searchName.toLowerCase());
+      const nameMatch = a.artefact.loot.name.toLowerCase().includes(this.searchName.toLowerCase());
       const priceMatch = (!this.priceMin || a.currentBid >= this.priceMin) &&
-                         (!this.priceMax || a.currentBid <= this.priceMax);
-      const rarityMatch = !this.rarity || a.artefact.rarity === this.rarity;
+                        (!this.priceMax || a.currentBid <= this.priceMax);
+      const rarityMatch = !this.rarity || a.artefact.loot.rarity === this.rarity;
 
       const tabMatch =
         this.activeTab === 'all' ||
@@ -65,6 +65,7 @@ export class AuctionListComponent {
       return nameMatch && priceMatch && rarityMatch && tabMatch;
     });
   }
+
 
   openAuctionDetail(auction: any): void {
     this.selectedAuction = auction;

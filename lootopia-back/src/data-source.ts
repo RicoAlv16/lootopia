@@ -11,6 +11,7 @@ import { Artefact } from './shared/entities/artefact.entity';
 import { RolesEntity } from './shared/entities/roles.entity';
 import { PermissionsEntity } from './shared/entities/permissions.entity';
 import { ProfileEntity } from './shared/entities/profile.entity';
+import { LootTable } from './shared/entities/loot-table.entity';
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
@@ -28,7 +29,8 @@ export const AppDataSource = new DataSource({
     Artefact,
     RolesEntity,
     PermissionsEntity,
-    ProfileEntity
+    ProfileEntity,
+    LootTable
 
   ],
   migrations: ['src/migrations/*.ts'],

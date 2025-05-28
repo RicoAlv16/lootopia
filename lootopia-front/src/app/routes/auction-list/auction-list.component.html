@@ -21,12 +21,21 @@
 <!-- Grille des enchères -->
 <div class="auction-grid">
   <div class="auction-card" *ngFor="let auction of filteredAuctions" (click)="openAuctionDetail(auction)">
-    <div class="auction-title">{{ auction.artefact.name }}</div>
-    <div>Prix actuel : {{ auction.currentBid }} couronnes</div>
-    <div class="rarity {{ auction.artefact.rarity.toLowerCase() }}">{{ auction.artefact.rarity }}</div>
-    <div class="auction-endtime">Fin : {{ auction.endTime | date: 'short' }}</div>
+    <img class="artefact-img" [src]="'http://localhost:3000' + auction.artefact.loot.image" alt="{{ auction.artefact.loot.name }}" />
+    
+    <div class="auction-title">{{ auction.artefact.loot.name }}</div>
+    <div>
+      Prix actuel : {{
+        auction.currentBid > 0 ? auction.currentBid : auction.startingPrice
+      }} couronnes
+    </div>
+    <div class="rarity {{ auction.artefact.loot.rarity.toLowerCase() }}">{{ auction.artefact.loot.rarity }}</div>
+    <div class="auction-endtime">
+      Fin : {{ auction.endTime | date: 'dd/MM/yyyy HH:mm' }}
+    </div>
   </div>
 </div>
+
 
 <!-- Modale des détails -->
 <app-auction-detail

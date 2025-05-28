@@ -1,23 +1,18 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { UsersEntity } from './users.entity';
+import { LootTable } from './loot-table.entity';
 
 @Entity('artefacts')
 export class Artefact {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  name: string;
-
-  @Column({ type: 'text', nullable: true })
-  description: string;
-
-  @Column({ nullable: true })
-  image: string; // URL de l’image de l’artefact
-
-  @Column({ default: false })
-  isInAuction: boolean; // Pour savoir si déjà listé
+  @ManyToOne(() => LootTable, { eager: true, nullable: false })
+  loot: LootTable;
 
   @ManyToOne(() => UsersEntity, user => user.id, { nullable: false, onDelete: 'CASCADE' })
   owner: UsersEntity;
+
+  @Column({ default: false })
+  isInAuction: boolean;
 }

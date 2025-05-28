@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToMany,
+  JoinColumn,
+} from 'typeorm';
 import { UsersEntity } from './users.entity';
 import { Artefact } from './artefact.entity';
 import { Bid } from './bid.entity';
@@ -8,10 +15,12 @@ export class Auction {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Artefact, { eager: true })
+  @ManyToOne(() => Artefact, { eager: true, onDelete: 'CASCADE' })
+  @JoinColumn()
   artefact: Artefact;
 
   @ManyToOne(() => UsersEntity)
+  @JoinColumn()
   seller: UsersEntity;
 
   @Column()
@@ -21,6 +30,7 @@ export class Auction {
   currentBid: number;
 
   @ManyToOne(() => UsersEntity, { nullable: true })
+  @JoinColumn()
   currentBidder: UsersEntity;
 
   @Column()
