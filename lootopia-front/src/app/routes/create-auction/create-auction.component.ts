@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { AuctionService } from '../../shared/services/auction/auction.service';
 import { ArtefactService } from '../../shared/services/auction/artefact.service';
 import { Router } from '@angular/router';
@@ -13,10 +13,13 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./create-auction.component.scss'],
 })
 export class CreateAuctionComponent implements OnInit {
+  @Output() close = new EventEmitter<void>();
+
   artefacts: any[] = [];
   selectedArtefactId: number | null = null;
-  startingPrice: number = 0;
-  durationInMinutes: number = 60;
+  selectedArtefact: any = null;
+  startingPrice = 0;
+  durationInMinutes = 60;
 
   constructor(
     private auctionService: AuctionService,
@@ -25,33 +28,44 @@ export class CreateAuctionComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.artefactService.getMyArtefacts().subscribe((data) => {
-      this.artefacts = data;
+    const userId = 1;
+    this.artefactService.getMyArtefacts(userId).subscribe({
+      next: (data) => {
+        this.artefacts = data;
+      },
+      error: (err) => {
+        console.error('Erreur chargement artefacts', err);
+      },
     });
   }
 
-createAuction(): void {
-  if (!this.selectedArtefactId || this.startingPrice <= 0) {
-    alert('Veuillez remplir tous les champs.');
-    return;
+  onArtefactChange(): void {
+    this.selectedArtefact = this.artefacts.find(a => a.id === this.selectedArtefactId) || null;
   }
 
-  const userId = 1; // 👤 mock utilisateur (à remplacer plus tard par un AuthService)
+  createAuction(): void {
+    if (!this.selectedArtefactId || this.startingPrice <= 0) {
+      alert('Veuillez remplir tous les champs.');
+      return;
+    }
 
-  this.auctionService
-    .createAuction({
+    const userId = 1;
+
+    this.auctionService.createAuction({
       artefactId: this.selectedArtefactId,
       startingPrice: this.startingPrice,
       durationInMinutes: this.durationInMinutes,
-      userId, // ajout requis
-    })
-    .subscribe({
+      userId,
+    }).subscribe({
       next: () => {
         alert('Enchère créée avec succès !');
-        this.router.navigate(['/']); // à adapter
+        this.close.emit();
       },
       error: (err) => alert(err.error?.message || 'Erreur'),
     });
-}
+  }
 
+  cancel(): void {
+    this.close.emit();
+  }
 }

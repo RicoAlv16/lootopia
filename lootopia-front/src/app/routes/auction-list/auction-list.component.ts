@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuctionService } from '../../shared/services/auction/auction.service';
 import { AuctionDetailComponent } from '../auction/auction-detail.component';
+import { CreateAuctionComponent } from '../create-auction/create-auction.component';
 
 @Component({
   selector: 'app-auction-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, AuctionDetailComponent],
+  imports: [CommonModule, FormsModule, AuctionDetailComponent, CreateAuctionComponent],
   templateUrl: './auction-list.component.html',
   styleUrls: ['./auction-list.component.css']
 })
@@ -120,4 +121,14 @@ ngOnInit(): void {
     });
   }
 
+  showCreateForm = false;
+
+  openCreateAuction(): void {
+    this.showCreateForm = true;
+  }
+
+  closeCreateAuction(): void {
+    this.showCreateForm = false;
+    this.refreshAuctions(); // Pour recharger les données après création
+  }
 }

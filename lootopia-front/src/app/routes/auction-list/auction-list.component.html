@@ -18,6 +18,11 @@
   </select>
 </div>
 
+<!-- Bouton création (uniquement dans l'onglet "mine") -->
+<div class="actions" *ngIf="activeTab === 'mine'">
+  <button class="create-btn" (click)="openCreateAuction()">+ Créer une enchère</button>
+</div>
+
 <!-- Grille des enchères -->
 <div class="auction-grid">
   <div class="auction-card" *ngFor="let auction of filteredAuctions" (click)="openAuctionDetail(auction)">
@@ -36,8 +41,7 @@
   </div>
 </div>
 
-
-<!-- Modale des détails -->
+<!-- Modale détails -->
 <app-auction-detail
   *ngIf="selectedAuction"
   [auction]="selectedAuction"
@@ -45,3 +49,8 @@
   (updated)="refreshAuctions()"
 ></app-auction-detail>
 
+<!-- Formulaire de création -->
+<app-create-auction
+  *ngIf="showCreateForm"
+  (close)="closeCreateAuction()"
+></app-create-auction>

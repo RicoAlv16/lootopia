@@ -108,3 +108,23 @@
   object-fit: contain;
   border-radius: 12px;
 }
+
+.create-btn {
+  background-color: #228b22;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  margin: auto;
+}
+
+.create-btn:hover {
+  background-color: #2faa2f;
+}
+
+.actions {
+  text-align: center;
+  margin-bottom: 1rem;
+}
