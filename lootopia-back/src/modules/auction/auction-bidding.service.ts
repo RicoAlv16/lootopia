@@ -45,11 +45,20 @@ export class AuctionBiddingService {
       throw new HttpException("Vous êtes déjà le meilleur enchérisseur", HttpStatus.BAD_REQUEST);
     }
 
-    if (dto.amount <= auction.currentBid) {
-      console.warn('❌ Montant trop bas');
-      throw new HttpException('Montant trop bas', HttpStatus.BAD_REQUEST);
-    }
+    const hasBid = auction.currentBid > 0;
 
+    if (
+      (hasBid && dto.amount <= auction.currentBid) ||
+      (!hasBid && dto.amount < auction.startingPrice)
+    ) {
+      const minimumRequired = hasBid ? auction.currentBid + 1 : auction.startingPrice;
+      console.warn(`❌ Montant trop bas : montant=${dto.amount}, requis=${minimumRequired}`);
+      throw new HttpException(
+        `L'enchère doit être au moins de ${minimumRequired} couronnes`,
+        HttpStatus.BAD_REQUEST
+      );
+    }
+    
     const user = await this.userRepo.findOne({
       where: { id: userId },
       relations: ['profile'],

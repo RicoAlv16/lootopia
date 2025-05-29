@@ -41,7 +41,7 @@ export class AuctionService {
 
   // Placer une enchère
   placeBid(auctionId: number, amount: number): Observable<any> {
-    const userId = 2; // TODO: Remplacer par un auth service réel
+    const userId = 1; // TODO: Remplacer par un auth service réel
     return this.http.post(`${this.baseUrl}/bid`, { auctionId, amount, userId });
   }
 

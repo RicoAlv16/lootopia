@@ -19,6 +19,7 @@ async function seed() {
 
   const users: UsersEntity[] = [];
 
+  // 👤 Création des utilisateurs + profils
   for (let i = 1; i <= 2; i++) {
     const user = userRepo.create({
       nickname: `user${i}`,
@@ -40,6 +41,7 @@ async function seed() {
     users.push(user);
   }
 
+  // 🧱 Loots avec image selon leur ID
   const lootItems = [
     { name: 'Carte au trésor', rarity: 'Rare' },
     { name: 'Pelle en or', rarity: 'Épique' },
@@ -65,24 +67,24 @@ async function seed() {
 
   const savedLoots: LootTable[] = [];
 
-  // 💾 Enregistrer les loots et leur attribuer une image selon l'ID
-  for (const item of lootItems) {
+  for (let i = 0; i < lootItems.length; i++) {
+    const item = lootItems[i];
     const loot = lootRepo.create({
       name: item.name,
       description: 'Un objet mystérieux lié à la chasse au trésor.',
       rarity: item.rarity as 'Commun' | 'Rare' | 'Épique' | 'Légendaire',
-      image: '', // temporairement vide
     });
+
     const saved = await lootRepo.save(loot);
-    saved.image = `/static/artefacts/${saved.id}.png`;
-    await lootRepo.save(saved); // mise à jour avec l'image
+    saved.image = `/static/artefacts/${i + 1}.png`; // image ID = index + 1
+    await lootRepo.save(saved);
     savedLoots.push(saved);
   }
 
-  // 🎯 Assigner des artefacts aux joueurs
-  for (let i = 0; i < 10; i++) {
-    const owner = users[i % users.length];
+  // 🎯 Création d’artefacts & enchères (1 par loot)
+  for (let i = 0; i < savedLoots.length; i++) {
     const loot = savedLoots[i];
+    const owner = users[i % users.length];
 
     const artefact = artefactRepo.create({
       loot,
@@ -92,7 +94,7 @@ async function seed() {
     await artefactRepo.save(artefact);
 
     const startTime = new Date();
-    const endTime = new Date(startTime.getTime() + (1 + i % 5) * 60 * 60 * 1000);
+    const endTime = new Date(startTime.getTime() + (1 + (i % 5)) * 60 * 60 * 1000);
 
     const auction = auctionRepo.create({
       artefact,
@@ -106,10 +108,10 @@ async function seed() {
     });
     await auctionRepo.save(auction);
 
-    console.log(`✅ Artefact ${loot.name} attribué à ${owner.nickname} avec image ${loot.image}`);
+    console.log(`✅ Artefact ${loot.name} (image ${loot.image}) attribué à ${owner.nickname}`);
   }
 
-  console.log('🎯 Seeding terminé.');
+  console.log('🎯 Seeding terminé avec succès.');
   process.exit(0);
 }
 
