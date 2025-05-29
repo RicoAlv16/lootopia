@@ -6,6 +6,7 @@ import { Bid } from 'src/shared/entities/bid.entity';
 import { UsersEntity } from 'src/shared/entities/users.entity';
 import { PlaceBidDto } from 'src/shared/dto/place-bid.dto';
 import { ProfileService } from 'src/modules/profile/profile.service';
+import { FollowedAuction } from 'src/shared/entities/followed-auction.entity';
 
 @Injectable()
 export class AuctionBiddingService {
@@ -19,6 +20,9 @@ export class AuctionBiddingService {
     @InjectRepository(UsersEntity)
     private userRepo: Repository<UsersEntity>,
 
+    @InjectRepository(FollowedAuction)
+    private followRepo: Repository<FollowedAuction>,
+
     private profileService: ProfileService
   ) {}
 
@@ -31,17 +35,14 @@ export class AuctionBiddingService {
     });
 
     if (!auction || auction.status !== 'active') {
-      console.warn('❌ Enchère invalide ou expirée');
       throw new HttpException('Enchère invalide ou expirée', HttpStatus.BAD_REQUEST);
     }
 
     if (auction.seller.id === userId) {
-      console.warn('❌ L’utilisateur est le vendeur');
       throw new HttpException("Vous ne pouvez pas enchérir sur votre propre enchère", HttpStatus.BAD_REQUEST);
     }
 
     if (auction.currentBidder?.id === userId) {
-      console.warn('❌ L’utilisateur est déjà le meilleur enchérisseur');
       throw new HttpException("Vous êtes déjà le meilleur enchérisseur", HttpStatus.BAD_REQUEST);
     }
 
@@ -52,13 +53,12 @@ export class AuctionBiddingService {
       (!hasBid && dto.amount < auction.startingPrice)
     ) {
       const minimumRequired = hasBid ? auction.currentBid + 1 : auction.startingPrice;
-      console.warn(`❌ Montant trop bas : montant=${dto.amount}, requis=${minimumRequired}`);
       throw new HttpException(
         `L'enchère doit être au moins de ${minimumRequired} couronnes`,
         HttpStatus.BAD_REQUEST
       );
     }
-    
+
     const user = await this.userRepo.findOne({
       where: { id: userId },
       relations: ['profile'],
@@ -71,17 +71,14 @@ export class AuctionBiddingService {
     }
 
     if (profile.balance < dto.amount) {
-      console.warn('❌ Solde insuffisant');
       throw new HttpException('Solde insuffisant', HttpStatus.BAD_REQUEST);
     }
 
     if (auction.endTime <= new Date()) {
-      console.warn('❌ Enchère expirée');
       throw new HttpException('Enchère expirée', HttpStatus.BAD_REQUEST);
     }
 
-    console.log(`💸 Débit de ${dto.amount} couronnes à l'utilisateur ${userId}`);
-
+    // Remboursement de l’ancien enchérisseur
     if (auction.currentBidder) {
       await this.profileService.creditUser(auction.currentBidder.id, auction.currentBid);
     }
@@ -100,6 +97,16 @@ export class AuctionBiddingService {
     auction.currentBid = dto.amount;
     auction.currentBidder = user;
     await this.auctionRepo.save(auction);
+
+    const alreadyFollowed = await this.followRepo.findOne({
+      where: { user: { id: user.id }, auction: { id: auction.id } },
+    });
+
+    if (!alreadyFollowed) {
+      const follow = this.followRepo.create({ user, auction });
+      await this.followRepo.save(follow);
+      console.log('⭐ Enchère ajoutée aux suivies automatiquement');
+    }
 
     console.log('✅ Enchère placée avec succès');
     return bid;
