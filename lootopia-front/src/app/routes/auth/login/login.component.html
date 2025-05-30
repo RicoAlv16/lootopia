@@ -1,7 +1,8 @@
 <app-modal
   [(visible)]="visibleLoginSuccess"
   [(isOPTModal)]="isOPTModal"
-  [login]="login.bind(this)">
+  [login]="login.bind(this)"
+  [verifyCredentials]="verifyCredentials.bind(this)">
 </app-modal>
 <p-toast />
 <p-dialog

@@ -22,9 +22,11 @@ export class PricingComponent implements OnInit {
 
   visible = false;
   isPaymentMethode = false;
-  showDialog() {
+  whichPrice = '';
+  showDialog(whichPrice: string) {
     this.visible = true;
     this.isPaymentMethode = true;
+    this.whichPrice = whichPrice;
     this.getPaymentMethods();
   }
 
@@ -35,14 +37,11 @@ export class PricingComponent implements OnInit {
   montantA = 10;
   montantB = 20;
   paymentType = '';
+  items: { price: string; quantity: number }[] = [];
+
   validatePayment(montant: number, keyword: string): void {
     if (keyword) {
-      // this.visible = false;
-      // this.isPaymentMethode = false;
-      // this.paymentType = keyword;
-
       montant = 70;
-
       console.log('Payment a démarré', montant, keyword);
 
       // Créer d'abord le payment intent
@@ -51,16 +50,28 @@ export class PricingComponent implements OnInit {
         .subscribe(paymentIntent => {
           console.log('Payment Intent created:', paymentIntent);
 
-          // Puis créer la session de checkout
-          const items = [
-            {
-              price: this.env.priceStarterId, // Utiliser l'ID du payment intent comme price ID
-              quantity: 1,
-            },
-          ];
+          // Prix de la deuxieme formule
+          if (this.whichPrice === 'starter') {
+            this.items = [
+              {
+                price: this.env.priceStarterId, // Utiliser l'ID du payment intent comme price ID
+                quantity: 1,
+              },
+            ];
+          }
+          // Prix de la deuxieme formule
+          if (this.whichPrice === 'advanced') {
+            this.items = [
+              {
+                price: this.env.priceAdvancedId, // Utiliser l'ID du payment intent comme price ID
+                quantity: 1,
+              },
+            ];
+          }
 
+          // Puis créer la session de checkout
           this.pricingService
-            .createCheckoutSession(items, keyword)
+            .createCheckoutSession(this.items, keyword)
             .subscribe(session => {
               console.log('Checkout Session:', session);
               // Rediriger vers l'URL de checkout si disponible

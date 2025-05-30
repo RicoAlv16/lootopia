@@ -4,6 +4,11 @@
   background-color: #111418;
   border-bottom: 1px solid #2a2a2b;
 }
+
+#menu-gauche {
+  background-color: #111418;
+}
+
 :host ::ng-deep .p-menu {
   width: 100%;
   height: 100vh;
@@ -22,4 +27,41 @@
 
 :host ::ng-deep .p-menu-list > li:last-child {
   margin-top: auto;
+  margin-bottom: 0;
+  position: sticky;
+  bottom: 0;
+}
+
+/* Ajout des nouvelles règles pour la couleur des items et le scroll */
+:host ::ng-deep .p-menu .p-menu-item-label {
+  color: #e0e0e0 !important;
+}
+
+:host ::ng-deep .p-menu .p-menu-item-icon {
+  color: #e0e0e0 !important;
+}
+
+:host ::ng-deep .p-menu .p-menu-item-link:hover .p-menu-item-label,
+:host ::ng-deep .p-menu .p-menu-item-link:hover .p-menu-item-icon {
+  color: #000 !important;
+}
+
+:host ::ng-deep .p-menu .active-menu-item .p-menu-item-label,
+:host ::ng-deep .p-menu .active-menu-item .p-menu-item-icon {
+  color: #000 !important;
+}
+
+:host ::ng-deep .p-menu .active-menu-item .p-menu-item-link {
+  background-color: #f1f5f9;
+  border-radius: 7px;
+}
+
+#layout-menu {
+  height: calc(100vh - 68px);
+  overflow: hidden;
+}
+
+#all-contents {
+  height: 100%;
+  overflow-y: auto;
 }

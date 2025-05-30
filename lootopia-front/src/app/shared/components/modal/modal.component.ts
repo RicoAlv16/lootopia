@@ -5,23 +5,30 @@ import {
   HostListener,
   inject,
   Input,
+  OnInit,
   Output,
   signal,
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { Dialog, DialogModule } from 'primeng/dialog';
-// import { FloatLabel } from 'primeng/floatlabel';
-// import { IconField } from 'primeng/iconfield';
 import { IftaLabelModule } from 'primeng/iftalabel';
-// import { InputIcon } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { PaymentMethodesInterface } from '../../../routes/pricing/payment-methodes/payment-methodes.interface';
 import { InputOtp } from 'primeng/inputotp';
-import { Toast } from 'primeng/toast';
 import { Router } from '@angular/router';
 import { ToastService } from '../../services/toast/toast.service';
+import { DecompteurService } from '../../services/decompteur/decompteur.service';
+// Imports pour le formulaire de chasse
+import { DropdownModule } from 'primeng/dropdown';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { CheckboxModule } from 'primeng/checkbox';
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { TextareaModule } from 'primeng/textarea';
+import { HuntForm } from '../../../routes/chasses/chasses.interface';
+import { Toast } from 'primeng/toast';
+import { CardModule } from 'primeng/card';
 
 @Component({
   selector: 'app-modal',
@@ -32,20 +39,24 @@ import { ToastService } from '../../services/toast/toast.service';
     InputTextModule,
     PasswordModule,
     FormsModule,
-    // InputIcon,
-    // IconField,
-    // FloatLabel,
     IftaLabelModule,
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
     InputOtp,
     Toast,
+    CardModule,
+    // Modules pour le formulaire de chasse
+    DropdownModule,
+    InputNumberModule,
+    CheckboxModule,
+    TextareaModule,
+    SelectButtonModule,
   ],
   templateUrl: './modal.component.html',
   styleUrl: './modal.component.css',
 })
-export class ModalComponent {
+export class ModalComponent implements OnInit {
   @Input() visible = false;
   @Input() isPaymentMethode = false;
   @Input() isPaymentSucces = false;
@@ -61,6 +72,16 @@ export class ModalComponent {
   @Input() isOPTModal = false;
   codeOPT: number | null = null;
   @Input() login: ((codeOPT: number) => void) | undefined;
+  @Input() verifyCredentials: ((codeOPT: number) => void) | undefined;
+  @Input() isCreateHuntModal = false;
+  @Input() visibleCreateHunt = false;
+
+  // Inputs pour le formulaire de chasse (reçus du parent)
+  @Input() huntForm!: HuntForm;
+  @Input() worldTypeOptions: { label: string; value: string }[] = [];
+  @Input() modeOptions: { label: string; value: string }[] = [];
+  @Input() mapSkinOptions: { label: string; value: string }[] = [];
+  @Input() validationTypeOptions: { label: string; value: string }[] = [];
 
   @Output() visibleChange = new EventEmitter<boolean>();
   @Output() isPaymentMethodeChange = new EventEmitter<boolean>();
@@ -69,6 +90,16 @@ export class ModalComponent {
   @Output() isSuccessModalChange = new EventEmitter<boolean>();
   @Output() isOPTModalChange = new EventEmitter<boolean>();
   @Output() codeOPTChange = new EventEmitter<number>();
+  @Output() isCreateHuntModalChange = new EventEmitter<boolean>();
+  @Output() visibleCreateHuntChange = new EventEmitter<boolean>();
+
+  // Outputs pour les actions du formulaire de chasse
+  @Output() createHunt = new EventEmitter<void>();
+  @Output() saveDraft = new EventEmitter<void>();
+  @Output() addStep = new EventEmitter<void>();
+  @Output() removeStep = new EventEmitter<number>();
+  @Output() addLandmark = new EventEmitter<void>();
+  @Output() removeLandmark = new EventEmitter<number>();
 
   @HostListener('document:keydown', ['$event'])
   handleKey(event: KeyboardEvent) {
@@ -77,6 +108,27 @@ export class ModalComponent {
 
   private toastService = inject(ToastService);
   private router = inject(Router);
+  private decompteurService = inject(DecompteurService);
+  countdown = '00:00';
+
+  ngOnInit() {
+    console.log(this.codeOPT);
+    // Lancement automatique du décompte
+    this.decompteurService.countdown$.subscribe(time => {
+      this.countdown = time;
+    });
+    if (this.verifyCredentials) {
+      this.decompteurService.startCountdown(5);
+    }
+  }
+
+  // Ajouter ces @Input() dans modal.component.ts
+  @Input() createHuntMethod!: () => void;
+  @Input() addStepMethod!: () => void;
+  @Input() removeStepMethod!: (index: number) => void;
+  @Input() addLandmarkMethod!: () => void;
+  @Input() removeLandmarkMethod!: (index: number) => void;
+  @Input() saveDraftMethod!: () => void;
 
   showDialog() {
     this.visible = true;
@@ -90,19 +142,27 @@ export class ModalComponent {
 
   closeDialog() {
     this.visible = false;
-    this.isPaymentMethode = true;
-    this.isPaymentSucces = true;
+    this.isPaymentMethode = false;
+    this.isPaymentSucces = false;
     this.isOPTModal = false;
+    this.isCreateHuntModal = false;
+    this.visibleCreateHunt = false;
 
     this.visibleChange.emit(this.visible);
-    this.isPaymentMethodeChange.emit(this.visible);
-    this.isPaymentSuccesChange.emit(this.visible);
+    this.isPaymentMethodeChange.emit(this.isPaymentMethode);
+    this.isPaymentSuccesChange.emit(this.isPaymentSucces);
     this.isSuccessModalChange.emit(this.isSuccessModal);
     this.isOPTModalChange.emit(this.isOPTModal);
+    this.isCreateHuntModalChange.emit(this.isCreateHuntModal);
+    this.visibleCreateHuntChange.emit(this.visibleCreateHunt);
   }
 
   resendCode() {
-    this.toastService.showSuccess('Un code de validation a été reenvoyé.');
+    this.decompteurService.resetCountdown();
+    // this.decompteurService.startCountdown(5);
+    this.toastService.showSuccess(
+      'Un nouveau code de validation a été reenvoyé.'
+    );
   }
 
   onClickPaymentMode(keyword: string) {
@@ -129,7 +189,6 @@ export class ModalComponent {
     if (this.login) {
       this.login(this.codeOPT);
       this.codeOPT = null;
-      // this.closeDialog();
     } else {
       this.toastService.showServerError('Une erreur est survenue');
     }

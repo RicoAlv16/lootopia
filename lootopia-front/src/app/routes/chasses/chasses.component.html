@@ -1,0 +1,104 @@
+<p-toast />
+<app-modal
+  [visible]="visibleCreateHunt"
+  [isCreateHuntModal]="isCreateHuntModal"
+  [huntForm]="huntForm"
+  [worldTypeOptions]="worldTypeOptions"
+  [modeOptions]="modeOptions"
+  [mapSkinOptions]="mapSkinOptions"
+  [validationTypeOptions]="validationTypeOptions"
+  [createHuntMethod]="createHunt.bind(this)"
+  [addStepMethod]="addStep.bind(this)"
+  [removeStepMethod]="removeStep.bind(this)"
+  [addLandmarkMethod]="addLandmark.bind(this)"
+  [removeLandmarkMethod]="removeLandmark.bind(this)"
+  [saveDraftMethod]="saveDraft.bind(this)"
+  (visibleChange)="visibleCreateHunt = $event"
+  (isCreateHuntModalChange)="isCreateHuntModal = $event">
+</app-modal>
+
+<div class="chasses-container">
+  <div class="header">
+    <h1 class="title">Mes Chasses aux Trésors</h1>
+    <button class="create-btn" (click)="openCreateHuntModal()">
+      <i class="pi pi-plus"></i>
+      Créer une chasse
+    </button>
+  </div>
+
+  <div class="chasses-grid">
+    @if (createdHunts().length === 0) {
+      <div class="empty-state">
+        <i class="pi pi-search" style="font-size: 3rem; color: #ccc"></i>
+        <h3>Aucune chasse créée</h3>
+        <p>Commencez par créer votre première chasse aux trésors !</p>
+        <button class="btn-primary" (click)="openCreateHuntModal()">
+          <i class="pi pi-plus"></i>
+          Créer ma première chasse
+        </button>
+      </div>
+    } @else {
+      @for (hunt of createdHunts(); track hunt.user) {
+        <div class="chasse-card">
+          <div class="card-header">
+            <div
+              class="world-badge"
+              [class]="
+                hunt.worldType === 'real' ? 'monde-reel' : 'monde-carto'
+              ">
+              {{ getWorldTypeLabel(hunt.worldType) }}
+            </div>
+            <div class="status-badge" [class]="hunt.status">
+              {{ getStatusLabel(hunt.status) }}
+            </div>
+          </div>
+
+          <div class="card-content">
+            <h3 class="chasse-title">{{ hunt.title }}</h3>
+            <p class="chasse-description">
+              {{ hunt.description }}
+            </p>
+
+            <div class="chasse-stats">
+              <div class="stat">
+                <i class="pi pi-users"></i>
+                <span
+                  >{{ hunt.participants }}/{{
+                    hunt.maxParticipants
+                  }}
+                  participants</span
+                >
+              </div>
+              <div class="stat">
+                <i class="pi pi-clock"></i>
+                <span>{{ getDurationLabel(hunt.duration) }}</span>
+              </div>
+              <div class="stat">
+                <i class="pi pi-map-marker"></i>
+                <span>{{ hunt.steps.length }} étapes</span>
+              </div>
+            </div>
+
+            <div class="reward-info">
+              <i class="pi pi-gift"></i>
+              <span>{{ getRewardLabel(hunt.rewards) }}</span>
+            </div>
+          </div>
+
+          <div class="card-footer">
+            @if (hunt.status === 'draft') {
+              <button class="btn-secondary">Modifier</button>
+              <button class="btn-primary">Publier</button>
+            } @else if (hunt.status === 'private') {
+              <button class="btn-secondary">Inviter</button>
+              <button class="btn-primary">Gérer</button>
+            } @else {
+              <button class="btn-secondary">Modifier</button>
+              <button class="btn-primary">Voir détails</button>
+            }
+          </div>
+        </div>
+      }
+    }
+  </div>
+</div>

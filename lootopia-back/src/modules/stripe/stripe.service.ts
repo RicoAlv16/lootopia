@@ -60,8 +60,8 @@ export class StripeService {
         : this.paymentMethods,
       line_items: items,
       mode: 'payment',
-      success_url: `${this.configService.get('FRONTEND_URL')}/payment/success`,
-      cancel_url: `${this.configService.get('FRONTEND_URL')}/payment/cancel`,
+      success_url: `${this.configService.get('FRONTEND_URL')}/sidebar/payment-success`,
+      cancel_url: `${this.configService.get('FRONTEND_URL')}/sidebar/payment-cancel`,
     });
 
     return { url: session.url };

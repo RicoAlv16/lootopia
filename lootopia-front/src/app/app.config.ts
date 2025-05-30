@@ -20,6 +20,7 @@ export const appConfig: ApplicationConfig = {
             name: 'primeng',
             order: 'theme, base, primeng',
           },
+          darkModeSelector: '.dark-mode',
         },
       },
       ripple: true,

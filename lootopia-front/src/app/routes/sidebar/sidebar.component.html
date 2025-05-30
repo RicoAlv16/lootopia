@@ -6,10 +6,15 @@
         alt="logo"
         class="w-13 h-13 rounded-full"
         draggable="false" />
-      <div class="ml-4">
-        <h1 class="text-lg font-bold">Lootopia</h1>
+      <div class="flex flex-row ml-4">
+        <h1 class="text-lg text-white font-bold">Lootopia</h1>
+        <span
+          class="inline-flex items-center rounded-md ml-2 px-2 py-1 text-xs font-medium ring-1 ring-surface-700 ring-inset"
+          >beta</span
+        >
       </div>
     </div>
+
     <a
       pstyleclass="@next"
       enterfromclass="hidden"
@@ -39,6 +44,15 @@
             styleClass="ml-8" />
         </li>
         <li>
+          <!-- Ajout du bouton de basculement de thème -->
+          <p-button
+            (click)="toggleDarkMode()"
+            [severity]="isDarkMode ? 'secondary' : 'primary'"
+            class="flex items-center justify-center ml-8 w-10 h-10 rounded-full transition-colors duration-200">
+            <i [class]="isDarkMode ? 'pi pi-sun' : 'pi pi-moon'"></i>
+          </p-button>
+        </li>
+        <li>
           <a
             pstyleclass="#menu"
             enterfromclass="hidden"
@@ -49,6 +63,7 @@
               badgeSize="small"
               severity="danger"
               pBadge
+              [badgeStyleClass]="'text-white'"
               value="3"></i>
           </a>
         </li>
@@ -61,7 +76,7 @@
               draggable="false" />
             <div class="flex flex-col ml-3">
               <div class="flex flex-row gap-2">
-                <h3 class="text-surface-300">Roger Lami</h3>
+                <h3 class="text-surface-300">{{ nickname }}</h3>
                 <span
                   class="inline-flex items-center rounded-md bg-blue-700 px-2 py-1 text-xs font-medium ring-1 ring-blue-600/20 ring-inset"
                   >PAR</span
@@ -83,6 +98,7 @@
   <div id="layout-menu" class="flex flex-row gap-4">
     <!-- le menu de gauche -->
     <div
+      id="menu-gauche"
       class="flex-none shadow-[10px_0_20px_-5px_#181818]"
       style="border-right: 1px solid #2a2a2b">
       <p-menu [model]="items" />
@@ -95,7 +111,10 @@
         <app-pricing></app-pricing>
       }
       @if (itemToShow === 'dashboard') {
-        <app-home-page></app-home-page>
+        <app-dashboad></app-dashboad>
+      }
+      @if (itemToShow === 'creer-chasses') {
+        <app-chasses></app-chasses>
       }
     </div>
     <!-- FIN du corps des composents -->
