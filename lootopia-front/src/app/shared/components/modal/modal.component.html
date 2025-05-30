@@ -37,55 +37,217 @@
   </ng-container>
 }
 
-@if (isPaymentSucces) {
+@if (paymentStatus === 'payment-success') {
   <ng-container>
     <p-dialog
       maskStyleClass="backdrop-blur-sm"
       [(visible)]="visible"
-      styleClass="!border-0 !bg-transparent">
+      styleClass="!border-0 !bg-black/70">
       <ng-template #headless>
-        <div
-          class="flex flex-col px-8 py-8 gap-6 rounded-2xl"
-          style="
-            border-radius: 12px;
-            background-image: radial-gradient(
-              circle at left top,
-              var(--p-primary-400),
-              var(--p-primary-700)
-            );
-          ">
-          <h1 class="text-center text-xl">Connexion</h1>
-          <img
-            src="icons/lootopia_icon.webp"
-            alt="logo"
-            class="block mx-auto w-17 h-17 rounded-full"
-            draggable="false" />
+        <div class="flex flex-col items-center mt-8 py-8 px-6">
+          <svg
+            width="240px"
+            height="240px"
+            viewBox="0 0 240 240"
+            xmlns="http://www.w3.org/2000/svg">
+            <!-- Fond circulaire -->
+            <circle cx="120" cy="120" r="120" fill="#BAB476" />
 
-          <span class="text-end mb-4"
-            ><a class="font-medium no-underline ml-2 cursor-pointer"
-              >Mot de pass oublié?</a
-            ></span
+            <!-- Carte bancaire -->
+            <g transform="translate(60, 80)">
+              <rect
+                x="0"
+                y="0"
+                width="120"
+                height="80"
+                rx="10"
+                fill="#E7F0F5"
+                stroke="#BFDBE5"
+                stroke-width="2" />
+              <!-- Bande magnétique -->
+              <rect x="0" y="10" width="120" height="15" fill="#92C8D6" />
+              <!-- Puce -->
+              <rect
+                x="10"
+                y="35"
+                width="20"
+                height="15"
+                fill="#BFDBE5"
+                rx="2" />
+              <!-- Numéro de carte -->
+              <text x="40" y="50" font-size="12" fill="#004B70">
+                1234 5678 9012 3456
+              </text>
+            </g>
+
+            <!-- Cercle de validation -->
+            <circle
+              cx="180"
+              cy="180"
+              r="20"
+              stroke="#19AB4B"
+              stroke-width="4"
+              fill="none"
+              stroke-dasharray="125.6"
+              stroke-dashoffset="125.6">
+              <animate
+                attributeName="stroke-dashoffset"
+                from="125.6"
+                to="0"
+                dur="0.45s"
+                fill="freeze"
+                repeatCount="1" />
+            </circle>
+
+            <!-- Coche de validation -->
+            <polyline
+              points="175,180 180,185 190,170"
+              fill="none"
+              stroke="#19AB4B"
+              stroke-width="4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="30"
+              stroke-dashoffset="30">
+              <animate
+                attributeName="stroke-dashoffset"
+                from="30"
+                to="0"
+                dur="0.45s"
+                fill="freeze"
+                repeatCount="1" />
+            </polyline>
+          </svg>
+
+          <h1 class="text-white text-center text-xl my-4">Bien jouer!</h1>
+          <span class="text-white"
+            >Votre paiement est bien éffectué, votre compte couronnes a été
+            crédité.</span
           >
-          <span class="text-color-secondary text-center mb-4"
-            >ou inscrivez-vous avec</span
+          <div class="mt-3 pt-3">
+            <p-button
+              label="OK"
+              (click)="visible = false"
+              [text]="true"
+              styleClass="p-4 text-primary-500 border border-white/30 hover:bg-white/10 py-2 px-4"
+              class="w-full" />
+          </div>
+        </div>
+      </ng-template>
+    </p-dialog>
+  </ng-container>
+}
+@if (paymentStatus === 'payment-cancel') {
+  <ng-container>
+    <p-dialog
+      maskStyleClass="backdrop-blur-sm"
+      [(visible)]="visible"
+      styleClass="!border-0 !bg-black/70">
+      <ng-template #headless>
+        <div class="flex flex-col items-center mt-8 py-8 px-6">
+          <svg
+            width="240px"
+            height="240px"
+            viewBox="0 0 240 240"
+            xmlns="http://www.w3.org/2000/svg">
+            <!-- Fond circulaire -->
+            <circle cx="120" cy="120" r="120" fill="#F8D7DA" />
+
+            <!-- Carte bancaire -->
+            <g transform="translate(60, 80)">
+              <rect
+                x="0"
+                y="0"
+                width="120"
+                height="80"
+                rx="10"
+                fill="#F1F1F1"
+                stroke="#D9D9D9"
+                stroke-width="2" />
+              <!-- Bande magnétique -->
+              <rect x="0" y="10" width="120" height="15" fill="#D88C8C" />
+              <!-- Puce -->
+              <rect
+                x="10"
+                y="35"
+                width="20"
+                height="15"
+                fill="#D9A3A3"
+                rx="2" />
+              <!-- Numéro de carte -->
+              <text x="40" y="50" font-size="12" fill="#AA3E3E">
+                4321 8765 2109 6543
+              </text>
+            </g>
+
+            <!-- Cercle d'erreur -->
+            <circle
+              cx="180"
+              cy="180"
+              r="20"
+              stroke="#DC3545"
+              stroke-width="4"
+              fill="none"
+              stroke-dasharray="125.6"
+              stroke-dashoffset="125.6">
+              <animate
+                attributeName="stroke-dashoffset"
+                from="125.6"
+                to="0"
+                dur="0.45s"
+                fill="freeze"
+                repeatCount="1" />
+            </circle>
+
+            <!-- Croix (X) -->
+            <g stroke="#DC3545" stroke-width="4" stroke-linecap="round">
+              <!-- Barre diagonale 1 -->
+              <line
+                x1="172"
+                y1="172"
+                x2="188"
+                y2="188"
+                stroke-dasharray="22.6"
+                stroke-dashoffset="22.6">
+                <animate
+                  attributeName="stroke-dashoffset"
+                  from="22.6"
+                  to="0"
+                  dur="0.3s"
+                  begin="0.5s"
+                  fill="freeze" />
+              </line>
+              <!-- Barre diagonale 2 -->
+              <line
+                x1="188"
+                y1="172"
+                x2="172"
+                y2="188"
+                stroke-dasharray="22.6"
+                stroke-dashoffset="22.6">
+                <animate
+                  attributeName="stroke-dashoffset"
+                  from="22.6"
+                  to="0"
+                  dur="0.3s"
+                  begin="0.8s"
+                  fill="freeze" />
+              </line>
+            </g>
+          </svg>
+
+          <h1 class="text-white text-center text-xl my-4">Oh zut!</h1>
+          <span class="text-white"
+            >Votre paiement a échoué, votre compte couronnes n'a pas été
+            crédité.</span
           >
-          <div class="flex items-center justify-center gap-4">
-            <a
-              class="inline-flex flex-shrink-0 w-3rem h-3rem justify-content-center align-items-center surface-ground border-circle"
-              ><i class="pi pi-facebook text-2xl text-color"></i
-            ></a>
-            <a
-              class="inline-flex flex-shrink-0 w-3rem h-3rem justify-content-center align-items-center surface-ground border-circle"
-              ><i class="pi pi-twitter text-2xl text-color"></i
-            ></a>
-            <a
-              class="inline-flex flex-shrink-0 w-3rem h-3rem justify-content-center align-items-center surface-ground border-circle"
-              ><i class="pi pi-google text-2xl text-color"></i
-            ></a>
-            <a
-              class="inline-flex flex-shrink-0 w-3rem h-3rem justify-content-center align-items-center surface-ground border-circle"
-              ><i class="pi pi-github text-2xl text-color"></i
-            ></a>
+          <div class="mt-3 pt-3">
+            <p-button
+              label="OK"
+              (click)="visible = false"
+              [text]="true"
+              styleClass="p-4 text-primary-500 border border-white/30 hover:bg-white/10 py-2 px-4"
+              class="w-full" />
           </div>
         </div>
       </ng-template>
@@ -129,7 +291,7 @@
     <p-dialog
       maskStyleClass="backdrop-blur-sm"
       [(visible)]="visible"
-      styleClass="!border-0 !bg-transparent">
+      styleClass="!border-0 !bg-black">
       <ng-template #headless>
         <div class="flex flex-col px-8 py-8 gap-6 rounded-2xl modal-content">
           <div class="font-bold text-xl mb-2">Validation MFA</div>

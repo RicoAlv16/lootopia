@@ -1,3 +1,8 @@
+<app-modal
+  [(visible)]="visiblePaymentStatusModal"
+  [paymentStatus]="paymentStatus">
+</app-modal>
+
 <section id="topbar">
   <div class="top-bar flex justify-between items-center px-8 top-0 w-full">
     <div class="flex flex-row items-center">
@@ -30,17 +35,16 @@
         class="list-none p-4 lg:p-0 m-0 ml-auto flex lg:items-center select-none flex-col lg:flex-row cursor-pointer">
         <li>
           <p-message severity="success" size="small">
-            <ng-template #icon>
-              <p-avatar image="images/crowns.png" shape="circle" />
-            </ng-template>
-            <span class="ml-2">7 000</span>
+            <ng-template #icon> 👑 </ng-template>
+            <span class="ml-2">{{ couronnes }}</span>
           </p-message>
         </li>
         <li>
           <p-message
             severity="secondary"
             icon="pi pi-bolt"
-            text="300"
+            text="0"
+            size="small"
             styleClass="ml-8" />
         </li>
         <li>

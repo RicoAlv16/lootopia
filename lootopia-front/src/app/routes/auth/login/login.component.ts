@@ -31,6 +31,7 @@ import { ModalComponent } from '../../../shared/components/modal/modal.component
 import { LoginResponseInterface } from './login.interface';
 import { ProgressSpinner } from 'primeng/progressspinner';
 import { Router } from '@angular/router';
+import { Checkbox, CheckboxChangeEvent } from 'primeng/checkbox';
 
 @Component({
   selector: 'app-login',
@@ -51,6 +52,7 @@ import { Router } from '@angular/router';
     Toast,
     ModalComponent,
     ProgressSpinner,
+    Checkbox,
   ],
   providers: [MessageService, ToastService],
   standalone: true,
@@ -83,8 +85,10 @@ export class LoginComponent {
     });
   }
 
+  visibleRGPD = false;
   showDialog() {
     this.visible = true;
+    this.visibleRGPD = true;
   }
 
   visibleLoginSuccess = false;
@@ -103,8 +107,15 @@ export class LoginComponent {
   isLoading = signal<boolean>(false);
   loginResponse = signal<LoginResponseInterface | null>(null);
 
+  rgpd = false;
+  onRGPDChange(event: CheckboxChangeEvent) {
+    this.rgpd = event.checked;
+    console.log('RGPD checked?', this.rgpd);
+  }
+
   verifyCredentials() {
-    if (this.loginForm.valid) {
+    console.log(this.rgpd);
+    if (this.loginForm.valid && this.rgpd) {
       this.isLoading.set(true);
       this.loginService.verifyCredentials(this.loginForm.value).subscribe({
         next: response => {
@@ -136,7 +147,7 @@ export class LoginComponent {
             this.isOPTModal = true;
             this.loginResponse.set(response);
             localStorage.setItem('user', JSON.stringify(response));
-            this.router.navigate(['/sidebar']);
+            this.router.navigate(['/sidebar/user']);
           }
           this.isLoading.set(false);
         },

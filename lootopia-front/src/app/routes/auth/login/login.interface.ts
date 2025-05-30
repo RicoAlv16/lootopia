@@ -2,6 +2,7 @@ export interface LoginRequestInterface {
   email: string;
   password: string;
   isVerified: boolean;
+  rgpd: string;
 }
 
 export interface LoginResponseInterface {

@@ -44,6 +44,7 @@ export interface HuntForm {
 }
 
 export interface CreatedHunt {
+  id: string;
   user: string;
   title: string;
   description: string;

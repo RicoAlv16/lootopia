@@ -9,6 +9,7 @@ import { Toast } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { ToastService } from '../../shared/services/toast/toast.service';
 import { ModalComponent } from '../../shared/components/modal/modal.component';
+import { HuntService } from './hunt.service';
 
 @Component({
   selector: 'app-chasses',
@@ -89,6 +90,8 @@ export class ChassesComponent implements OnInit {
   email = '';
 
   private toastService = inject(ToastService);
+  private huntService = inject(HuntService);
+  private isLoading = signal(false);
 
   ngOnInit() {
     const userStr = localStorage.getItem('user') || '{}';
@@ -98,6 +101,7 @@ export class ChassesComponent implements OnInit {
     if (this.huntForm.steps.length === 0) {
       this.addStep();
     }
+    this.loadHuntsFromAPI();
 
     // Charger les chasses existantes
     this.loadHuntsFromStorage();
@@ -204,39 +208,138 @@ export class ChassesComponent implements OnInit {
     this.isCreateHuntModal = true;
   }
 
+  // Charger les chasses depuis l'API
+  private loadHuntsFromAPI() {
+    this.isLoading.set(true);
+    this.huntService.getMyHunts(this.email).subscribe({
+      next: hunts => {
+        this.createdHunts.set(hunts);
+        this.isLoading.set(false);
+      },
+      error: error => {
+        console.error('Erreur lors du chargement des chasses:', error);
+        this.toastService.showServerError(error.error.message || '');
+        this.isLoading.set(false);
+        // Fallback vers localStorage en cas d'erreur
+        this.loadHuntsFromStorage();
+      },
+    });
+  }
+
   // Créer la chasse
+  // Créer la chasse via l'API
   createHunt() {
     if (!this.validateHuntForm()) {
       return;
     }
 
-    // Créer une nouvelle chasse avec un ID unique
+    this.isLoading.set(true);
+
+    this.huntService.createHunt(this.huntForm, this.email).subscribe({
+      next: newHunt => {
+        // Ajouter la chasse au signal de façon réactive
+        this.createdHunts.update(hunts => [newHunt, ...hunts]);
+
+        this.toastService.showSuccess('Chasse créée avec succès!');
+
+        // Réinitialiser le formulaire
+        this.resetHuntForm();
+
+        // Fermer le modal
+        this.visibleCreateHunt = false;
+        this.isCreateHuntModal = false;
+
+        this.isLoading.set(false);
+      },
+      error: error => {
+        console.error('Erreur lors de la création de la chasse:', error);
+        this.toastService.showServerError(
+          'Erreur lors de la création de la chasse'
+        );
+        this.isLoading.set(false);
+
+        // Fallback vers localStorage en cas d'erreur
+        this.createHuntLocally();
+      },
+    });
+  }
+
+  // Générer un ID unique plus robuste
+  private generateUniqueId(): string {
+    // Utilise crypto.randomUUID() si disponible (moderne et sécurisé)
+    if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+      return crypto.randomUUID();
+    }
+
+    // Fallback pour les environnements plus anciens
+    const timestamp = Date.now().toString(36);
+    const randomPart = Math.random().toString(36).substring(2, 15);
+    const extraRandom = Math.random().toString(36).substring(2, 8);
+
+    return `hunt_${timestamp}_${randomPart}_${extraRandom}`;
+  }
+
+  // Méthode de fallback pour créer localement
+  private createHuntLocally() {
     const newHunt: CreatedHunt = {
-      user: this.email,
+      id: this.generateUniqueId(),
+      user: 'local_user',
       ...this.huntForm,
       status: this.huntForm.mode === 'private' ? 'private' : 'draft',
       participants: 0,
       createdAt: new Date(),
     };
 
-    // Ajouter la chasse au signal de façon réactive
-    this.createdHunts.update(hunts => [...hunts, newHunt]);
-
-    // Sauvegarder dans localStorage pour la persistance
+    this.createdHunts.update(hunts => [newHunt, ...hunts]);
     this.saveHuntsToStorage();
 
-    // Ici vous pouvez envoyer les données au serveur
-    console.log('Création de la chasse:', this.huntForm);
-
-    // Simuler la création
-    this.toastService.showSuccess('Chasse créée avec succès!');
-
-    // Réinitialiser le formulaire
+    this.toastService.showSuccess('Chasse créée localement (mode hors ligne)');
     this.resetHuntForm();
-
-    // Fermer le modal
     this.visibleCreateHunt = false;
     this.isCreateHuntModal = false;
+  }
+
+  // Publier une chasse
+  publishHunt(huntId: string) {
+    this.huntService.publishHunt(huntId, this.email).subscribe({
+      next: updatedHunt => {
+        this.createdHunts.update(hunts =>
+          hunts.map(hunt => (hunt.id === huntId ? updatedHunt : hunt))
+        );
+        this.toastService.showSuccess('Chasse publiée avec succès!');
+      },
+      error: error => {
+        console.error('Erreur lors de la publication:', error);
+        this.toastService.showServerError(
+          'Erreur lors de la publication de la chasse'
+        );
+      },
+    });
+  }
+
+  // Supprimer une chasse
+  deleteHunt(huntId: string) {
+    if (confirm('Êtes-vous sûr de vouloir supprimer cette chasse ?')) {
+      this.huntService.deleteHunt(huntId, this.email).subscribe({
+        next: () => {
+          this.createdHunts.update(hunts =>
+            hunts.filter(hunt => hunt.id !== huntId)
+          );
+          this.toastService.showSuccess('Chasse supprimée avec succès!');
+        },
+        error: error => {
+          console.error('Erreur lors de la suppression:', error);
+          this.toastService.showServerError(
+            'Erreur lors de la suppression de la chasse'
+          );
+        },
+      });
+    }
+  }
+
+  // Getter pour l'état de chargement
+  get loading() {
+    return this.isLoading();
   }
 
   // Sauvegarder les chasses dans localStorage

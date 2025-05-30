@@ -16,7 +16,7 @@ export const routes: Routes = [
     component: HomePageComponent,
   },
   {
-    path: 'sidebar',
+    path: 'sidebar/:payment',
     title: 'Lootopia sidebar menu',
     component: SidebarComponent,
   },

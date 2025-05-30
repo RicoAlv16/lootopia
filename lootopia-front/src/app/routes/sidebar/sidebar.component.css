@@ -41,19 +41,12 @@
   color: #e0e0e0 !important;
 }
 
-:host ::ng-deep .p-menu .p-menu-item-link:hover .p-menu-item-label,
-:host ::ng-deep .p-menu .p-menu-item-link:hover .p-menu-item-icon {
-  color: #000 !important;
+:host ::ng-deep .p-menu .p-menu-item-link:hover {
+  background-color: #3f3f46 !important;
 }
 
-:host ::ng-deep .p-menu .active-menu-item .p-menu-item-label,
-:host ::ng-deep .p-menu .active-menu-item .p-menu-item-icon {
-  color: #000 !important;
-}
-
-:host ::ng-deep .p-menu .active-menu-item .p-menu-item-link {
-  background-color: #f1f5f9;
-  border-radius: 7px;
+:host ::ng-deep .p-menu-item.p-focus .p-menu-item-content {
+  background: #3f3f46;
 }
 
 #layout-menu {

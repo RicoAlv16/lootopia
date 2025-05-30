@@ -127,7 +127,7 @@ export class DashboadComponent implements OnInit {
   totalArtifacts = 150;
   artifacts: Artifact[] = []; // Modifié pour être un tableau d'Artifact
   ranking = 'Top 10';
-  crowns = 1500;
+  crowns = 0;
 
   // Activité récente
   recentActivities: Activity[] = [];
@@ -169,6 +169,12 @@ export class DashboadComponent implements OnInit {
   ngOnInit() {
     this.initializeData();
     this.setupCharts();
+
+    const couronnes = localStorage.getItem('crowsPaid');
+    if (couronnes) {
+      console.log(couronnes);
+      this.crowns = this.crowns + (couronnes ? parseInt(couronnes) : 0);
+    }
   }
 
   private initializeData() {

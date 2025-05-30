@@ -59,7 +59,7 @@ import { CardModule } from 'primeng/card';
 export class ModalComponent implements OnInit {
   @Input() visible = false;
   @Input() isPaymentMethode = false;
-  @Input() isPaymentSucces = false;
+  @Input() paymentStatus = '';
   @Input() paymentMethods_S = signal<PaymentMethodesInterface[]>([]);
   @Input() paymentType = '';
   @Input() montant = 0;
@@ -85,7 +85,7 @@ export class ModalComponent implements OnInit {
 
   @Output() visibleChange = new EventEmitter<boolean>();
   @Output() isPaymentMethodeChange = new EventEmitter<boolean>();
-  @Output() isPaymentSuccesChange = new EventEmitter<boolean>();
+  // @Output() isPaymentSuccesChange = new EventEmitter<string>();
   @Output() paymentTypeChange = new EventEmitter<string>();
   @Output() isSuccessModalChange = new EventEmitter<boolean>();
   @Output() isOPTModalChange = new EventEmitter<boolean>();
@@ -133,7 +133,6 @@ export class ModalComponent implements OnInit {
   showDialog() {
     this.visible = true;
     this.isPaymentMethode = true;
-    this.isPaymentSucces = true;
     this.paymentMethods_S();
     this.isSuccessModal = true;
     this.isOPTModal = true;
@@ -143,14 +142,12 @@ export class ModalComponent implements OnInit {
   closeDialog() {
     this.visible = false;
     this.isPaymentMethode = false;
-    this.isPaymentSucces = false;
     this.isOPTModal = false;
     this.isCreateHuntModal = false;
     this.visibleCreateHunt = false;
 
     this.visibleChange.emit(this.visible);
     this.isPaymentMethodeChange.emit(this.isPaymentMethode);
-    this.isPaymentSuccesChange.emit(this.isPaymentSucces);
     this.isSuccessModalChange.emit(this.isSuccessModal);
     this.isOPTModalChange.emit(this.isOPTModal);
     this.isCreateHuntModalChange.emit(this.isCreateHuntModal);
@@ -159,7 +156,6 @@ export class ModalComponent implements OnInit {
 
   resendCode() {
     this.decompteurService.resetCountdown();
-    // this.decompteurService.startCountdown(5);
     this.toastService.showSuccess(
       'Un nouveau code de validation a été reenvoyé.'
     );

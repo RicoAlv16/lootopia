@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { MenuItem, MessageService } from 'primeng/api';
 import { Menu } from 'primeng/menu';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BadgeModule } from 'primeng/badge';
 import { MessageModule } from 'primeng/message';
 import { AvatarModule } from 'primeng/avatar';
@@ -10,6 +10,7 @@ import { ToastService } from '../../shared/services/toast/toast.service';
 import { DashboadComponent } from '../dashboad/dashboad.component';
 import { ButtonModule } from 'primeng/button';
 import { ChassesComponent } from '../chasses/chasses.component';
+import { ModalComponent } from '../../shared/components/modal/modal.component';
 
 @Component({
   selector: 'app-sidebar',
@@ -22,6 +23,7 @@ import { ChassesComponent } from '../chasses/chasses.component';
     DashboadComponent,
     ButtonModule,
     ChassesComponent,
+    ModalComponent,
   ],
   standalone: true,
   providers: [MessageService, ToastService],
@@ -35,10 +37,14 @@ export class SidebarComponent implements OnInit {
     nickname: string;
     access_token: string;
   };
+  couronnes = 0;
   nickname = '';
   access_token = '';
+  paymentStatus = '';
+  visiblePaymentStatusModal = false;
 
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   // constructor() {}
 
@@ -56,15 +62,11 @@ export class SidebarComponent implements OnInit {
             label: 'Tableau de bord',
             icon: 'pi pi-home',
             command: () => this.showItemContent('dashboard'),
-            styleClass:
-              this.itemToShow === 'dashboard' ? 'active-menu-item' : '',
           },
           {
             label: 'Mes artéfacts',
             icon: 'pi pi-box',
             command: () => this.showItemContent('artefacts'),
-            styleClass:
-              this.itemToShow === 'artefacts' ? 'active-menu-item' : '',
           },
         ],
       },
@@ -75,21 +77,16 @@ export class SidebarComponent implements OnInit {
             label: 'Mes chasses',
             icon: 'pi pi-compass',
             command: () => this.showItemContent('chasses'),
-            styleClass: this.itemToShow === 'chasses' ? 'active-menu-item' : '',
           },
           {
             label: 'Organiser des chasses',
             icon: 'pi pi-map',
             command: () => this.showItemContent('creer-chasses'),
-            styleClass:
-              this.itemToShow === 'creer-chasses' ? 'active-menu-item' : '',
           },
           {
             label: 'Récompences',
             icon: 'pi pi-gift',
             command: () => this.showItemContent('recompences'),
-            styleClass:
-              this.itemToShow === 'recompences' ? 'active-menu-item' : '',
           },
         ],
       },
@@ -100,13 +97,11 @@ export class SidebarComponent implements OnInit {
             label: 'Acheter des couronnes',
             icon: 'pi pi-money-bill',
             command: () => this.showItemContent('pricing'),
-            styleClass: this.itemToShow === 'pricing' ? 'active-menu-item' : '',
           },
           {
             label: 'Mes ventes',
             icon: 'pi pi-tag',
             command: () => this.showItemContent('ventes'),
-            styleClass: this.itemToShow === 'ventes' ? 'active-menu-item' : '',
           },
         ],
       },
@@ -117,27 +112,21 @@ export class SidebarComponent implements OnInit {
             label: 'FAQ',
             icon: 'pi pi-question-circle',
             command: () => this.showItemContent('faq'),
-            styleClass: this.itemToShow === 'faq' ? 'active-menu-item' : '',
           },
           {
             label: 'contact',
             icon: 'pi pi-envelope',
             command: () => this.showItemContent('contact'),
-            styleClass: this.itemToShow === 'contact' ? 'active-menu-item' : '',
           },
           {
             label: 'Confidentialités',
             icon: 'pi pi-lock',
             command: () => this.showItemContent('confidentialites'),
-            styleClass:
-              this.itemToShow === 'confidentialites' ? 'active-menu-item' : '',
           },
           {
             label: 'Conditions utilisateurs',
             icon: 'pi pi-file',
             command: () => this.showItemContent('conditions'),
-            styleClass:
-              this.itemToShow === 'conditions' ? 'active-menu-item' : '',
           },
         ],
       },
@@ -148,7 +137,6 @@ export class SidebarComponent implements OnInit {
             label: 'Gestion Admin',
             icon: 'pi pi-shield',
             command: () => this.showItemContent('admin'),
-            styleClass: this.itemToShow === 'admin' ? 'active-menu-item' : '',
           },
         ],
       },
@@ -159,14 +147,11 @@ export class SidebarComponent implements OnInit {
             label: 'Mon profil',
             icon: 'pi pi-user',
             command: () => this.showItemContent('profile'),
-            styleClass: this.itemToShow === 'profile' ? 'active-menu-item' : '',
           },
           {
             label: 'Paramètres',
             icon: 'pi pi-cog',
             command: () => this.showItemContent('settings'),
-            styleClass:
-              this.itemToShow === 'settings' ? 'active-menu-item' : '',
           },
           {
             label: 'Déconnexion',
@@ -185,6 +170,17 @@ export class SidebarComponent implements OnInit {
     this.user = JSON.parse(userStr);
     this.nickname = this.user.nickname;
     this.access_token = this.user.access_token;
+
+    const payment = this.route.snapshot.paramMap.get('payment');
+    if (payment) {
+      this.visiblePaymentStatusModal = true;
+      this.paymentStatus = payment;
+    }
+    const couronnes = localStorage.getItem('crowsPaid');
+    if (couronnes) {
+      console.log(payment === 'payment-success' && couronnes);
+      this.couronnes = this.couronnes + (couronnes ? parseInt(couronnes) : 0);
+    }
   }
 
   itemToShow = 'dashboard';

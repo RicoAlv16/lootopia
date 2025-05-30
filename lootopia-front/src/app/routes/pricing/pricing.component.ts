@@ -41,7 +41,6 @@ export class PricingComponent implements OnInit {
 
   validatePayment(montant: number, keyword: string): void {
     if (keyword) {
-      montant = 70;
       console.log('Payment a démarré', montant, keyword);
 
       // Créer d'abord le payment intent
@@ -52,6 +51,13 @@ export class PricingComponent implements OnInit {
 
           // Prix de la deuxieme formule
           if (this.whichPrice === 'starter') {
+            if (typeof window !== 'undefined') {
+              try {
+                localStorage.setItem('crowsPaid', '100');
+              } catch (error) {
+                console.error('Erreur de stockage:', error);
+              }
+            }
             this.items = [
               {
                 price: this.env.priceStarterId, // Utiliser l'ID du payment intent comme price ID
@@ -61,6 +67,13 @@ export class PricingComponent implements OnInit {
           }
           // Prix de la deuxieme formule
           if (this.whichPrice === 'advanced') {
+            if (typeof window !== 'undefined') {
+              try {
+                localStorage.setItem('crowsPaid', '250');
+              } catch (error) {
+                console.error('Erreur de stockage:', error);
+              }
+            }
             this.items = [
               {
                 price: this.env.priceAdvancedId, // Utiliser l'ID du payment intent comme price ID
