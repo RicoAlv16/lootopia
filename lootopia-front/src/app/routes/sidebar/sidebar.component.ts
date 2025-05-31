@@ -12,6 +12,7 @@ import { ButtonModule } from 'primeng/button';
 import { ChassesComponent } from '../chasses/chasses.component';
 import { ModalComponent } from '../../shared/components/modal/modal.component';
 import { ChassesAuxTresorsComponent } from '../chasses-aux-tresors/chasses-aux-tresors.component';
+import { MesChassesComponent } from '../mes-chasses/mes-chasses.component';
 
 @Component({
   selector: 'app-sidebar',
@@ -26,6 +27,7 @@ import { ChassesAuxTresorsComponent } from '../chasses-aux-tresors/chasses-aux-t
     ChassesComponent,
     ModalComponent,
     ChassesAuxTresorsComponent,
+    MesChassesComponent,
   ],
   standalone: true,
   providers: [MessageService, ToastService],
@@ -88,7 +90,7 @@ export class SidebarComponent implements OnInit {
           {
             label: 'Mes chasses',
             icon: 'pi pi-compass',
-            command: () => this.showItemContent('chasses'),
+            command: () => this.showItemContent('mes-chasses'),
           },
           {
             label: 'Organiser des chasses',
@@ -106,9 +108,9 @@ export class SidebarComponent implements OnInit {
             command: () => this.showItemContent('pricing'),
           },
           {
-            label: 'Mes ventes',
+            label: 'Hôtel de ventes',
             icon: 'pi pi-tag',
-            command: () => this.showItemContent('ventes'),
+            command: () => this.showItemContent('hotel-de-ventes'),
           },
         ],
       },

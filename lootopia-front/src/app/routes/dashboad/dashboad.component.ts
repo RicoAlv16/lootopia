@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
@@ -15,85 +16,17 @@ import { InputSwitchModule } from 'primeng/inputswitch';
 import { DropdownModule } from 'primeng/dropdown';
 import { TooltipModule } from 'primeng/tooltip';
 import { FormsModule } from '@angular/forms';
+import { MessageService } from 'primeng/api';
+import {
+  Artifact,
+  Activity,
+  ActiveHunt,
+  DashboardService,
+  DashboardData,
+  Badge,
+} from './dashboard.service';
 
-interface Activity {
-  date: Date;
-  hunt: string;
-  reward: string;
-  status: string;
-  isNew: boolean;
-}
-
-interface Artifact {
-  id: number;
-  name: string;
-  rarity: string;
-  type: string;
-  image: string;
-  isNew: boolean;
-}
-
-interface ActiveHunt {
-  name: string;
-  progress: number;
-  timeLeft: number;
-  location: string;
-}
-
-interface Badge {
-  name: string;
-  icon: string;
-  category: 'explorer' | 'collector' | 'social';
-  description: string;
-  unlocked: boolean;
-}
-
-// Ajouter ces interfaces en haut du fichier avec les autres interfaces
-interface ChartData {
-  labels: string[];
-  datasets: {
-    label: string;
-    data: number[];
-    fill: boolean;
-    borderColor: string;
-    tension: number;
-  }[];
-}
-
-interface ChartOptions {
-  responsive?: boolean;
-  maintainAspectRatio?: boolean;
-  plugins?: {
-    legend?: {
-      labels?: {
-        color?: string;
-      };
-    };
-    title?: {
-      display?: boolean;
-      text?: string;
-      color?: string;
-    };
-  };
-  scales?: {
-    x?: {
-      ticks?: {
-        color?: string;
-      };
-      grid?: {
-        color?: string;
-      };
-    };
-    y?: {
-      ticks?: {
-        color?: string;
-      };
-      grid?: {
-        color?: string;
-      };
-    };
-  };
-}
+// Interfaces pour les options du graphique
 
 @Component({
   selector: 'app-dashboad',
@@ -116,39 +49,22 @@ interface ChartOptions {
     TooltipModule,
     FormsModule,
   ],
+  providers: [MessageService],
   templateUrl: './dashboad.component.html',
   styleUrls: ['./dashboad.component.css'],
 })
 export class DashboadComponent implements OnInit {
   // Stats rapides
-  completedHunts = 42;
+  completedHunts = 0;
   huntsGoal = 100;
-  artifactsCount = 27; // Nouveau compteur pour le nombre total d'artefacts
+  artifactsCount = 0;
   totalArtifacts = 150;
-  artifacts: Artifact[] = []; // Modifié pour être un tableau d'Artifact
-  ranking = 'Top 10';
+  artifacts: Artifact[] = [];
+  ranking = 'Débutant';
   crowns = 0;
 
   // Activité récente
   recentActivities: Activity[] = [];
-
-  // Données du graphique de progression
-  // Remplacer les 'any' par les nouveaux types
-  progressionData: ChartData = {
-    labels: [],
-    datasets: [],
-  };
-  progressionOptions: ChartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        labels: {
-          color: '#495057',
-        },
-      },
-    },
-  };
 
   // Artefacts
   artifactsList: Artifact[] = [];
@@ -164,56 +80,110 @@ export class DashboadComponent implements OnInit {
   // Badges
   badges: Badge[] = [];
 
-  // constructor() {}
+  // État de chargement
+  loading = true;
+  error: string | null = null;
+
+  constructor(
+    private dashboardService: DashboardService,
+    private messageService: MessageService
+  ) {}
 
   ngOnInit() {
-    this.initializeData();
-    this.setupCharts();
-
-    const couronnes = localStorage.getItem('crowsPaid');
-    if (couronnes) {
-      console.log(couronnes);
-      this.crowns = this.crowns + (couronnes ? parseInt(couronnes) : 0);
-    }
+    this.loadDashboardData();
+    this.progressionData = this.getDefaultProgressionData();
+    this.setupChartOptions();
   }
 
-  private initializeData() {
-    // Initialisation des données mockées
-    this.initActivities();
-    this.initArtifacts();
-    this.initActiveHunts();
-    this.initBadges();
+  private loadDashboardData() {
+    this.loading = true;
+    this.error = null;
+
+    this.dashboardService.getDashboardData().subscribe({
+      next: (data: DashboardData) => {
+        this.updateComponentData(data);
+        this.loading = false;
+
+        // Ajouter les couronnes du localStorage si elles existent
+        const couronnes = localStorage.getItem('crowsPaid');
+        if (couronnes) {
+          const additionalCrowns = parseInt(couronnes);
+          this.addCrowns(additionalCrowns);
+          localStorage.removeItem('crowsPaid'); // Nettoyer après utilisation
+        }
+      },
+      error: error => {
+        console.error(
+          'Erreur lors du chargement des données du dashboard:',
+          error
+        );
+        this.error = 'Erreur lors du chargement des données';
+        this.loading = false;
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erreur',
+          detail: 'Impossible de charger les données du dashboard',
+        });
+      },
+    });
   }
 
-  private setupCharts() {
-    this.progressionData = {
-      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+  private updateComponentData(data: DashboardData) {
+    this.completedHunts = data.completedHunts;
+    this.huntsGoal = data.huntsGoal;
+    this.artifactsCount = data.artifactsCount;
+    this.totalArtifacts = data.totalArtifacts;
+    this.ranking = data.ranking;
+    this.crowns = data.crowns;
+    this.recentActivities = data.recentActivities || [];
+    this.progressionData =
+      data.progressionData || this.getDefaultProgressionData();
+    this.artifactsList = data.artifactsList || [];
+    this.activeHunts = data.activeHunts || [];
+    this.badges = data.badges || [];
+
+    this.setupChartOptions();
+  }
+
+  // Changez les déclarations de propriétés
+  progressionData: any;
+  progressionOptions: any;
+
+  // Modifiez la méthode getDefaultProgressionData
+  private getDefaultProgressionData(): any {
+    return {
+      labels: ['Juin', 'Juil', 'Août', 'Sept', 'Oct', 'Nov'],
       datasets: [
         {
           label: 'Niveau',
-          data: [1, 2, 3, 4, 5, 6],
-          fill: false,
-          borderColor: '#4CAF50', // Changé en vert
-          tension: 0.4,
+          data: [65, 59, 80, 81, 56, 55],
+          backgroundColor: '#8B5CF6',
+          borderColor: '#8B5CF6',
+          borderWidth: 2,
         },
         {
           label: 'Chasses',
-          data: [10, 15, 8, 12, 9, 14],
-          fill: false,
-          borderColor: '#81C784', // Vert plus clair
-          tension: 0.4,
+          data: [28, 48, 40, 19, 86, 27],
+          backgroundColor: '#06D6A0',
+          borderColor: '#06D6A0',
+          borderWidth: 2,
         },
         {
           label: 'Couronnes',
-          data: [100, 150, 80, 120, 90, 140],
-          fill: false,
-          borderColor: '#FFA726',
-          tension: 0.4,
+          data: [12, 25, 30, 45, 32, 18],
+          backgroundColor: '#FFD60A',
+          borderColor: '#FFD60A',
+          borderWidth: 2,
         },
       ],
     };
+  }
 
+  // Modifiez setupChartOptions
+  private setupChartOptions() {
     this.progressionOptions = {
+      maintainAspectRatio: false,
+      aspectRatio: 0.8,
       responsive: true,
       plugins: {
         legend: {
@@ -222,60 +192,106 @@ export class DashboadComponent implements OnInit {
           },
         },
       },
+      scales: {
+        x: {
+          ticks: {
+            color: '#9CA3AF',
+            font: {
+              weight: 500,
+            },
+          },
+          grid: {
+            color: '#374151',
+            drawBorder: false,
+          },
+        },
+        y: {
+          ticks: {
+            color: '#9CA3AF',
+          },
+          grid: {
+            color: '#374151',
+            drawBorder: false,
+          },
+        },
+      },
+      elements: {
+        bar: {
+          backgroundColor: ['#8B5CF6', '#06D6A0', '#FFD60A'],
+          borderColor: ['#8B5CF6', '#06D6A0', '#FFD60A'],
+          borderWidth: 1,
+        },
+      },
     };
   }
 
-  // Méthodes d'initialisation des données mockées
-  private initActivities() {
-    this.recentActivities = [
-      {
-        date: new Date(),
-        hunt: 'Chasse au trésor',
-        reward: '100 couronnes',
-        status: 'Terminé',
-        isNew: true,
+  // Méthodes pour mettre à jour les données
+  addCrowns(amount: number) {
+    this.dashboardService.addCrowns(amount).subscribe({
+      next: () => {
+        this.crowns += amount;
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Succès',
+          detail: `${amount} couronnes ajoutées !`,
+        });
       },
-      // Ajouter plus d'activités...
-    ];
+      error: error => {
+        console.error("Erreur lors de l'ajout des couronnes:", error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erreur',
+          detail: "Impossible d'ajouter les couronnes",
+        });
+      },
+    });
   }
 
-  private initArtifacts() {
-    this.artifactsList = [
-      {
-        id: 1,
-        name: 'Épée légendaire',
-        rarity: 'Légendaire',
-        type: 'Arme',
-        image: 'assets/sword.png',
-        isNew: true,
+  incrementCompletedHunts() {
+    this.dashboardService.incrementCompletedHunts().subscribe({
+      next: () => {
+        this.completedHunts += 1;
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Succès',
+          detail: 'Chasse complétée !',
+        });
       },
-      // Ajouter plus d'artefacts...
-    ];
+      error: error => {
+        console.error("Erreur lors de l'incrémentation des chasses:", error);
+      },
+    });
   }
 
-  private initActiveHunts() {
-    this.activeHunts = [
-      {
-        name: 'Chasse mystérieuse',
-        progress: 65,
-        timeLeft: 3600,
-        location: 'Forêt enchantée',
+  addArtifact(artifact: Artifact) {
+    this.dashboardService.addArtifact(artifact).subscribe({
+      next: () => {
+        this.artifactsList.push(artifact);
+        this.artifactsCount = this.artifactsList.length;
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Nouvel artefact !',
+          detail: `${artifact.name} ajouté à votre collection`,
+        });
       },
-      // Ajouter plus de chasses...
-    ];
+      error: error => {
+        console.error("Erreur lors de l'ajout de l'artefact:", error);
+      },
+    });
   }
 
-  private initBadges() {
-    this.badges = [
-      {
-        name: 'Explorateur novice',
-        icon: '🗺️',
-        category: 'explorer',
-        description: 'Complétez 5 chasses',
-        unlocked: true,
+  addRecentActivity(activity: Activity) {
+    this.dashboardService.addRecentActivity(activity).subscribe({
+      next: () => {
+        this.recentActivities.unshift(activity);
+        if (this.recentActivities.length > 10) {
+          this.recentActivities = this.recentActivities.slice(0, 10);
+        }
       },
-      // Ajouter plus de badges...
-    ];
+      error: error => {
+        console.error("Erreur lors de l'ajout de l'activité:", error);
+      },
+    });
   }
 
   // Méthodes utilitaires
@@ -283,5 +299,41 @@ export class DashboadComponent implements OnInit {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     return `${hours}h ${minutes}m`;
+  }
+
+  // Méthode pour rafraîchir les données
+  refreshData() {
+    this.loadDashboardData();
+  }
+
+  // Méthode pour réinitialiser les données (utile pour les tests)
+  resetDashboardData() {
+    const defaultData = {
+      completedHunts: 0,
+      huntsGoal: 100,
+      artifactsCount: 0,
+      totalArtifacts: 150,
+      ranking: 'Débutant',
+      crowns: 0,
+      recentActivities: [],
+      progressionData: this.getDefaultProgressionData(),
+      artifactsList: [],
+      activeHunts: [],
+      badges: [],
+    };
+
+    this.dashboardService.updateDashboardData(defaultData).subscribe({
+      next: () => {
+        this.loadDashboardData();
+        this.messageService.add({
+          severity: 'info',
+          summary: 'Réinitialisé',
+          detail: 'Données du dashboard réinitialisées',
+        });
+      },
+      error: error => {
+        console.error('Erreur lors de la réinitialisation:', error);
+      },
+    });
   }
 }

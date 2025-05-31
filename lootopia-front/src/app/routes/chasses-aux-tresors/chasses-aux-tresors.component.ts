@@ -35,10 +35,20 @@ export class ChassesAuxTresorsComponent implements OnInit {
   showParticipateModal = false;
   selectedHunt = signal<ActiveHunt | null>(null);
 
+  user!: {
+    email: string;
+    access_token: string;
+  };
+  email = '';
+
   private huntService = inject(HuntService);
   private toastService = inject(ToastService);
 
   ngOnInit() {
+    const userStr = localStorage.getItem('user') || '{}';
+    this.user = JSON.parse(userStr);
+    this.email = this.user.email;
+
     this.loadActiveHunts();
   }
 
@@ -103,13 +113,19 @@ export class ChassesAuxTresorsComponent implements OnInit {
   }
 
   confirmParticipation() {
-    const hunt = this.selectedHunt();
-    if (hunt) {
-      // TODO: Implémenter l'API pour rejoindre la chasse
-      this.toastService.showSuccess(
-        `Vous avez rejoint la chasse "${hunt.title}" !`
-      );
-      this.closeParticipateModal();
+    if (this.selectedHunt()) {
+      this.huntService.joinHunt(this.selectedHunt()!.id, this.email).subscribe({
+        next: () => {
+          this.toastService.showSuccess(
+            `Vous participez maintenant à "${this.selectedHunt()!.title}"`
+          );
+          this.showParticipateModal = false;
+          this.selectedHunt.set(null);
+        },
+        error: error => {
+          this.toastService.showServerError(error.error.message || '');
+        },
+      });
     }
   }
 

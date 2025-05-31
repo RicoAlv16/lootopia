@@ -3,9 +3,9 @@ import { HuntsService } from './hunts.service';
 import { CreateHuntDto } from '../../shared/dto/create-hunt.dto';
 // import { JwtAuthGuard } from '../../guards/jwt-auth.guard';
 import { Hunt } from 'src/shared/entities/hunt.entity';
+import { HuntParticipation } from 'src/shared/entities/hunt-participation.entity';
 
 @Controller('hunts')
-// @UseGuards(JwtAuthGuard)
 export class HuntsController {
   private readonly logger = new Logger(HuntsController.name);
   constructor(private readonly huntsService: HuntsService) {}
@@ -55,5 +55,25 @@ export class HuntsController {
   async findAllActiveHunts(): Promise<Hunt[]> {
     this.logger.verbose('Getting all active hunts');
     return this.huntsService.findAllActiveHunts();
+  }
+
+  @Post('/join')
+  async joinHunt(
+    @Body() req: { huntId: string; email: string },
+  ): Promise<HuntParticipation> {
+    return await this.huntsService.joinHunt(req.huntId, req.email);
+  }
+
+  @Post('/leave')
+  async leaveHunt(@Body() req: { huntId: string; email: string }) {
+    await this.huntsService.leaveHunt(req.huntId, req.email);
+    return { message: 'Vous avez quitté la chasse' };
+  }
+
+  @Post('my-participations')
+  async getMyParticipations(
+    @Body() req: { email: string },
+  ): Promise<HuntParticipation[]> {
+    return await this.huntsService.getUserParticipations(req.email);
   }
 }

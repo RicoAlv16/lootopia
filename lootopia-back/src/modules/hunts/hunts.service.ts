@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   HttpException,
   HttpStatus,
   Injectable,
@@ -9,6 +10,7 @@ import { Equal, Not, Repository } from 'typeorm';
 import { Hunt } from '../../shared/entities/hunt.entity';
 import { CreateHuntDto } from '../../shared/dto/create-hunt.dto';
 import { UsersEntity } from '../../shared/entities/users.entity';
+import { HuntParticipation } from 'src/shared/entities/hunt-participation.entity';
 
 @Injectable()
 export class HuntsService {
@@ -17,6 +19,8 @@ export class HuntsService {
     private huntRepository: Repository<Hunt>,
     @InjectRepository(UsersEntity)
     private usersRepository: Repository<UsersEntity>,
+    @InjectRepository(HuntParticipation)
+    private huntParticipationRepository: Repository<HuntParticipation>,
   ) {}
 
   async create(createHuntDto: CreateHuntDto, email: string): Promise<Hunt> {
@@ -121,6 +125,111 @@ export class HuntsService {
         `Erreur lors de la récupération des chasses actives: ${error.message}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
+    }
+  }
+
+  async joinHunt(
+    huntId: string,
+    userEmail: string,
+  ): Promise<HuntParticipation> {
+    // Vérifier que la chasse existe et est active
+    const hunt = await this.huntRepository.findOne({
+      where: { id: huntId, status: 'active' },
+      relations: ['participations'],
+    });
+
+    if (!hunt) {
+      throw new NotFoundException('Chasse non trouvée ou inactive');
+    }
+
+    // Vérifier le nombre de participants
+    if (hunt.participations.length >= hunt.maxParticipants) {
+      throw new BadRequestException('Chasse complète');
+    }
+
+    // Trouver l'utilisateur
+    const user = await this.usersRepository.findOne({
+      where: { email: userEmail },
+    });
+
+    if (!user) {
+      throw new NotFoundException('Utilisateur non trouvé');
+    }
+
+    // Vérifier si l'utilisateur participe déjà
+    const existingParticipation =
+      await this.huntParticipationRepository.findOne({
+        where: { huntId: huntId, userId: user.id }, // Correction ici
+      });
+
+    if (existingParticipation) {
+      throw new BadRequestException('Vous participez déjà à cette chasse');
+    }
+
+    // Créer la participation
+    const participation = this.huntParticipationRepository.create({
+      huntId: huntId, // Correction ici - s'assurer que huntId est bien défini
+      userId: user.id,
+      status: 'active',
+    });
+
+    const savedParticipation =
+      await this.huntParticipationRepository.save(participation);
+
+    // Mettre à jour le compteur de participants
+    await this.huntRepository.update(huntId, {
+      participants: hunt.participations.length + 1,
+    });
+
+    return savedParticipation;
+  }
+
+  async getUserParticipations(userEmail: string): Promise<HuntParticipation[]> {
+    const user = await this.usersRepository.findOne({
+      where: { email: userEmail },
+    });
+
+    if (!user) {
+      throw new NotFoundException('Utilisateur non trouvé');
+    }
+
+    return await this.huntParticipationRepository.find({
+      where: { userId: user.id },
+      relations: ['hunt', 'hunt.user'],
+      order: { joinedAt: 'DESC' },
+    });
+  }
+
+  async leaveHunt(huntId: string, userEmail: string): Promise<void> {
+    const user = await this.usersRepository.findOne({
+      where: { email: userEmail },
+    });
+
+    if (!user) {
+      throw new NotFoundException('Utilisateur non trouvé');
+    }
+
+    const participation = await this.huntParticipationRepository.findOne({
+      where: { huntId: huntId, userId: user.id, status: 'active' }, // Correction ici
+    });
+
+    if (!participation) {
+      throw new NotFoundException('Participation non trouvée');
+    }
+
+    // Supprimer la participation
+    await this.huntParticipationRepository.remove(participation);
+
+    // Décrémenter le compteur de participants
+    const hunt = await this.huntRepository.findOne({
+      where: { id: huntId },
+      relations: ['participations'],
+    });
+
+    if (hunt) {
+      await this.huntRepository.update(huntId, {
+        participants: Math.max(0, hunt.participants - 1),
+      });
     }
   }
 }

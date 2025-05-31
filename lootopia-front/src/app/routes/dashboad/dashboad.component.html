@@ -1,4 +1,15 @@
+<!-- À ajouter dans dashboad.component.html -->
 <div class="container mx-auto p-4">
+  <div class="dashboard-actions" style="margin-bottom: 2rem">
+    <p-button
+      icon="pi pi-refresh"
+      label="Rafraîchir"
+      (onClick)="refreshData()"
+      [loading]="loading"
+      styleClass="p-button-outlined">
+    </p-button>
+  </div>
+
   <!-- Section Stats Rapides -->
   <div
     class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 mb-2"
@@ -158,16 +169,19 @@
   </p-card>
 
   <!-- Section Badges & Réussites -->
-  <p-card class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
-    <div
-      *ngFor="let badge of badges"
-      class="bg-gray-800 text-surface-100 rounded-lg p-4 flex flex-col items-center justify-center transition-all hover:shadow-xl"
-      [pTooltip]="badge.description">
-      <span class="text-4xl">{{ badge.icon }}</span>
-      <h3 class="mt-2 font-bold">{{ badge.name }}</h3>
-      <p-tag
-        [severity]="badge.unlocked ? 'success' : 'warning'"
-        [value]="badge.unlocked ? 'Débloqué' : 'À débloquer'"></p-tag>
+  <p-card class="rounded-lg p-6 mb-8">
+    <h2 class="text-2xl font-bold mb-4">Badges & Réussites</h2>
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div
+        *ngFor="let badge of badges"
+        class="bg-gray-800 text-surface-100 rounded-lg p-4 flex flex-col items-center justify-center transition-all hover:shadow-xl"
+        [pTooltip]="badge.description">
+        <span class="text-4xl">{{ badge.icon }}</span>
+        <h3 class="mt-2 font-bold">{{ badge.name }}</h3>
+        <p-tag
+          [severity]="badge.unlocked ? 'success' : 'warning'"
+          [value]="badge.unlocked ? 'Débloqué' : 'À débloquer'"></p-tag>
+      </div>
     </div>
   </p-card>
 

@@ -223,54 +223,10 @@ export class ChassesComponent implements OnInit {
         console.error('Erreur lors du chargement des chasses:', error);
         this.toastService.showServerError(error.error.message || '');
         this.isLoading.set(false);
-        // Fallback vers localStorage en cas d'erreur
         this.loadHuntsFromStorage();
       },
     });
   }
-
-  // Créer la chasse via l'API
-  // createHunt() {
-  //   if (!this.validateHuntForm()) {
-  //     return;
-  //   }
-
-  //   this.isLoading.set(true);
-
-  //   this.huntService.createHunt(this.huntForm, this.email).subscribe({
-  //     next: newHunt => {
-  //       // Ajouter la chasse au signal de façon réactive
-  //       this.createdHunts.update(hunts => [newHunt, ...hunts]);
-
-  //       this.toastService.showSuccess('Chasse créée avec succès!');
-
-  //       // Réinitialiser le formulaire
-  //       this.resetHuntForm();
-
-  //       // Fermer le modal
-  //       this.visibleCreateHunt = false;
-  //       this.isCreateHuntModal = false;
-
-  //       this.isLoading.set(false);
-  //     },
-  //     error: error => {
-  //       console.error('Erreur lors de la création de la chasse:', error);
-  //       this.toastService.showServerError(
-  //         'Erreur lors de la création de la chasse'
-  //       );
-  //       this.isLoading.set(false);
-
-  //       // Fallback vers localStorage en cas d'erreur
-  //       this.createHuntLocally();
-  //     },
-  //   });
-  // }
-
-  // Créer ou modifier une chasse
-
-  // Générer un ID unique plus robuste
-
-  // Créer ou modifier une chasse
 
   createHunt() {
     if (!this.huntForm.title || !this.huntForm.description) {

@@ -5,9 +5,11 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
+  OneToMany,
   JoinColumn,
 } from 'typeorm';
 import { UsersEntity } from './users.entity';
+import { HuntParticipation } from './hunt-participation.entity';
 
 @Entity('hunts')
 export class Hunt {
@@ -96,4 +98,7 @@ export class Hunt {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @OneToMany(() => HuntParticipation, (participation) => participation.hunt)
+  participations: HuntParticipation[];
 }

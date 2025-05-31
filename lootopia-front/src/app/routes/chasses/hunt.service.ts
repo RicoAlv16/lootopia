@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -63,6 +64,31 @@ export class HuntService {
   getActiveHunts(): Observable<ActiveHunt[]> {
     return this.http.get<ActiveHunt[]>(
       `${this.apiUrl}/active-hunts`,
+      this.httpOptions
+    );
+  }
+
+  // Méthodes de participation aux chasses
+  joinHunt(huntId: string, email: string): Observable<any> {
+    return this.http.post(
+      `${this.apiUrl}/join`,
+      { email, huntId },
+      this.httpOptions
+    );
+  }
+
+  leaveHunt(huntId: string, email: string): Observable<any> {
+    return this.http.post(
+      `${this.apiUrl}/leave`,
+      { email, huntId },
+      this.httpOptions
+    );
+  }
+
+  getMyParticipations(email: string): Observable<any[]> {
+    return this.http.post<any[]>(
+      `${this.apiUrl}/my-participations`,
+      { email },
       this.httpOptions
     );
   }
