@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { CreatedHunt, HuntForm } from './chasses.interface';
 import { environment } from '../../../env/env.dev';
+import { ActiveHunt } from '../chasses-aux-tresors/chasses-actives.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -40,21 +41,28 @@ export class HuntService {
     huntData: Partial<HuntForm>,
     email: string
   ): Observable<CreatedHunt> {
-    return this.http.post<CreatedHunt>(`${this.apiUrl}/update`, {
+    return this.http.post<CreatedHunt>(`${this.apiUrl}/update-hunt`, {
       id,
-      ...huntData,
       email,
+      updateData: huntData, // ✅ Encapsuler les données dans updateData
     });
   }
 
   deleteHunt(id: string, email: string): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/delete`, { id, email });
+    return this.http.post<void>(`${this.apiUrl}/delete-hunt`, { id, email });
   }
 
   publishHunt(id: string, email: string): Observable<CreatedHunt> {
     return this.http.post<CreatedHunt>(
       this.apiUrl + '/publish-hunt',
       { id, email },
+      this.httpOptions
+    );
+  }
+
+  getActiveHunts(): Observable<ActiveHunt[]> {
+    return this.http.get<ActiveHunt[]>(
+      `${this.apiUrl}/active-hunts`,
       this.httpOptions
     );
   }

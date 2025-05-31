@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 @import 'tailwindcss-primeui';
 @import 'primeicons/primeicons.css';
+@import 'leaflet/dist/leaflet.css';
 
 /* ================================
    COULEURS PRINCIPALES
@@ -182,11 +183,6 @@ img.rounded {
   background-color: var(--color-light-gray);
 }
 
-.header {
-  background-color: var(--color-dark-blue);
-  color: var(--color-gold);
-}
-
 /* Carte interactive */
 .icon-chest {
   color: var(--color-gold);
@@ -210,4 +206,27 @@ img.rounded {
 }
 .secondary-dark {
   background-color: var(--color-secon-dark);
+}
+
+/* Vous devez ajouter ceci au début du fichier, après les autres imports */
+@import 'leaflet/dist/leaflet.css';
+
+/* Styles pour corriger l'affichage de Leaflet */
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+  background: #f8fafc;
+}
+
+.leaflet-tile {
+  filter: none !important;
+}
+
+.leaflet-control-container {
+  font-family: inherit;
+}
+
+/* Correction pour les tuiles manquantes */
+.leaflet-tile-container {
+  overflow: visible;
 }

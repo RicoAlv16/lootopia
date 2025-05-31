@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Equal, Not, Repository } from 'typeorm';
 import { Hunt } from '../../shared/entities/hunt.entity';
 import { CreateHuntDto } from '../../shared/dto/create-hunt.dto';
 import { UsersEntity } from '../../shared/entities/users.entity';
@@ -46,6 +46,7 @@ export class HuntsService {
           user: {
             email: email,
           },
+          status: Not(Equal('active')), // Exclure les chasses actives
         },
         order: { createdAt: 'DESC' },
         relations: ['user'],
@@ -53,7 +54,7 @@ export class HuntsService {
 
       if (!hunts || hunts.length === 0) {
         throw new HttpException(
-          `Vous avez créé aucune chasse pour l'instant`,
+          `Vous n'avez aucune chasse en cours de création`,
           HttpStatus.NOT_FOUND,
         );
       }
@@ -102,5 +103,24 @@ export class HuntsService {
     const hunt = await this.findOne(id, email);
     hunt.status = 'active';
     return await this.huntRepository.save(hunt);
+  }
+
+  async findAllActiveHunts(): Promise<Hunt[]> {
+    try {
+      const hunts = await this.huntRepository.find({
+        where: {
+          status: Equal('active'),
+        },
+        order: { createdAt: 'DESC' },
+        relations: ['user'],
+      });
+
+      return hunts;
+    } catch (error) {
+      throw new HttpException(
+        `Erreur lors de la récupération des chasses actives: ${error.message}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }

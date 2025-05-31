@@ -13,27 +13,32 @@
   [addLandmarkMethod]="addLandmark.bind(this)"
   [removeLandmarkMethod]="removeLandmark.bind(this)"
   [saveDraftMethod]="saveDraft.bind(this)"
+  [createButtonText]="createButtonText"
+  [isLoading]="isLoading"
   (visibleChange)="visibleCreateHunt = $event"
   (isCreateHuntModalChange)="isCreateHuntModal = $event">
 </app-modal>
 
 <div class="chasses-container">
-  <div class="header">
-    <h1 class="title">Mes Chasses aux Trésors</h1>
-    <button class="create-btn" (click)="openCreateHuntModal()">
-      <i class="pi pi-plus"></i>
-      Créer une chasse
-    </button>
-  </div>
+  <p-card styleClass="mb-8">
+    <div class="header">
+      <h1 class="title">Mes Chasses aux Trésors</h1>
+      <button class="create-btn" (click)="openCreateHuntModal()">
+        <i class="pi pi-plus"></i>
+        Créer une chasse
+      </button>
+    </div>
+  </p-card>
 
   <div class="chasses-grid">
-    @if (createdHunts().length === 0) {
+    @if (createdHunts().length === 0 && !loading) {
       <div class="empty-state">
-        <i class="pi pi-search" style="font-size: 3rem; color: #ccc"></i>
-        <h3>Aucune chasse créée</h3>
-        <p>Commencez par créer votre première chasse aux trésors !</p>
+        <h3>Aucune chasse en cours</h3>
+        <p>
+          Vous n'avez aucune chasse en cours de création. Créez votre première
+          chasse pour commencer !
+        </p>
         <button class="btn-primary" (click)="openCreateHuntModal()">
-          <i class="pi pi-plus"></i>
           Créer ma première chasse
         </button>
       </div>
@@ -87,14 +92,44 @@
 
           <div class="card-footer">
             @if (hunt.status === 'draft') {
-              <button class="btn-secondary">Modifier</button>
-              <button class="btn-primary">Publier</button>
+              <div class="btn-group">
+                <button
+                  class="btn-secondary"
+                  (click)="editHunt(hunt)"
+                  title="Modifier cette chasse">
+                  <i class="pi pi-pencil"></i> Modifier
+                </button>
+                <button
+                  class="btn-primary"
+                  (click)="publishHunt(hunt.id)"
+                  title="Publier cette chasse">
+                  <i class="pi pi-send"></i> Publier
+                </button>
+              </div>
+              <button
+                class="btn-danger"
+                (click)="deleteHunt(hunt.id)"
+                title="Supprimer définitivement cette chasse">
+                <i class="pi pi-trash"></i> Supprimer
+              </button>
             } @else if (hunt.status === 'private') {
-              <button class="btn-secondary">Inviter</button>
-              <button class="btn-primary">Gérer</button>
-            } @else {
-              <button class="btn-secondary">Modifier</button>
-              <button class="btn-primary">Voir détails</button>
+              <div class="btn-group">
+                <button class="btn-secondary" title="Inviter des participants">
+                  <i class="pi pi-users"></i> Inviter
+                </button>
+                <button
+                  class="btn-primary"
+                  (click)="publishHunt(hunt.id)"
+                  title="Publier cette chasse">
+                  <i class="pi pi-send"></i> Publier
+                </button>
+              </div>
+              <button
+                class="btn-danger"
+                (click)="deleteHunt(hunt.id)"
+                title="Supprimer définitivement cette chasse">
+                <i class="pi pi-trash"></i> Supprimer
+              </button>
             }
           </div>
         </div>

@@ -8,6 +8,7 @@ import {
   OnInit,
   Output,
   signal,
+  WritableSignal,
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
@@ -129,6 +130,8 @@ export class ModalComponent implements OnInit {
   @Input() addLandmarkMethod!: () => void;
   @Input() removeLandmarkMethod!: (index: number) => void;
   @Input() saveDraftMethod!: () => void;
+  @Input() createButtonText = 'Créer la chasse';
+  @Input() isLoading!: WritableSignal<boolean>;
 
   showDialog() {
     this.visible = true;

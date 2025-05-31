@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Logger } from '@nestjs/common';
+import { Controller, Post, Body, Logger, Get } from '@nestjs/common';
 import { HuntsService } from './hunts.service';
 import { CreateHuntDto } from '../../shared/dto/create-hunt.dto';
 // import { JwtAuthGuard } from '../../guards/jwt-auth.guard';
@@ -49,5 +49,11 @@ export class HuntsController {
       `Publishing hunts by user: ${JSON.stringify(req.email)}`,
     );
     return this.huntsService.publish(req.id, req.email);
+  }
+
+  @Get('active-hunts')
+  async findAllActiveHunts(): Promise<Hunt[]> {
+    this.logger.verbose('Getting all active hunts');
+    return this.huntsService.findAllActiveHunts();
   }
 }

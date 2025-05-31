@@ -10,6 +10,7 @@ import { MessageService } from 'primeng/api';
 import { ToastService } from '../../shared/services/toast/toast.service';
 import { ModalComponent } from '../../shared/components/modal/modal.component';
 import { HuntService } from './hunt.service';
+import { CardModule } from 'primeng/card';
 
 @Component({
   selector: 'app-chasses',
@@ -21,6 +22,7 @@ import { HuntService } from './hunt.service';
     SelectButtonModule,
     Toast,
     ModalComponent,
+    CardModule,
   ],
   standalone: true,
   providers: [MessageService, ToastService],
@@ -88,10 +90,11 @@ export class ChassesComponent implements OnInit {
     access_token: string;
   };
   email = '';
+  editingHuntId: string | null = null;
 
   private toastService = inject(ToastService);
   private huntService = inject(HuntService);
-  private isLoading = signal(false);
+  public isLoading = signal(false);
 
   ngOnInit() {
     const userStr = localStorage.getItem('user') || '{}';
@@ -226,45 +229,124 @@ export class ChassesComponent implements OnInit {
     });
   }
 
-  // Créer la chasse
   // Créer la chasse via l'API
+  // createHunt() {
+  //   if (!this.validateHuntForm()) {
+  //     return;
+  //   }
+
+  //   this.isLoading.set(true);
+
+  //   this.huntService.createHunt(this.huntForm, this.email).subscribe({
+  //     next: newHunt => {
+  //       // Ajouter la chasse au signal de façon réactive
+  //       this.createdHunts.update(hunts => [newHunt, ...hunts]);
+
+  //       this.toastService.showSuccess('Chasse créée avec succès!');
+
+  //       // Réinitialiser le formulaire
+  //       this.resetHuntForm();
+
+  //       // Fermer le modal
+  //       this.visibleCreateHunt = false;
+  //       this.isCreateHuntModal = false;
+
+  //       this.isLoading.set(false);
+  //     },
+  //     error: error => {
+  //       console.error('Erreur lors de la création de la chasse:', error);
+  //       this.toastService.showServerError(
+  //         'Erreur lors de la création de la chasse'
+  //       );
+  //       this.isLoading.set(false);
+
+  //       // Fallback vers localStorage en cas d'erreur
+  //       this.createHuntLocally();
+  //     },
+  //   });
+  // }
+
+  // Créer ou modifier une chasse
+
+  // Générer un ID unique plus robuste
+
+  // Créer ou modifier une chasse
+
   createHunt() {
-    if (!this.validateHuntForm()) {
+    if (!this.huntForm.title || !this.huntForm.description) {
+      this.toastService.showServerError(
+        'Veuillez remplir tous les champs obligatoires'
+      );
       return;
     }
 
+    // Activer le loading
     this.isLoading.set(true);
 
-    this.huntService.createHunt(this.huntForm, this.email).subscribe({
-      next: newHunt => {
-        // Ajouter la chasse au signal de façon réactive
-        this.createdHunts.update(hunts => [newHunt, ...hunts]);
+    const huntData = {
+      ...this.huntForm,
+    };
 
-        this.toastService.showSuccess('Chasse créée avec succès!');
+    if (this.editingHuntId) {
+      // Mode édition - mettre à jour la chasse existante
+      this.huntService
+        .updateHunt(this.editingHuntId, huntData, this.email)
+        .subscribe({
+          next: updatedHunt => {
+            console.log('Chasse mise à jour avec succès:', updatedHunt);
 
-        // Réinitialiser le formulaire
-        this.resetHuntForm();
+            // Mettre à jour la chasse dans la liste
+            this.createdHunts.update(hunts =>
+              hunts.map(hunt =>
+                hunt.id === this.editingHuntId ? updatedHunt : hunt
+              )
+            );
 
-        // Fermer le modal
-        this.visibleCreateHunt = false;
-        this.isCreateHuntModal = false;
+            this.toastService.showSuccess('Chasse modifiée avec succès!');
 
-        this.isLoading.set(false);
-      },
-      error: error => {
-        console.error('Erreur lors de la création de la chasse:', error);
-        this.toastService.showServerError(
-          'Erreur lors de la création de la chasse'
-        );
-        this.isLoading.set(false);
+            // Fermer le modal et réinitialiser
+            this.visibleCreateHunt = false;
+            this.isCreateHuntModal = false;
+            this.resetHuntForm();
+            this.editingHuntId = null;
+            this.isLoading.set(false);
+          },
+          error: error => {
+            console.error('Erreur lors de la modification:', error);
+            this.toastService.showServerError(
+              'Erreur lors de la modification de la chasse'
+            );
+            this.isLoading.set(false);
+          },
+        });
+    } else {
+      // Mode création - créer une nouvelle chasse
+      this.huntService.createHunt(huntData, this.email).subscribe({
+        next: newHunt => {
+          console.log('Chasse créée avec succès:', newHunt);
+          this.createdHunts.update(hunts => [newHunt, ...hunts]);
+          this.toastService.showSuccess('Chasse créée avec succès!');
 
-        // Fallback vers localStorage en cas d'erreur
-        this.createHuntLocally();
-      },
-    });
+          // Fermer le modal et réinitialiser
+          this.visibleCreateHunt = false;
+          this.isCreateHuntModal = false;
+          this.resetHuntForm();
+          this.isLoading.set(false);
+        },
+        error: error => {
+          console.error('Erreur lors de la création:', error);
+          this.toastService.showServerError(
+            'Erreur lors de la création de la chasse'
+          );
+          this.isLoading.set(false);
+
+          // Fallback vers localStorage en cas d'erreur
+          this.createHuntLocally();
+        },
+      });
+    }
   }
 
-  // Générer un ID unique plus robuste
   private generateUniqueId(): string {
     // Utilise crypto.randomUUID() si disponible (moderne et sécurisé)
     if (typeof crypto !== 'undefined' && crypto.randomUUID) {
@@ -299,22 +381,33 @@ export class ChassesComponent implements OnInit {
     this.isCreateHuntModal = false;
   }
 
-  // Publier une chasse
+  // Publier une chasse avec confirmation
   publishHunt(huntId: string) {
-    this.huntService.publishHunt(huntId, this.email).subscribe({
-      next: updatedHunt => {
-        this.createdHunts.update(hunts =>
-          hunts.map(hunt => (hunt.id === huntId ? updatedHunt : hunt))
-        );
-        this.toastService.showSuccess('Chasse publiée avec succès!');
-      },
-      error: error => {
-        console.error('Erreur lors de la publication:', error);
-        this.toastService.showServerError(
-          'Erreur lors de la publication de la chasse'
-        );
-      },
-    });
+    // Afficher une confirmation avant publication
+    if (
+      confirm(
+        'Êtes-vous sûr de vouloir publier cette chasse ? Une fois publiée, elle sera visible par tous les utilisateurs et sortira de votre liste de chasses en cours.'
+      )
+    ) {
+      this.huntService.publishHunt(huntId, this.email).subscribe({
+        next: updatedHunt => {
+          console.log('Chasse publiée avec succès:', updatedHunt);
+          // Retirer la chasse de la liste car elle devient active
+          this.createdHunts.update(hunts =>
+            hunts.filter(hunt => hunt.id !== huntId)
+          );
+          this.toastService.showSuccess(
+            'Chasse publiée avec succès! Elle est maintenant visible par tous les utilisateurs.'
+          );
+        },
+        error: error => {
+          console.error('Erreur lors de la publication:', error);
+          this.toastService.showServerError(
+            'Erreur lors de la publication de la chasse'
+          );
+        },
+      });
+    }
   }
 
   // Supprimer une chasse
@@ -395,6 +488,7 @@ export class ChassesComponent implements OnInit {
 
   // Réinitialiser le formulaire
   resetHuntForm() {
+    this.editingHuntId = null; // Réinitialiser l'ID d'édition
     this.huntForm = {
       title: '',
       description: '',
@@ -443,5 +537,41 @@ export class ChassesComponent implements OnInit {
         );
       }
     }
+  }
+
+  // Éditer une chasse
+  editHunt(hunt: CreatedHunt) {
+    // Charger les données de la chasse dans le formulaire
+    this.huntForm = {
+      title: hunt.title,
+      description: hunt.description,
+      duration: hunt.duration,
+      worldType: hunt.worldType,
+      mode: hunt.mode,
+      maxParticipants: hunt.maxParticipants,
+      participationFee: hunt.participationFee,
+      chatEnabled: hunt.chatEnabled,
+      interactiveMap: hunt.interactiveMap,
+      mapConfig: hunt.mapConfig,
+      steps: hunt.steps,
+      landmarks: hunt.landmarks,
+      rewards: hunt.rewards,
+      searchDelay: hunt.searchDelay || 5,
+      searchCost: hunt.searchCost || 0,
+    };
+
+    // Stocker l'ID de la chasse en cours d'édition
+    this.editingHuntId = hunt.id;
+
+    // Ouvrir le modal de création/édition
+    this.visibleCreateHunt = true;
+    this.isCreateHuntModal = true;
+
+    this.toastService.showSuccess('Chasse chargée pour modification');
+  }
+
+  // Getter pour le texte du bouton
+  get createButtonText(): string {
+    return this.editingHuntId ? 'Modifier la chasse' : 'Créer la chasse';
   }
 }

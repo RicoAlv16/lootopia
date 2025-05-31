@@ -11,6 +11,7 @@ import { DashboadComponent } from '../dashboad/dashboad.component';
 import { ButtonModule } from 'primeng/button';
 import { ChassesComponent } from '../chasses/chasses.component';
 import { ModalComponent } from '../../shared/components/modal/modal.component';
+import { ChassesAuxTresorsComponent } from '../chasses-aux-tresors/chasses-aux-tresors.component';
 
 @Component({
   selector: 'app-sidebar',
@@ -24,6 +25,7 @@ import { ModalComponent } from '../../shared/components/modal/modal.component';
     ButtonModule,
     ChassesComponent,
     ModalComponent,
+    ChassesAuxTresorsComponent,
   ],
   standalone: true,
   providers: [MessageService, ToastService],
@@ -68,11 +70,21 @@ export class SidebarComponent implements OnInit {
             icon: 'pi pi-box',
             command: () => this.showItemContent('artefacts'),
           },
+          {
+            label: 'Récompences',
+            icon: 'pi pi-gift',
+            command: () => this.showItemContent('recompences'),
+          },
         ],
       },
       {
         label: 'Chasse aux trésors',
         items: [
+          {
+            label: 'Chasses aux trésors',
+            icon: 'pi pi-discord',
+            command: () => this.showItemContent('chasses-aux-tresors'),
+          },
           {
             label: 'Mes chasses',
             icon: 'pi pi-compass',
@@ -82,11 +94,6 @@ export class SidebarComponent implements OnInit {
             label: 'Organiser des chasses',
             icon: 'pi pi-map',
             command: () => this.showItemContent('creer-chasses'),
-          },
-          {
-            label: 'Récompences',
-            icon: 'pi pi-gift',
-            command: () => this.showItemContent('recompences'),
           },
         ],
       },

@@ -428,7 +428,7 @@
 
               <div class="space-y-2">
                 <label for="huntTitle" class="block text-sm font-medium"
-                  >Frais de participation (€)</label
+                  >Frais de participation (C)</label
                 >
                 <p-inputNumber
                   [(ngModel)]="huntForm.participationFee"
@@ -705,7 +705,7 @@
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="space-y-2">
                   <label for="huntTitle" class="block text-sm font-medium"
-                    >1ère place (€)</label
+                    >1ère place (C)</label
                   >
                   <p-inputNumber
                     [(ngModel)]="huntForm.rewards.first"
@@ -719,7 +719,7 @@
 
                 <div class="space-y-2">
                   <label for="huntTitle" class="block text-sm font-medium"
-                    >2ème place (€)</label
+                    >2ème place (C)</label
                   >
                   <p-inputNumber
                     [(ngModel)]="huntForm.rewards.second"
@@ -733,7 +733,7 @@
 
                 <div class="space-y-2">
                   <label for="huntTitle" class="block text-sm font-medium"
-                    >3ème place (€)</label
+                    >3ème place (C)</label
                   >
                   <p-inputNumber
                     [(ngModel)]="huntForm.rewards.third"
@@ -767,7 +767,7 @@
 
                 <div class="space-y-2">
                   <label for="huntTitle" class="block text-sm font-medium"
-                    >Coût par fouille (€)</label
+                    >Coût par fouille (C)</label
                   >
                   <p-inputNumber
                     [(ngModel)]="huntForm.searchCost"
@@ -794,8 +794,10 @@
                 (click)="saveDraftMethod()"
                 [outlined]="true" />
               <p-button
-                label="Créer la chasse"
+                [label]="createButtonText"
                 (click)="createHuntMethod()"
+                [loading]="isLoading()"
+                [disabled]="isLoading()"
                 icon="pi pi-check" />
             </div>
           </form>
