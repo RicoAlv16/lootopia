@@ -1,0 +1,282 @@
+<p-toast></p-toast>
+
+<div class="profile-container">
+  <!-- En-tête du profil -->
+  <div class="profile-header">
+    <div class="avatar-section">
+      <p-avatar
+        [image]="getAvatarUrl()"
+        size="xlarge"
+        shape="circle"
+        class="profile-avatar">
+      </p-avatar>
+
+      @if (editMode()) {
+        <div class="avatar-upload">
+          <input
+            type="file"
+            id="avatar-upload"
+            accept="image/*"
+            (change)="onFileSelected($event)"
+            class="hidden" />
+          <label for="avatar-upload" class="upload-btn">
+            <i class="pi pi-camera"></i>
+          </label>
+        </div>
+      }
+    </div>
+
+    <div class="profile-info">
+      <h1 class="profile-name">
+        {{ profileForm.get('nickname')?.value || nickname }}
+      </h1>
+      <div class="profile-tags">
+        <p-tag
+          [value]="getStatusLabel()"
+          [severity]="getStatusSeverity()"
+          class="status-tag">
+        </p-tag>
+
+        <p-tag
+          [value]="getCompteTypeLabel()"
+          [severity]="getCompteTypeSeverity()"
+          class="compte-tag">
+        </p-tag>
+
+        @if (profile()?.acceptMFA) {
+          <p-tag value="MFA Activé" severity="warning" class="mfa-tag">
+            <i class="pi pi-shield"></i>
+          </p-tag>
+        }
+      </div>
+    </div>
+
+    <div class="profile-actions">
+      @if (!editMode()) {
+        <p-button
+          label="Modifier le profil"
+          icon="pi pi-pencil"
+          (onClick)="toggleEditMode()"
+          class="edit-btn">
+        </p-button>
+      } @else {
+        <div class="edit-actions">
+          <p-button
+            label="Annuler"
+            icon="pi pi-times"
+            severity="secondary"
+            (onClick)="toggleEditMode()"
+            class="cancel-btn">
+          </p-button>
+          <p-button
+            label="Sauvegarder"
+            icon="pi pi-check"
+            [loading]="loading()"
+            (onClick)="saveProfile()"
+            class="save-btn">
+          </p-button>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Contenu principal -->
+  <div class="profile-content">
+    <p-card class="profile-card">
+      <ng-template #header>
+        <div class="card-header pt-4 ml-4">
+          <i class="pi pi-user icon-header"></i>
+          <h2>Informations personnelles</h2>
+        </div>
+      </ng-template>
+
+      <form [formGroup]="profileForm" class="profile-form">
+        <!-- Type de compte -->
+        <div class="form-field">
+          <label for="compte">Type de compte *</label>
+          @if (editMode()) {
+            <p-dropdown
+              id="compte"
+              formControlName="compte"
+              [options]="compteOptions"
+              placeholder="Sélectionnez le type de compte"
+              class="form-dropdown">
+            </p-dropdown>
+            @if (
+              profileForm.get('compte')?.invalid &&
+              profileForm.get('compte')?.touched
+            ) {
+              <small class="error-message">Le type de compte est requis</small>
+            }
+          } @else {
+            <p class="form-value">{{ getCompteTypeLabel() }}</p>
+          }
+        </div>
+
+        <!-- Nom d'utilisateur -->
+        <div class="form-field">
+          <label for="nickname">Nom d'utilisateur *</label>
+          @if (editMode()) {
+            <input
+              pInputText
+              id="nickname"
+              formControlName="nickname"
+              placeholder="Votre nom d'utilisateur"
+              class="form-input" />
+            @if (
+              profileForm.get('nickname')?.invalid &&
+              profileForm.get('nickname')?.touched
+            ) {
+              <small class="error-message"
+                >Le nom d'utilisateur est requis (min. 3 caractères)</small
+              >
+            }
+          } @else {
+            <p class="form-value">
+              {{ profileForm.get('nickname')?.value || 'Non renseigné' }}
+            </p>
+          }
+        </div>
+
+        <!-- Email -->
+        <div class="form-field">
+          <label for="email">Adresse email *</label>
+          @if (editMode()) {
+            <input
+              pInputText
+              id="email"
+              formControlName="email"
+              placeholder="votre.email@exemple.com"
+              class="form-input" />
+            @if (
+              profileForm.get('email')?.invalid &&
+              profileForm.get('email')?.touched
+            ) {
+              <small class="error-message"
+                >Veuillez saisir une adresse email valide</small
+              >
+            }
+          } @else {
+            <p class="form-value">
+              {{ profileForm.get('email')?.value || 'Non renseigné' }}
+            </p>
+          }
+        </div>
+
+        <!-- Téléphone -->
+        <div class="form-field">
+          <label for="telephone">Téléphone</label>
+          @if (editMode()) {
+            <input
+              pInputText
+              id="telephone"
+              formControlName="telephone"
+              placeholder="+33 6 12 34 56 78"
+              class="form-input" />
+            @if (
+              profileForm.get('telephone')?.invalid &&
+              profileForm.get('telephone')?.touched
+            ) {
+              <small class="error-message">Format de téléphone invalide</small>
+            }
+          } @else {
+            <p class="form-value">
+              {{ profile()?.telephone || 'Non renseigné' }}
+            </p>
+          }
+        </div>
+
+        <!-- Biographie -->
+        <div class="form-field">
+          <label for="bio">Biographie</label>
+          @if (editMode()) {
+            <textarea
+              pInputTextarea
+              id="bio"
+              formControlName="bio"
+              placeholder="Parlez-nous de vous..."
+              rows="4"
+              class="form-textarea">
+            </textarea>
+            @if (
+              profileForm.get('bio')?.invalid && profileForm.get('bio')?.touched
+            ) {
+              <small class="error-message"
+                >La biographie ne peut pas dépasser 500 caractères</small
+              >
+            }
+          } @else {
+            <p class="form-value bio-text">
+              {{ profile()?.bio || 'Aucune biographie renseignée' }}
+            </p>
+          }
+        </div>
+      </form>
+    </p-card>
+
+    <!-- Paramètres de sécurité -->
+    <p-card class="security-card" styleClass="h-full">
+      <ng-template #header>
+        <div class="card-header pt-4 ml-4">
+          <i class="pi pi-shield icon-header"></i>
+          <h2>Paramètres de sécurité</h2>
+        </div>
+      </ng-template>
+
+      <div class="security-settings">
+        <div class="setting-item">
+          <div class="setting-info">
+            <div class="setting-title">
+              <i class="pi pi-lock setting-icon"></i>
+              <h3>Authentification à deux facteurs (MFA)</h3>
+            </div>
+            <p>
+              Renforcez la sécurité de votre compte avec la double
+              authentification
+            </p>
+          </div>
+          @if (editMode()) {
+            <p-inputSwitch
+              formControlName="acceptMFA"
+              class="setting-toggle"></p-inputSwitch>
+          } @else {
+            <p-tag
+              [value]="profile()?.acceptMFA ? 'Activé' : 'Désactivé'"
+              [severity]="profile()?.acceptMFA ? 'success' : 'warning'">
+            </p-tag>
+          }
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <div class="setting-title">
+              <i class="pi pi-eye-slash setting-icon"></i>
+              <h3>Mode hors ligne</h3>
+            </div>
+            <p>Masquer votre statut en ligne aux autres utilisateurs</p>
+          </div>
+          @if (editMode()) {
+            <p-inputSwitch
+              formControlName="compteOff"
+              class="setting-toggle"></p-inputSwitch>
+          } @else {
+            <p-tag
+              [value]="profile()?.compteOff ? 'Activé' : 'Désactivé'"
+              [severity]="profile()?.compteOff ? 'info' : 'success'">
+            </p-tag>
+          }
+        </div>
+      </div>
+    </p-card>
+  </div>
+
+  <!-- État de chargement -->
+  @if (loading()) {
+    <div class="loading-overlay">
+      <div class="loading-spinner">
+        <i class="pi pi-spin pi-spinner"></i>
+        <p>Chargement...</p>
+      </div>
+    </div>
+  }
+</div>

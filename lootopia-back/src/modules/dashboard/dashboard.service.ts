@@ -114,9 +114,9 @@ export class DashboardService {
     await this.dashboardRepository.save(dashboardData);
   }
 
-  async addCrowns(userEmail: string, amount: number): Promise<void> {
+  async addCrowns(userEmail: string, crowns: number): Promise<void> {
     const dashboardData = await this.getDashboardData(userEmail);
-    dashboardData.crowns += amount;
+    dashboardData.crowns += crowns;
     await this.dashboardRepository.save(dashboardData);
   }
 

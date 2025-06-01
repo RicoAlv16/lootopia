@@ -192,4 +192,9 @@ export class ModalComponent implements OnInit {
       this.toastService.showServerError('Une erreur est survenue');
     }
   }
+
+  closePaymentCheckoutModal() {
+    this.paymentStatus = '';
+    this.router.navigate(['/sidebar/user']);
+  }
 }

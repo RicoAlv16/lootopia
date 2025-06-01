@@ -1,4 +1,4 @@
-import { Controller, Get, Put, Body } from '@nestjs/common';
+import { Controller, Put, Body, Post } from '@nestjs/common';
 // import { UseGuards } from '@nestjs/common';
 // import { JwtAuthGuard } from '../../guards/jwt-auth.guard';
 import { DashboardService } from './dashboard.service';
@@ -9,7 +9,7 @@ import { UpdateDashboardDataDto } from '../../shared/dto/dashboard-data.dto';
 export class DashboardController {
   constructor(private readonly dashboardService: DashboardService) {}
 
-  @Get()
+  @Post()
   async getDashboardData(@Body() req: { email: string }) {
     return await this.dashboardService.getDashboardData(req.email);
   }
@@ -31,8 +31,8 @@ export class DashboardController {
   }
 
   @Put('add-crowns')
-  async addCrowns(@Body() req: { email: string; amount: number }) {
-    await this.dashboardService.addCrowns(req.email, req.amount);
+  async addCrowns(@Body() req: { email: string; crowns: number }) {
+    await this.dashboardService.addCrowns(req.email, req.crowns);
     return { message: 'Couronnes ajoutées' };
   }
 

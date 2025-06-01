@@ -13,6 +13,8 @@ import { ChassesComponent } from '../chasses/chasses.component';
 import { ModalComponent } from '../../shared/components/modal/modal.component';
 import { ChassesAuxTresorsComponent } from '../chasses-aux-tresors/chasses-aux-tresors.component';
 import { MesChassesComponent } from '../mes-chasses/mes-chasses.component';
+import { DashboardData, DashboardService } from '../dashboad/dashboard.service';
+import { ProfilesComponent } from '../profiles/profiles.component';
 
 @Component({
   selector: 'app-sidebar',
@@ -28,6 +30,7 @@ import { MesChassesComponent } from '../mes-chasses/mes-chasses.component';
     ModalComponent,
     ChassesAuxTresorsComponent,
     MesChassesComponent,
+    ProfilesComponent,
   ],
   standalone: true,
   providers: [MessageService, ToastService],
@@ -39,22 +42,29 @@ export class SidebarComponent implements OnInit {
   items: MenuItem[] | undefined;
   user!: {
     nickname: string;
+    email: string;
     access_token: string;
   };
   couronnes = 0;
+  artifactsCount = 0;
   nickname = '';
+  email = '';
   access_token = '';
   paymentStatus = '';
   visiblePaymentStatusModal = false;
 
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private dashboardService = inject(DashboardService);
 
   // constructor() {}
 
   private showItemContent(item: string) {
     this.itemToShow = item;
     this.updateMenuItems();
+  }
+  private isAdmin(): boolean {
+    return false;
   }
 
   private updateMenuItems() {
@@ -145,6 +155,7 @@ export class SidebarComponent implements OnInit {
           {
             label: 'Gestion Admin',
             icon: 'pi pi-shield',
+            disabled: !this.isAdmin(),
             command: () => this.showItemContent('admin'),
           },
         ],
@@ -155,7 +166,7 @@ export class SidebarComponent implements OnInit {
           {
             label: 'Mon profil',
             icon: 'pi pi-user',
-            command: () => this.showItemContent('profile'),
+            command: () => this.showItemContent('profiles'),
           },
           {
             label: 'Paramètres',
@@ -178,6 +189,7 @@ export class SidebarComponent implements OnInit {
     const userStr = localStorage.getItem('user') || '{}';
     this.user = JSON.parse(userStr);
     this.nickname = this.user.nickname;
+    this.email = this.user.email;
     this.access_token = this.user.access_token;
 
     const payment = this.route.snapshot.paramMap.get('payment');
@@ -185,11 +197,43 @@ export class SidebarComponent implements OnInit {
       this.visiblePaymentStatusModal = true;
       this.paymentStatus = payment;
     }
+
+    this.loadDashboardData();
+
     const couronnes = localStorage.getItem('crowsPaid');
-    if (couronnes) {
-      console.log(payment === 'payment-success' && couronnes);
-      this.couronnes = this.couronnes + (couronnes ? parseInt(couronnes) : 0);
+
+    if (couronnes && payment === 'payment-success') {
+      const additionalCrowns = parseInt(couronnes);
+      this.addCrowns(additionalCrowns, this.email);
+      localStorage.removeItem('crowsPaid'); // Nettoyer après utilisation
     }
+  }
+
+  private loadDashboardData() {
+    this.dashboardService.getDashboardData(this.email).subscribe({
+      next: (data: DashboardData) => {
+        this.couronnes = data.crowns;
+        this.artifactsCount = data.artifactsCount;
+      },
+      error: error => {
+        console.error(
+          'Erreur lors du chargement des données du dashboard:',
+          error
+        );
+      },
+    });
+  }
+
+  // Méthodes pour mettre à jour les données
+  addCrowns(crowns: number, email: string) {
+    this.dashboardService.addCrowns(crowns, email).subscribe({
+      next: () => {
+        this.couronnes += crowns;
+      },
+      error: error => {
+        console.error("Erreur lors de l'ajout des couronnes:", error);
+      },
+    });
   }
 
   itemToShow = 'dashboard';
@@ -200,7 +244,9 @@ export class SidebarComponent implements OnInit {
   }
 
   private handleLogout() {
-    // Implémentez votre logique de déconnexion ici
-    this.router.navigate(['/auth/login']);
+    localStorage.removeItem('user');
+    localStorage.removeItem('createdHunts');
+    localStorage.removeItem('crowsPaid');
+    this.router.navigate(['/home']);
   }
 }

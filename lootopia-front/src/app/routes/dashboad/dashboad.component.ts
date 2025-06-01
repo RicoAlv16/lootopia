@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -25,8 +25,7 @@ import {
   DashboardData,
   Badge,
 } from './dashboard.service';
-
-// Interfaces pour les options du graphique
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-dashboad',
@@ -61,7 +60,18 @@ export class DashboadComponent implements OnInit {
   totalArtifacts = 150;
   artifacts: Artifact[] = [];
   ranking = 'Débutant';
-  crowns = 0;
+  // crownss = 0;
+  crowns = signal<number>(0);
+
+  // Récupérer l'utilisateur
+  user!: {
+    nickname: string;
+    email: string;
+    access_token: string;
+  };
+  nickname = '';
+  email = '';
+  access_token = '';
 
   // Activité récente
   recentActivities: Activity[] = [];
@@ -84,12 +94,20 @@ export class DashboadComponent implements OnInit {
   loading = true;
   error: string | null = null;
 
+  private route = inject(ActivatedRoute);
+
   constructor(
     private dashboardService: DashboardService,
     private messageService: MessageService
   ) {}
 
   ngOnInit() {
+    const userStr = localStorage.getItem('user') || '{}';
+    this.user = JSON.parse(userStr);
+    this.nickname = this.user.nickname;
+    this.email = this.user.email;
+    this.access_token = this.user.access_token;
+
     this.loadDashboardData();
     this.progressionData = this.getDefaultProgressionData();
     this.setupChartOptions();
@@ -99,17 +117,17 @@ export class DashboadComponent implements OnInit {
     this.loading = true;
     this.error = null;
 
-    this.dashboardService.getDashboardData().subscribe({
+    this.dashboardService.getDashboardData(this.email).subscribe({
       next: (data: DashboardData) => {
         this.updateComponentData(data);
         this.loading = false;
 
         // Ajouter les couronnes du localStorage si elles existent
         const couronnes = localStorage.getItem('crowsPaid');
-        if (couronnes) {
+        const payment = this.route.snapshot.paramMap.get('payment');
+        if (couronnes && payment === 'payment-success') {
           const additionalCrowns = parseInt(couronnes);
-          this.addCrowns(additionalCrowns);
-          localStorage.removeItem('crowsPaid'); // Nettoyer après utilisation
+          this.crowns.set(this.crowns() + additionalCrowns);
         }
       },
       error: error => {
@@ -134,7 +152,7 @@ export class DashboadComponent implements OnInit {
     this.artifactsCount = data.artifactsCount;
     this.totalArtifacts = data.totalArtifacts;
     this.ranking = data.ranking;
-    this.crowns = data.crowns;
+    this.crowns.set(data.crowns);
     this.recentActivities = data.recentActivities || [];
     this.progressionData =
       data.progressionData || this.getDefaultProgressionData();
@@ -223,28 +241,6 @@ export class DashboadComponent implements OnInit {
         },
       },
     };
-  }
-
-  // Méthodes pour mettre à jour les données
-  addCrowns(amount: number) {
-    this.dashboardService.addCrowns(amount).subscribe({
-      next: () => {
-        this.crowns += amount;
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Succès',
-          detail: `${amount} couronnes ajoutées !`,
-        });
-      },
-      error: error => {
-        console.error("Erreur lors de l'ajout des couronnes:", error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Erreur',
-          detail: "Impossible d'ajouter les couronnes",
-        });
-      },
-    });
   }
 
   incrementCompletedHunts() {

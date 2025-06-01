@@ -5,12 +5,14 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { TextareaModule } from 'primeng/textarea';
 import { CreatedHunt, HuntForm, HuntRewards } from './chasses.interface';
-import { Toast } from 'primeng/toast';
-import { MessageService } from 'primeng/api';
+import { Toast, ToastModule } from 'primeng/toast';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { ToastService } from '../../shared/services/toast/toast.service';
 import { ModalComponent } from '../../shared/components/modal/modal.component';
 import { HuntService } from './hunt.service';
 import { CardModule } from 'primeng/card';
+import { ConfirmDialog } from 'primeng/confirmdialog';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-chasses',
@@ -23,9 +25,12 @@ import { CardModule } from 'primeng/card';
     Toast,
     ModalComponent,
     CardModule,
+    ToastModule,
+    ConfirmDialog,
+    ButtonModule,
   ],
   standalone: true,
-  providers: [MessageService, ToastService],
+  providers: [MessageService, ToastService, ConfirmationService],
   templateUrl: './chasses.component.html',
   styleUrl: './chasses.component.css',
 })
@@ -93,6 +98,7 @@ export class ChassesComponent implements OnInit {
   editingHuntId: string | null = null;
 
   private toastService = inject(ToastService);
+  private confirmationService = inject(ConfirmationService);
   private huntService = inject(HuntService);
   public isLoading = signal(false);
 
@@ -339,51 +345,72 @@ export class ChassesComponent implements OnInit {
 
   // Publier une chasse avec confirmation
   publishHunt(huntId: string) {
-    // Afficher une confirmation avant publication
-    if (
-      confirm(
-        'Êtes-vous sûr de vouloir publier cette chasse ? Une fois publiée, elle sera visible par tous les utilisateurs et sortira de votre liste de chasses en cours.'
-      )
-    ) {
-      this.huntService.publishHunt(huntId, this.email).subscribe({
-        next: updatedHunt => {
-          console.log('Chasse publiée avec succès:', updatedHunt);
-          // Retirer la chasse de la liste car elle devient active
-          this.createdHunts.update(hunts =>
-            hunts.filter(hunt => hunt.id !== huntId)
-          );
-          this.toastService.showSuccess(
-            'Chasse publiée avec succès! Elle est maintenant visible par tous les utilisateurs.'
-          );
-        },
-        error: error => {
-          console.error('Erreur lors de la publication:', error);
-          this.toastService.showServerError(
-            'Erreur lors de la publication de la chasse'
-          );
-        },
-      });
-    }
+    this.confirmationService.confirm({
+      message:
+        'Êtes-vous sûr de vouloir publier cette chasse ? Une fois publiée, elle sera visible par tous les utilisateurs et sortira de votre liste de chasses en cours.',
+      header: 'Confirmer la publication',
+      icon: 'pi pi-send',
+      acceptLabel: 'Publier',
+      rejectLabel: 'Annuler',
+      accept: () => {
+        this.huntService.publishHunt(huntId, this.email).subscribe({
+          next: updatedHunt => {
+            console.log('Chasse publiée avec succès:', updatedHunt);
+            // Retirer la chasse de la liste car elle devient active
+            this.createdHunts.update(hunts =>
+              hunts.filter(hunt => hunt.id !== huntId)
+            );
+            this.toastService.showSuccess(
+              'Chasse publiée avec succès! Elle est maintenant visible par tous les utilisateurs.'
+            );
+          },
+          error: error => {
+            console.error('Erreur lors de la publication:', error);
+            this.toastService.showServerError(
+              'Erreur lors de la publication de la chasse'
+            );
+          },
+        });
+      },
+      reject: () => {
+        this.toastService.showServerError(
+          'Publication annulée. La chasse reste dans votre liste.'
+        );
+        // L'utilisateur a annulé, rien à faire
+      },
+    });
   }
 
   // Supprimer une chasse
   deleteHunt(huntId: string) {
-    if (confirm('Êtes-vous sûr de vouloir supprimer cette chasse ?')) {
-      this.huntService.deleteHunt(huntId, this.email).subscribe({
-        next: () => {
-          this.createdHunts.update(hunts =>
-            hunts.filter(hunt => hunt.id !== huntId)
-          );
-          this.toastService.showSuccess('Chasse supprimée avec succès!');
-        },
-        error: error => {
-          console.error('Erreur lors de la suppression:', error);
-          this.toastService.showServerError(
-            'Erreur lors de la suppression de la chasse'
-          );
-        },
-      });
-    }
+    this.confirmationService.confirm({
+      message:
+        'Êtes-vous sûr de vouloir supprimer définitivement cette chasse ? Cette action est irréversible.',
+      header: 'Confirmer la suppression',
+      icon: 'pi pi-trash',
+      acceptLabel: 'Supprimer',
+      rejectLabel: 'Annuler',
+      acceptButtonStyleClass: 'p-button-danger',
+      accept: () => {
+        this.huntService.deleteHunt(huntId, this.email).subscribe({
+          next: () => {
+            this.createdHunts.update(hunts =>
+              hunts.filter(hunt => hunt.id !== huntId)
+            );
+            this.toastService.showSuccess('Chasse supprimée avec succès!');
+          },
+          error: error => {
+            console.error('Erreur lors de la suppression:', error);
+            this.toastService.showServerError(
+              'Erreur lors de la suppression de la chasse'
+            );
+          },
+        });
+      },
+      reject: () => {
+        // L'utilisateur a annulé, rien à faire
+      },
+    });
   }
 
   // Getter pour l'état de chargement

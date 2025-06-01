@@ -92,8 +92,12 @@ export class DashboardService {
   constructor(private http: HttpClient) {}
 
   // Récupérer les données du dashboard
-  getDashboardData(): Observable<DashboardData> {
-    return this.http.get<DashboardData>(this.apiUrl);
+  getDashboardData(email: string): Observable<DashboardData> {
+    return this.http.post<DashboardData>(
+      this.apiUrl,
+      { email },
+      this.httpOptions
+    );
   }
 
   // Mettre à jour les données du dashboard
@@ -111,10 +115,10 @@ export class DashboardService {
   }
 
   // Ajouter des couronnes
-  addCrowns(amount: number): Observable<{ message: string }> {
+  addCrowns(crowns: number, email: string): Observable<{ message: string }> {
     return this.http.put<{ message: string }>(
       `${this.apiUrl}/add-crowns`,
-      { amount },
+      { crowns, email },
       this.httpOptions
     );
   }

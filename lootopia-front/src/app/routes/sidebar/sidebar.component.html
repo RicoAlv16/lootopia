@@ -43,7 +43,7 @@
           <p-message
             severity="secondary"
             icon="pi pi-bolt"
-            text="0"
+            text="{{ artifactsCount }}"
             size="small"
             styleClass="ml-8" />
         </li>
@@ -68,7 +68,7 @@
               severity="danger"
               pBadge
               [badgeStyleClass]="'text-white'"
-              value="3"></i>
+              value="0"></i>
           </a>
         </li>
         <li>
@@ -126,6 +126,9 @@
       }
       @if (itemToShow === 'mes-chasses') {
         <app-mes-chasses></app-mes-chasses>
+      }
+      @if (itemToShow === 'profiles') {
+        <app-profiles></app-profiles>
       }
     </div>
     <!-- FIN du corps des composents -->
