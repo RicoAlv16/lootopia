@@ -1,0 +1,172 @@
+<p-toast />
+<app-modal
+  [visible]="visibleCreateHunt"
+  [isCreateHuntModal]="isCreateHuntModal"
+  [huntForm]="huntForm"
+  [worldTypeOptions]="worldTypeOptions"
+  [modeOptions]="modeOptions"
+  [mapSkinOptions]="mapSkinOptions"
+  [validationTypeOptions]="validationTypeOptions"
+  [createHuntMethod]="createHunt.bind(this)"
+  [addStepMethod]="addStep.bind(this)"
+  [removeStepMethod]="removeStep.bind(this)"
+  [addLandmarkMethod]="addLandmark.bind(this)"
+  [removeLandmarkMethod]="removeLandmark.bind(this)"
+  [saveDraftMethod]="saveDraft.bind(this)"
+  [createButtonText]="createButtonText"
+  [isLoading]="isLoading"
+  (visibleChange)="visibleCreateHunt = $event"
+  (isCreateHuntModalChange)="isCreateHuntModal = $event">
+</app-modal>
+
+<div class="chasses-container">
+  <p-card styleClass="mb-8">
+    <div class="header">
+      <h1 class="title">Mes Chasses aux Trésors</h1>
+      <button class="create-btn" (click)="openCreateHuntModal()">
+        <i class="pi pi-plus"></i>
+        Créer une chasse
+      </button>
+    </div>
+  </p-card>
+
+  <div class="chasses-grid">
+    @if (createdHunts().length === 0 && !loading) {
+      <div class="empty-state">
+        <h3>Aucune chasse en cours</h3>
+        <p>
+          Vous n'avez aucune chasse en cours de création. Créez votre première
+          chasse pour commencer !
+        </p>
+        <button class="btn-primary" (click)="openCreateHuntModal()">
+          Créer ma première chasse
+        </button>
+      </div>
+    } @else {
+      @for (hunt of createdHunts(); track hunt.user) {
+        <div class="chasse-card">
+          <div class="card-header">
+            <div
+              class="world-badge"
+              [class]="
+                hunt.worldType === 'real' ? 'monde-reel' : 'monde-carto'
+              ">
+              {{ getWorldTypeLabel(hunt.worldType) }}
+            </div>
+            <div class="status-badge" [class]="hunt.status">
+              {{ getStatusLabel(hunt.status) }}
+            </div>
+          </div>
+
+          <div class="card-content">
+            <h3 class="chasse-title">{{ hunt.title }}</h3>
+            <p class="chasse-description">
+              {{ hunt.description }}
+            </p>
+
+            <div class="chasse-stats">
+              <div class="stat">
+                <i class="pi pi-users"></i>
+                <span
+                  >{{ hunt.participants }}/{{
+                    hunt.maxParticipants
+                  }}
+                  participants</span
+                >
+              </div>
+              <div class="stat">
+                <i class="pi pi-clock"></i>
+                <span>{{ getDurationLabel(hunt.duration) }}</span>
+              </div>
+              <div class="stat">
+                <i class="pi pi-map-marker"></i>
+                <span>{{ hunt.steps.length }} étapes</span>
+              </div>
+            </div>
+
+            <div class="reward-info">
+              <i class="pi pi-gift"></i>
+              <span>{{ getRewardLabel(hunt.rewards) }}</span>
+            </div>
+          </div>
+
+          <div class="card-footer">
+            @if (hunt.status === 'draft') {
+              <div class="btn-group">
+                <button
+                  class="btn-secondary"
+                  (click)="editHunt(hunt)"
+                  title="Modifier cette chasse">
+                  <i class="pi pi-pencil"></i> Modifier
+                </button>
+                <button
+                  class="btn-primary"
+                  (click)="publishHunt(hunt.id)"
+                  title="Publier cette chasse">
+                  <i class="pi pi-send"></i> Publier
+                </button>
+              </div>
+              <button
+                class="btn-danger"
+                (click)="deleteHunt(hunt.id)"
+                title="Supprimer définitivement cette chasse">
+                <i class="pi pi-trash"></i> Supprimer
+              </button>
+            } @else if (hunt.status === 'private') {
+              <div class="btn-group">
+                <button class="btn-secondary" title="Inviter des participants">
+                  <i class="pi pi-users"></i> Inviter
+                </button>
+                <button
+                  class="btn-primary"
+                  (click)="publishHunt(hunt.id)"
+                  title="Publier cette chasse">
+                  <i class="pi pi-send"></i> Publier
+                </button>
+              </div>
+              <button
+                class="btn-danger"
+                (click)="deleteHunt(hunt.id)"
+                title="Supprimer définitivement cette chasse">
+                <i class="pi pi-trash"></i> Supprimer
+              </button>
+            }
+          </div>
+        </div>
+      }
+    }
+  </div>
+</div>
+
+<p-confirmdialog #cd styleClass="w-1/3">
+  <ng-template
+    #headless
+    let-message
+    let-onAccept="onAccept"
+    let-onReject="onReject">
+    <div
+      class="flex flex-col items-center p-8 bg-surface-900 dark:bg-surface-900 rounded">
+      <div
+        class="rounded-full bg-primary text-primary-contrast inline-flex justify-center items-center h-24 w-24 -mt-20">
+        <i class="{{ message.icon || 'pi pi-question' }} !text-5xl"></i>
+      </div>
+      <span class="font-bold text-2xl block mb-2 mt-6">{{
+        message.header
+      }}</span>
+      <p class="mb-0">{{ message.message }}</p>
+      <div class="flex items-center gap-2 mt-6">
+        <p-button
+          [label]="message.acceptLabel || 'Confirmer'"
+          (onClick)="onAccept()"
+          [styleClass]="(message.acceptButtonStyleClass || '') + ' w-32'">
+        </p-button>
+        <p-button
+          [label]="message.rejectLabel || 'Annuler'"
+          [outlined]="true"
+          (onClick)="onReject()"
+          styleClass="w-32">
+        </p-button>
+      </div>
+    </div>
+  </ng-template>
+</p-confirmdialog>

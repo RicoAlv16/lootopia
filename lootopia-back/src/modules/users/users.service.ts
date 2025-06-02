@@ -39,4 +39,15 @@ export class UsersService {
       );
     }
   }
+
+  async verifyEmail(token: string): Promise<boolean> {
+    try {
+      return this.usersRepository.verifyEmail(token);
+    } catch (error) {
+      throw new HttpException(
+        `Erreur de verification de compte: ${error.message}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 }

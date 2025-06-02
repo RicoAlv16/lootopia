@@ -61,12 +61,12 @@ export class AuthService {
     try {
       const user = await this.usersService.getUserByMail(userData.email);
 
-      //   if (!user.isVerified) {
-      //     throw new HttpException(
-      //       "Veuillez vérifier votre compte avant d'accéder à la plateforme",
-      //       HttpStatus.FORBIDDEN,
-      //     );
-      //   }
+      if (!user.isVerified) {
+        throw new HttpException(
+          "Veuillez vérifier votre compte avant d'accéder à la plateforme",
+          HttpStatus.FORBIDDEN,
+        );
+      }
 
       if (user && (await bcrypt.compare(userData.password, user.password))) {
         const sendOPT = await this.sendOTPCode(user.email);

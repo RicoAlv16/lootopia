@@ -1,0 +1,6 @@
+:host ::ng-deep .my-password eyeicon.p-password-toggle-mask-icon {
+  color: white !important;
+}
+:host ::ng-deep .my-password eyeslashicon.p-password-toggle-mask-icon {
+  color: white !important;
+}

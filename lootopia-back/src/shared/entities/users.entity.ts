@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { RolesEntity } from './roles.entity';
 import { ProfileEntity } from './profile.entity';
+import { HuntParticipation } from './hunt-participation.entity';
 
 @Entity('Users')
 export class UsersEntity {
@@ -30,4 +31,7 @@ export class UsersEntity {
 
   @OneToMany(() => ProfileEntity, (profile) => profile.user)
   profile: ProfileEntity[];
+
+  @OneToMany(() => HuntParticipation, (participation) => participation.user)
+  huntParticipations: HuntParticipation[];
 }

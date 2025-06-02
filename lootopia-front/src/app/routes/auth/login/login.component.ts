@@ -5,6 +5,7 @@ import {
   inject,
   Input,
   Output,
+  signal,
 } from '@angular/core';
 import {
   FormBuilder,
@@ -23,6 +24,14 @@ import { FloatLabel } from 'primeng/floatlabel';
 import { IftaLabelModule } from 'primeng/iftalabel';
 import { CommonModule } from '@angular/common';
 import { LoginService } from './login.service';
+import { Toast } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
+import { ToastService } from '../../../shared/services/toast/toast.service';
+import { ModalComponent } from '../../../shared/components/modal/modal.component';
+import { LoginResponseInterface } from './login.interface';
+import { ProgressSpinner } from 'primeng/progressspinner';
+import { Router } from '@angular/router';
+import { Checkbox, CheckboxChangeEvent } from 'primeng/checkbox';
 
 @Component({
   selector: 'app-login',
@@ -40,7 +49,12 @@ import { LoginService } from './login.service';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    Toast,
+    ModalComponent,
+    ProgressSpinner,
+    Checkbox,
   ],
+  providers: [MessageService, ToastService],
   standalone: true,
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
@@ -54,7 +68,9 @@ export class LoginComponent {
   }
   private fb = inject(FormBuilder);
   private loginService = inject(LoginService);
+  private toastService = inject(ToastService);
   public loginForm: FormGroup;
+  private router = inject(Router);
 
   constructor() {
     this.loginForm = this.fb.group({
@@ -69,23 +85,77 @@ export class LoginComponent {
     });
   }
 
+  visibleRGPD = false;
   showDialog() {
     this.visible = true;
+    this.visibleRGPD = true;
+  }
+
+  visibleLoginSuccess = false;
+  isOPTModal = false;
+  closeJustDialog() {
+    this.visible = false;
   }
 
   closeDialog() {
     this.visible = false;
     this.visibleChange.emit(this.visible);
-    console.log('Le visible fermé : ' + this.visible);
+    this.visibleLoginSuccess = true;
+    this.isOPTModal = true;
   }
 
-  login() {
-    const { email, password } = this.loginForm.value;
-    this.loginService
-      .login(email, password)
-      .subscribe(response => console.log(response.token));
+  isLoading = signal<boolean>(false);
+  loginResponse = signal<LoginResponseInterface | null>(null);
 
-    this.loginForm.reset();
-    this.closeDialog();
+  rgpd = false;
+  onRGPDChange(event: CheckboxChangeEvent) {
+    this.rgpd = event.checked;
+    console.log('RGPD checked?', this.rgpd);
+  }
+
+  verifyCredentials() {
+    console.log(this.rgpd);
+    if (this.loginForm.valid && this.rgpd) {
+      this.isLoading.set(true);
+      this.loginService.verifyCredentials(this.loginForm.value).subscribe({
+        next: response => {
+          if (response) {
+            this.loginForm.reset();
+            this.closeDialog();
+          }
+
+          this.isLoading.set(false);
+        },
+        error: err => {
+          this.toastService.showServerError(err.error?.message);
+          this.loginForm.reset();
+          this.isLoading.set(false);
+        },
+      });
+    } else {
+      this.toastService.showInvalidTap();
+    }
+  }
+
+  login(codeOPT: number): void {
+    if (codeOPT) {
+      this.isLoading.set(true);
+      this.loginService.login({ codeOPT: codeOPT }).subscribe({
+        next: response => {
+          if (response) {
+            this.visibleLoginSuccess = true;
+            this.isOPTModal = true;
+            this.loginResponse.set(response);
+            localStorage.setItem('user', JSON.stringify(response));
+            this.router.navigate(['/sidebar/user']);
+          }
+          this.isLoading.set(false);
+        },
+        error: err => {
+          console.error('Erreur lors de la connexion', err);
+          this.toastService.showServerError(err.error?.message);
+        },
+      });
+    }
   }
 }
