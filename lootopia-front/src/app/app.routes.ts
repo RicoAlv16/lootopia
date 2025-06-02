@@ -2,9 +2,10 @@ import { Routes } from '@angular/router';
 import { AuctionDetailComponent } from './routes/auction/auction-detail.component';
 import { HomePageComponent } from './routes/home-page/home-page.component';
 import { NotFoundPageComponent } from './routes/not-found-page/not-found-page.component';
-import { authRoutes } from './routes/auth/auth.routes';
 import { CreateAuctionComponent } from './routes/create-auction/create-auction.component';
 import { AuctionListComponent } from './routes/auction-list/auction-list.component'
+import { SidebarComponent } from './routes/sidebar/sidebar.component';
+import { VerifyMailComponent } from './routes/auth/sigin/verify-mail/verify-mail.component';
 
 export const routes: Routes = [
   {
@@ -18,9 +19,14 @@ export const routes: Routes = [
     component: HomePageComponent,
   },
   {
-    path: 'auth',
-    title: 'all auth routes',
-    children: authRoutes,
+    path: 'sidebar/:payment',
+    title: 'Lootopia sidebar menu',
+    component: SidebarComponent,
+  },
+  {
+    path: 'verify-email/:token',
+    title: 'Lootopia sidebar menu',
+    component: VerifyMailComponent,
   },
   {
     path: 'auction/:id',

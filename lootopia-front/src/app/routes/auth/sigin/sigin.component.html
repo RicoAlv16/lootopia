@@ -1,0 +1,142 @@
+<app-modal
+  [(visible)]="visibleSiginSuccess"
+  [messageSiginSuccess]="messageSiginSuccess"
+  [messageSiginValidate]="messageSiginValidate"
+  [(isSuccessModal)]="isSuccessModal">
+</app-modal>
+<p-toast />
+<p-dialog
+  maskStyleClass="backdrop-blur-sm"
+  [(visible)]="visibleSign"
+  styleClass="!border-0 !bg-transparent">
+  <ng-template #headless>
+    <div
+      class="flex flex-col px-8 py-8 gap-6 rounded-2xl"
+      style="
+        border-radius: 12px;
+        background-image: radial-gradient(
+          circle at left top,
+          var(--p-primary-400),
+          var(--p-primary-700)
+        );
+      ">
+      <h1 class="text-center text-xl">Inscription</h1>
+      <img
+        src="icons/lootopia_icon.webp"
+        alt="logo"
+        class="block mx-auto w-17 h-17 rounded-full"
+        draggable="false" />
+
+      <form [formGroup]="siginForm" (ngSubmit)="sigin()">
+        <p-floatlabel variant="on" class="my-6">
+          <p-iconfield>
+            <p-inputicon class="pi pi-user text-white text-xl" />
+            <input
+              pInputText
+              formControlName="nickname"
+              id="nickname"
+              type="text"
+              class="!bg-white/20 !border-0 !p-4 !text-surface-700 w-80 text-lg"
+              [style.text-indent]="'1.5rem'" />
+          </p-iconfield>
+          <label
+            for="nickname"
+            [style.background]="'transparent'"
+            [style.color]="'white'"
+            [style.boxShadow]="'none'"
+            class="text-lg ml-2"
+            >Nickname</label
+          >
+        </p-floatlabel>
+        <p-floatlabel variant="on" class="my-6">
+          <p-iconfield>
+            <p-inputicon class="pi pi-envelope text-white text-xl" />
+            <input
+              pInputText
+              formControlName="email"
+              id="email"
+              type="email"
+              class="!bg-white/20 !border-0 !p-4 !text-surface-700 w-80 text-lg"
+              [style.text-indent]="'1.5rem'" />
+          </p-iconfield>
+          <label
+            for="email"
+            [style.background]="'transparent'"
+            [style.color]="'white'"
+            [style.boxShadow]="'none'"
+            class="text-lg ml-2"
+            >Email</label
+          >
+        </p-floatlabel>
+        <p-floatlabel variant="on" class="my-6">
+          <p-iconfield>
+            <p-inputicon class="pi pi-key text-white text-xl" />
+            <p-password
+              formControlName="password"
+              inputIid="password"
+              [toggleMask]="true"
+              [feedback]="true"
+              class="ng-dirty ng-invalid"
+              styleClass="my-password"
+              inputStyleClass="bg-white/20 border-0 p-4 text-surface-700 w-80 text-lg indent-7"
+              [(ngModel)]="password"
+              promptLabel="Choisissez un mot de pass"
+              weakLabel="Trop simple"
+              mediumLabel="Complexité moyen"
+              strongLabel="Parfait, mot de pass fort" />
+          </p-iconfield>
+          <label
+            for="mot de pass"
+            [style.background]="'transparent'"
+            [style.color]="'white'"
+            [style.boxShadow]="'none'"
+            class="text-lg ml-2"
+            >Mot de pass</label
+          >
+        </p-floatlabel>
+        <div class="flex items-center gap-4">
+          @if (isLoading()) {
+            <div class="flex items-center justify-center w-full">
+              <p-progress-spinner ariaLabel="loading" />
+            </div>
+          } @else {
+            <p-button
+              label="Annuler"
+              (click)="closeJustDialog()"
+              [text]="true"
+              styleClass="!p-4 w-full !text-primary-50 !border !border-white/30 hover:!bg-white/10"
+              class="w-full" />
+            <p-button
+              type="submit"
+              label="S'inscrire"
+              [text]="true"
+              styleClass="!p-4 w-full !text-primary-50 !border !border-white/30 hover:!bg-white/10"
+              class="w-full" />
+          }
+        </div>
+      </form>
+
+      <span class="text-color-secondary text-center mb-4"
+        >ou inscrivez-vous avec</span
+      >
+      <div class="flex items-center justify-center gap-4">
+        <a
+          class="inline-flex flex-shrink-0 w-3rem h-3rem justify-content-center align-items-center surface-ground border-circle"
+          ><i class="pi pi-facebook text-2xl text-color"></i
+        ></a>
+        <a
+          class="inline-flex flex-shrink-0 w-3rem h-3rem justify-content-center align-items-center surface-ground border-circle"
+          ><i class="pi pi-twitter text-2xl text-color"></i
+        ></a>
+        <a
+          class="inline-flex flex-shrink-0 w-3rem h-3rem justify-content-center align-items-center surface-ground border-circle"
+          ><i class="pi pi-google text-2xl text-color"></i
+        ></a>
+        <a
+          class="inline-flex flex-shrink-0 w-3rem h-3rem justify-content-center align-items-center surface-ground border-circle"
+          ><i class="pi pi-github text-2xl text-color"></i
+        ></a>
+      </div>
+    </div>
+  </ng-template>
+</p-dialog>

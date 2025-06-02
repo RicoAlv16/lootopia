@@ -1,0 +1,251 @@
+<p-toast></p-toast>
+
+<div class="active-hunts-container">
+  <p-card styleClass="mb-8">
+    <h1 class="title">Chasses aux Trésors Actives</h1>
+    <p class="subtitle">Découvrez et participez aux chasses en cours</p>
+  </p-card>
+
+  @if (isLoading()) {
+    <div class="loading-state">
+      <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+      <p>Chargement des chasses actives...</p>
+    </div>
+  } @else if (activeHunts().length === 0) {
+    <div class="empty-state">
+      <h3>Aucune chasse active</h3>
+      <p>
+        Il n'y a actuellement aucune chasse aux trésors active. Revenez plus
+        tard !
+      </p>
+    </div>
+  } @else {
+    <div class="hunts-grid">
+      @for (hunt of activeHunts(); track hunt.id) {
+        <div class="hunt-card">
+          <div class="card-header">
+            <div
+              class="world-badge"
+              [class]="
+                hunt.worldType === 'real' ? 'monde-reel' : 'monde-carto'
+              ">
+              {{ getWorldTypeLabel(hunt.worldType) }}
+            </div>
+            <div class="status-badge active">Active</div>
+          </div>
+
+          <div class="card-content">
+            <h3 class="hunt-title">{{ hunt.title }}</h3>
+            <p class="hunt-description">{{ hunt.description }}</p>
+
+            <div class="hunt-stats">
+              <div class="stat">
+                <i class="pi pi-users"></i>
+                <span
+                  >{{ hunt.participants }}/{{
+                    hunt.maxParticipants
+                  }}
+                  participants</span
+                >
+              </div>
+              <div class="stat">
+                <i class="pi pi-clock"></i>
+                <span>{{ getDurationLabel(hunt.duration) }}</span>
+              </div>
+              <div class="stat">
+                <i class="pi pi-map-marker"></i>
+                <span>{{ hunt.steps.length }} étapes</span>
+              </div>
+            </div>
+
+            <div class="reward-info">
+              <i class="pi pi-gift"></i>
+              <span>{{ getRewardLabel(hunt.rewards) }}</span>
+            </div>
+
+            @if (hunt.participationFee > 0) {
+              <div class="fee-info">
+                <i class="pi pi-euro"></i>
+                <span>{{ hunt.participationFee }}€ de participation</span>
+              </div>
+            }
+
+            <div class="creator-info">
+              <i class="pi pi-user"></i>
+              <span>Créée par {{ hunt.user.nickname }}</span>
+            </div>
+          </div>
+
+          <div class="card-footer">
+            <button
+              class="btn-secondary"
+              (click)="viewDetails(hunt.id)"
+              title="Voir les détails">
+              <i class="pi pi-eye"></i> Détails
+            </button>
+            <button
+              class="btn-primary"
+              (click)="joinHunt(hunt.id)"
+              title="Participer à cette chasse">
+              <i class="pi pi-sign-in"></i> Participer
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Modal Détails -->
+  <p-dialog
+    [(visible)]="showDetailsModal"
+    header="Détails de la chasse"
+    [modal]="true"
+    [draggable]="false"
+    [resizable]="false"
+    styleClass="hunt-details-modal"
+    [style]="{ width: '90vw', maxWidth: '800px' }">
+    @if (selectedHunt()) {
+      <div class="hunt-details">
+        <div class="detail-header">
+          <h2>{{ selectedHunt()!.title }}</h2>
+          <div class="badges">
+            <span
+              class="world-badge"
+              [class]="
+                selectedHunt()!.worldType === 'real'
+                  ? 'monde-reel'
+                  : 'monde-carto'
+              ">
+              {{ getWorldTypeLabel(selectedHunt()!.worldType) }}
+            </span>
+            <span class="status-badge active">Active</span>
+          </div>
+        </div>
+
+        <div class="detail-content">
+          <div class="detail-section">
+            <h3><i class="pi pi-info-circle"></i> Description</h3>
+            <p>{{ selectedHunt()!.description }}</p>
+          </div>
+
+          <div class="detail-grid">
+            <div class="detail-section">
+              <h3><i class="pi pi-users"></i> Participants</h3>
+              <p>
+                {{ selectedHunt()!.participants }}/{{
+                  selectedHunt()!.maxParticipants
+                }}
+                participants
+              </p>
+            </div>
+
+            <div class="detail-section">
+              <h3><i class="pi pi-clock"></i> Durée</h3>
+              <p>{{ getDurationLabel(selectedHunt()!.duration) }}</p>
+            </div>
+
+            <div class="detail-section">
+              <h3><i class="pi pi-cog"></i> Mode</h3>
+              <p>{{ selectedHunt()!.mode }}</p>
+            </div>
+
+            @if (selectedHunt()!.participationFee > 0) {
+              <div class="detail-section">
+                <h3><i class="pi pi-euro"></i> Frais de participation</h3>
+                <p>{{ selectedHunt()!.participationFee }}€</p>
+              </div>
+            }
+          </div>
+
+          <div class="detail-section">
+            <h3><i class="pi pi-gift"></i> Récompenses</h3>
+            <div class="rewards-grid">
+              <div class="reward-item">
+                <span class="position">1er</span>
+                <span class="amount">{{ selectedHunt()!.rewards.first }}€</span>
+              </div>
+              <div class="reward-item">
+                <span class="position">2ème</span>
+                <span class="amount"
+                  >{{ selectedHunt()!.rewards.second }}€</span
+                >
+              </div>
+              <div class="reward-item">
+                <span class="position">3ème</span>
+                <span class="amount">{{ selectedHunt()!.rewards.third }}€</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <h3>
+              <i class="pi pi-map-marker"></i> Étapes ({{
+                selectedHunt()!.steps.length
+              }})
+            </h3>
+            <div class="steps-list">
+              @for (step of selectedHunt()!.steps; track $index) {
+                <div class="step-item">
+                  <span class="step-number">{{ $index + 1 }}</span>
+                  <div class="step-content">
+                    <h4>{{ step.title }}</h4>
+                    <p>{{ step.description }}</p>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <h3><i class="pi pi-user"></i> Créateur</h3>
+            <p>{{ selectedHunt()!.user.nickname }}</p>
+          </div>
+        </div>
+      </div>
+    }
+  </p-dialog>
+
+  <!-- Modal Participer -->
+  <p-dialog
+    [(visible)]="showParticipateModal"
+    header="Participer à la chasse"
+    [modal]="true"
+    [draggable]="false"
+    [resizable]="false"
+    styleClass="participate-modal"
+    [style]="{ width: '90vw', maxWidth: '800px', height: '80vh' }">
+    @if (selectedHunt()) {
+      <div class="participate-content">
+        <div class="hunt-info">
+          <h3>{{ selectedHunt()!.title }}</h3>
+          <p>{{ selectedHunt()!.description }}</p>
+        </div>
+
+        <div class="map-container">
+          <app-map
+            [center]="getHuntCenter(selectedHunt()!)"
+            [huntSteps]="getHuntStepsAsMapPoints(selectedHunt()!)"
+            [zoom]="14"
+            height="400px">
+          </app-map>
+        </div>
+
+        <div class="participation-actions">
+          <p-button
+            label="Annuler"
+            icon="pi pi-times"
+            severity="secondary"
+            (onClick)="closeParticipateModal()"
+            styleClass="p-button-outlined">
+          </p-button>
+          <p-button
+            label="Confirmer la participation"
+            icon="pi pi-check"
+            severity="success"
+            (onClick)="confirmParticipation()">
+          </p-button>
+        </div>
+      </div>
+    }
+  </p-dialog>
+</div>

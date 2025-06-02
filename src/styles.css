@@ -1,0 +1,23 @@
+/* Styles Leaflet */
+@import '~leaflet/dist/leaflet.css';
+
+/* Styles personnalisés pour les marqueurs de chasse */
+.custom-hunt-marker {
+  background: transparent;
+  border: none;
+}
+
+.hunt-marker {
+  background: linear-gradient(135deg, #4ade80, #22c55e);
+  color: white;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 14px;
+  border: 2px solid white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}

@@ -1,29 +1,35 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '../../../../env/env.dev';
+import { Observable } from 'rxjs';
 import {
   LoginRequestInterface,
   LoginResponseInterface,
 } from './login.interface';
-import { HttpClient, httpResource } from '@angular/common/http';
-import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LoginService {
-  private apiUrl = '/auth/login';
+  private backend = new environment();
+  private http = inject(HttpClient);
+  private httpOptions = {
+    headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+  };
 
-  constructor(private http: HttpClient) {}
-
-  public login(
-    email: string,
-    password: string
-  ): Observable<LoginResponseInterface> {
-    const loginData: LoginRequestInterface = { email, password };
-    return this.http.post<LoginResponseInterface>(this.apiUrl, loginData);
+  login(loginPost: { codeOPT: number }): Observable<LoginResponseInterface> {
+    return this.http.post<LoginResponseInterface>(
+      this.backend.apiUrl + '/auth/login',
+      loginPost,
+      this.httpOptions
+    );
   }
 
-  loginResource = httpResource<LoginRequestInterface>({
-    method: 'POST',
-    url: '/auth/login',
-  });
+  verifyCredentials(userData: LoginRequestInterface): Observable<boolean> {
+    return this.http.post<boolean>(
+      this.backend.apiUrl + '/auth/verify-credentials',
+      userData,
+      this.httpOptions
+    );
+  }
 }

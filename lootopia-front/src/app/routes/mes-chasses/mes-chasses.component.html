@@ -1,0 +1,68 @@
+<div class="mes-chasses-container">
+  <p-card styleClass="mb-8">
+    <h1 class="title">Mes Chasses aux Trésors</h1>
+    <p class="subtitle">Liste de mes chasses en cours</p>
+  </p-card>
+
+  @if (isLoading()) {
+    <div class="loading">Chargement...</div>
+  } @else if (participations().length === 0) {
+    <div class="empty-state">
+      <i class="pi pi-search" style="font-size: 3rem; color: #ccc"></i>
+      <h3>Aucune participation</h3>
+      <p>Vous ne participez à aucune chasse pour le moment.</p>
+    </div>
+  } @else {
+    <div class="participations-grid">
+      @for (participation of participations(); track participation.id) {
+        <div class="participation-card">
+          <div class="card-header">
+            <h3>{{ participation.hunt.title }}</h3>
+            <p-tag
+              [value]="getStatusLabel(participation.status)"
+              [severity]="getStatusSeverity(participation.status)">
+            </p-tag>
+          </div>
+
+          <p class="description">{{ participation.hunt.description }}</p>
+
+          <div class="hunt-info">
+            <div class="info-item">
+              <i class="pi pi-user"></i>
+              <span>Créée par {{ participation.hunt.user.nickname }}</span>
+            </div>
+            <div class="info-item">
+              <i class="pi pi-calendar"></i>
+              <span>Rejoint le {{ formatDate(participation.joinedAt) }}</span>
+            </div>
+            @if (participation.status === 'completed') {
+              <div class="info-item">
+                <i class="pi pi-trophy"></i>
+                <span>Score: {{ participation.score }}</span>
+              </div>
+            }
+          </div>
+
+          <div class="actions">
+            @if (participation.status === 'active') {
+              <p-button
+                label="Continuer"
+                icon="pi pi-play"
+                severity="success"
+                (onClick)="continueHunt(participation.hunt.id)">
+              </p-button>
+              <p-button
+                label="Quitter"
+                icon="pi pi-times"
+                severity="danger"
+                styleClass="p-button-outlined"
+                (onClick)="leaveHunt(participation.hunt.id)">
+              </p-button>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>
+<p-toast></p-toast>

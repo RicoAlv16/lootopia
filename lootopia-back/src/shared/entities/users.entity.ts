@@ -8,6 +8,7 @@ import {
 import { RolesEntity } from './roles.entity';
 import { ProfileEntity } from './profile.entity';
 import { FollowedAuction } from './followed-auction.entity';
+import { HuntParticipation } from './hunt-participation.entity';
 
 @Entity('Users')
 export class UsersEntity {
@@ -35,4 +36,6 @@ export class UsersEntity {
   @OneToMany(() => FollowedAuction, follow => follow.user)
   followedAuctions: FollowedAuction[];
 
+  @OneToMany(() => HuntParticipation, (participation) => participation.user)
+  huntParticipations: HuntParticipation[];
 }
