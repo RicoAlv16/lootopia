@@ -1,0 +1,130 @@
+.tabs {
+  display: flex;
+  gap: 1rem;
+  padding: 1.5rem 2rem 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.tabs button {
+  background: transparent;
+  border: 2px solid #228b22;
+  color: #228b22;
+  padding: 0.5rem 1.2rem;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s ease;
+}
+
+.tabs button:hover,
+.tabs button.active {
+  background: #228b22;
+  color: white;
+}
+
+.filters {
+  display: flex;
+  gap: 1rem;
+  padding: 0 2rem 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.filters input,
+.filters select {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  min-width: 150px;
+}
+
+.auction-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.auction-card {
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  color: black;
+  transition: transform 0.2s ease;
+}
+
+.auction-card:hover {
+  transform: scale(1.02);
+}
+
+.auction-title {
+  font-weight: bold;
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+}
+
+.auction-bid {
+  font-weight: bold;
+  margin-top: 0.5rem;
+}
+
+.auction-endtime {
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: 0.5rem;
+}
+
+.rarity {
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-top: 0.5rem;
+}
+
+/* Couleurs des raretés */
+.rarity.commun {
+  color: #228b22;
+}
+.rarity.rare {
+  color: #1e90ff;
+}
+.rarity.épique {
+  color: #800080;
+}
+.rarity.légendaire {
+  color: #ffa500;
+}
+
+.artefact-img {
+  max-width: 100%;
+  max-height: 100%;
+  display: block;
+  margin: 0 auto 1rem;
+  object-fit: contain;
+  border-radius: 12px;
+}
+
+.create-btn {
+  background-color: #228b22;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  margin: auto;
+}
+
+.create-btn:hover {
+  background-color: #2faa2f;
+}
+
+.actions {
+  text-align: center;
+  margin-bottom: 1rem;
+}

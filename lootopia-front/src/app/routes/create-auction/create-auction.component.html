@@ -1,0 +1,32 @@
+<div class="create-auction-container">
+  <h2>Créer une nouvelle enchère</h2>
+
+  <div>
+    <label>Artéfact :</label>
+    <select [(ngModel)]="selectedArtefactId" (change)="onArtefactChange()">
+      <option [ngValue]="null">-- Sélectionnez un artéfact --</option>
+      <option *ngFor="let artefact of artefacts" [ngValue]="artefact.id">
+        {{ artefact.loot.name }}
+      </option>
+    </select>
+  </div>
+
+  <div *ngIf="selectedArtefact" class="preview">
+    <img [src]="'http://localhost:3000' + selectedArtefact.loot.image" alt="Image de l'artéfact" />
+  </div>
+
+  <div>
+    <label>Prix de départ :</label>
+    <input type="number" [(ngModel)]="startingPrice" />
+  </div>
+
+  <div>
+    <label>Durée (en minutes) :</label>
+    <input type="number" [(ngModel)]="durationInMinutes" />
+  </div>
+
+  <div class="button-group">
+    <button (click)="createAuction()">Créer l’enchère</button>
+    <button class="cancel-btn" (click)="cancel()">Annuler</button>
+  </div>
+</div>

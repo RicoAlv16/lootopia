@@ -50,4 +50,35 @@ export class ProfileRepository {
       );
     }
   }
+  async creditBalance(userId: number, amount: number): Promise<void> {
+    const profile = await this.profileRepository.findOne({
+      where: { user: { id: userId } },
+      relations: ['user'],
+    });
+
+    if (!profile) {
+      throw new HttpException('Profil introuvable', HttpStatus.NOT_FOUND);
+    }
+
+    profile.balance += amount;
+    await this.profileRepository.save(profile);
+  }
+
+  async debitBalance(userId: number, amount: number): Promise<void> {
+    const profile = await this.profileRepository.findOne({
+      where: { user: { id: userId } },
+      relations: ['user'],
+    });
+
+    if (!profile) {
+      throw new HttpException('Profil introuvable', HttpStatus.NOT_FOUND);
+    }
+
+    if (profile.balance < amount) {
+      throw new HttpException('Solde insuffisant', HttpStatus.BAD_REQUEST);
+    }
+
+    profile.balance -= amount;
+    await this.profileRepository.save(profile);
+  }
 }

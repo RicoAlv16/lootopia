@@ -9,6 +9,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './modules/auth/auth.module';
 import { ProfileModule } from './modules/profile/profile.module';
 import { StripeModule } from './modules/stripe/stripe.module';
+import { AuctionModule } from './modules/auction/auction.module';
+import { ScheduleModule } from '@nestjs/schedule';
 import { HuntsModule } from './modules/hunts/hunts.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
 
@@ -34,6 +36,8 @@ import { DashboardModule } from './modules/dashboard/dashboard.module';
     AuthModule,
     ProfileModule,
     StripeModule,
+    AuctionModule,
+    ScheduleModule.forRoot(),
     HuntsModule,
     DashboardModule,
   ],
