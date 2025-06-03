@@ -32,6 +32,7 @@ import { LoginResponseInterface } from './login.interface';
 import { ProgressSpinner } from 'primeng/progressspinner';
 import { Router } from '@angular/router';
 import { Checkbox, CheckboxChangeEvent } from 'primeng/checkbox';
+import { AuthService } from '../../../shared/services/auth/auth.services';
 
 @Component({
   selector: 'app-login',
@@ -71,6 +72,7 @@ export class LoginComponent {
   private toastService = inject(ToastService);
   public loginForm: FormGroup;
   private router = inject(Router);
+  private authService = inject(AuthService);
 
   constructor() {
     this.loginForm = this.fb.group({
@@ -146,7 +148,7 @@ export class LoginComponent {
             this.visibleLoginSuccess = true;
             this.isOPTModal = true;
             this.loginResponse.set(response);
-            localStorage.setItem('user', JSON.stringify(response));
+            this.authService.setUser(response);
             this.router.navigate(['/sidebar/user']);
           }
           this.isLoading.set(false);

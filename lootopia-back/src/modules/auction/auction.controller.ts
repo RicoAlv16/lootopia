@@ -1,4 +1,14 @@
-import { Body, Controller, Post, Get, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
+import { Request } from 'express';
+import { AuthGuard } from '@nestjs/passport';
 
 import { CreateAuctionDto } from 'src/shared/dto/create-auction.dto';
 import { FilterAuctionDto } from 'src/shared/dto/filter-auction.dto';
@@ -8,6 +18,7 @@ import { AuctionBiddingService } from './auction-bidding.service';
 import { AuctionManagementService } from './auction-management.service';
 import { AuctionQueryService } from './auction-query.service';
 
+@UseGuards(AuthGuard('jwt'))
 @Controller('auction')
 export class AuctionController {
   constructor(
@@ -17,13 +28,15 @@ export class AuctionController {
   ) {}
 
   @Post('create')
-  async createAuction(@Body() dto: CreateAuctionDto & { userId: number }) {
-    return this.managementService.createAuction(dto.userId, dto);
+  async createAuction(@Req() req: Request, @Body() dto: CreateAuctionDto) {
+    const userId = req.user['userId'];
+    return this.managementService.createAuction(userId, dto);
   }
 
   @Post('bid')
-  async placeBid(@Body() dto: PlaceBidDto & { userId: number }) {
-    return this.biddingService.placeBid(dto.userId, dto);
+  async placeBid(@Body() dto: PlaceBidDto, @Req() req: Request) {
+    const userId = req.user['userId'];
+    return this.biddingService.placeBid(userId, dto);
   }
 
   @Get('list')
@@ -32,12 +45,14 @@ export class AuctionController {
   }
 
   @Get('my')
-  async getMyAuctions(@Query('userId') userId: number) {
+  async getMyAuctions(@Req() req: Request) {
+    const userId = req.user['userId'];
     return this.queryService.getMyAuctions(userId);
   }
 
   @Get('followed')
-  async getFollowedAuctions(@Query('userId') userId: number) {
+  async getFollowedAuctions(@Req() req: Request) {
+    const userId = req.user['userId'];
     return this.queryService.getFollowedAuctions(userId);
   }
 }

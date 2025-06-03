@@ -2,6 +2,7 @@
   [(visible)]="visiblePaymentStatusModal"
   [paymentStatus]="paymentStatus">
 </app-modal>
+<p-toast></p-toast>
 
 <section id="topbar">
   <div class="top-bar flex justify-between items-center px-8 top-0 w-full">
@@ -130,6 +131,11 @@
       @if (itemToShow === 'profiles') {
         <app-profiles></app-profiles>
       }
+
+      @if (itemToShow === 'hotel-de-ventes') {
+        <app-auction-list></app-auction-list>
+      }
+
     </div>
     <!-- FIN du corps des composents -->
   </div>

@@ -13,6 +13,8 @@ import { PermissionsEntity } from './shared/entities/permissions.entity';
 import { ProfileEntity } from './shared/entities/profile.entity';
 import { LootTable } from './shared/entities/loot-table.entity';
 import { FollowedAuction } from './shared/entities/followed-auction.entity';
+import { Hunt } from './shared/entities/hunt.entity';
+import { HuntParticipation } from './shared/entities/hunt-participation.entity';
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
@@ -33,6 +35,8 @@ export const AppDataSource = new DataSource({
     ProfileEntity,
     LootTable,
     FollowedAuction,
+    Hunt,
+    HuntParticipation
 
   ],
   migrations: ['src/migrations/*.ts'],

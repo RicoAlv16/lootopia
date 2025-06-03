@@ -6,6 +6,7 @@ export interface LoginRequestInterface {
 }
 
 export interface LoginResponseInterface {
+  id: number;
   access_token: string;
   nickname: string;
   email: string;

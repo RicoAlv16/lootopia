@@ -35,14 +35,17 @@ export class AuctionBiddingService {
     });
 
     if (!auction || auction.status !== 'active') {
+      console.log('❌ Enchère invalide ou expirée');
       throw new HttpException('Enchère invalide ou expirée', HttpStatus.BAD_REQUEST);
     }
 
     if (auction.seller.id === userId) {
+      console.log('❌ Tentative d\'enchère sur sa propre enchère');
       throw new HttpException("Vous ne pouvez pas enchérir sur votre propre enchère", HttpStatus.BAD_REQUEST);
     }
 
     if (auction.currentBidder?.id === userId) {
+      console.log('❌ Utilisateur est déjà le meilleur enchérisseur');
       throw new HttpException("Vous êtes déjà le meilleur enchérisseur", HttpStatus.BAD_REQUEST);
     }
 
@@ -53,6 +56,7 @@ export class AuctionBiddingService {
       (!hasBid && dto.amount < auction.startingPrice)
     ) {
       const minimumRequired = hasBid ? auction.currentBid + 1 : auction.startingPrice;
+      console.log(`❌ Montant proposé (${dto.amount}) insuffisant, requis: ${minimumRequired}`);
       throw new HttpException(
         `L'enchère doit être au moins de ${minimumRequired} couronnes`,
         HttpStatus.BAD_REQUEST
@@ -67,18 +71,21 @@ export class AuctionBiddingService {
     const profile = user?.profile?.[0];
 
     if (!user || !profile) {
+      console.log('❌ Utilisateur ou profil introuvable');
       throw new HttpException('Utilisateur ou profil introuvable', HttpStatus.NOT_FOUND);
     }
 
     if (profile.balance < dto.amount) {
+      console.log(`❌ Solde insuffisant : balance=${profile.balance}, demandé=${dto.amount}`);
       throw new HttpException('Solde insuffisant', HttpStatus.BAD_REQUEST);
     }
 
     if (auction.endTime <= new Date()) {
+      console.log('❌ Enchère expirée (date atteinte)');
       throw new HttpException('Enchère expirée', HttpStatus.BAD_REQUEST);
     }
 
-    // Remboursement de l’ancien enchérisseur
+    // Remboursement ancien enchérisseur
     if (auction.currentBidder) {
       await this.profileService.creditUser(auction.currentBidder.id, auction.currentBid);
     }
@@ -111,4 +118,5 @@ export class AuctionBiddingService {
     console.log('✅ Enchère placée avec succès');
     return bid;
   }
+
 }

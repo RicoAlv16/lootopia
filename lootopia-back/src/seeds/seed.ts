@@ -7,6 +7,8 @@ import { Artefact } from '../shared/entities/artefact.entity';
 import { Auction } from '../shared/entities/auction.entity';
 import { LootTable } from '../shared/entities/loot-table.entity';
 
+import * as bcrypt from 'bcrypt';
+
 async function seed() {
   await AppDataSource.initialize();
   console.log('📦 Connexion établie.');
@@ -19,20 +21,32 @@ async function seed() {
 
   const users: UsersEntity[] = [];
 
+  // 🔍 Déterminer le prochain ID utilisateur disponible
+  const lastUser = await userRepo
+    .createQueryBuilder('user')
+    .orderBy('user.id', 'DESC')
+    .getOne();
+  const startIndex = lastUser ? lastUser.id + 1 : 1;
+
   // 👤 Création des utilisateurs + profils
-  for (let i = 1; i <= 2; i++) {
+  const numberOfUsersToCreate = 2;
+  for (let i = 0; i < numberOfUsersToCreate; i++) {
+    const userIndex = startIndex + i;
+    const rawPassword = `Password${userIndex}*`;
+    const hashedPassword = await bcrypt.hash(rawPassword, 10);
+
     const user = userRepo.create({
-      nickname: `user${i}`,
-      email: `user${i}@treasure.com`,
-      password: 'hashed_password',
+      nickname: `user${userIndex}`,
+      email: `user${userIndex}@treasure.com`,
+      password: hashedPassword,
       isVerified: true,
     });
     await userRepo.save(user);
 
     const profile = profileRepo.create({
-      compte: `Compte user${i}`,
-      telephone: `060000000${i}`,
-      bio: `Chasseur de trésor #${i}`,
+      compte: `Compte user${userIndex}`,
+      telephone: `060000000${userIndex}`,
+      bio: `Chasseur de trésor #${userIndex}`,
       user,
       balance: 1000,
     });

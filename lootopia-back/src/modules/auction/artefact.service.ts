@@ -7,10 +7,10 @@ import { Artefact } from 'src/shared/entities/artefact.entity';
 export class ArtefactService {
   constructor(
     @InjectRepository(Artefact)
-    private artefactRepo: Repository<Artefact>
+    private readonly artefactRepo: Repository<Artefact>
   ) {}
 
-  async getMyArtefacts(userId: number): Promise<Artefact[]> {
+  async getArtefactsByUser(userId: number): Promise<Artefact[]> {
     return this.artefactRepo.find({
       where: {
         owner: { id: userId },

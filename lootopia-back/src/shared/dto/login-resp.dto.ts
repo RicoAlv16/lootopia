@@ -1,4 +1,4 @@
-import { IsArray, IsNotEmpty, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class LoginRespDto {
@@ -21,4 +21,8 @@ export class LoginRespDto {
   @IsString({ each: true })
   @ApiProperty({ type: [String], description: 'Liste des noms de rôles' })
   roles: string[];
+
+  @IsNumber()
+  @ApiProperty({ type: Number })
+  id: number;
 }

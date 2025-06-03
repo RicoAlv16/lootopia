@@ -8,10 +8,10 @@
 
 .tabs button {
   background: transparent;
-  border: 2px solid #228b22;
-  color: #228b22;
+  border: 2px solid #4ade80;
+  color: #4ade80;
   padding: 0.5rem 1.2rem;
-  border-radius: 25px;
+  border-radius: 8px;
   cursor: pointer;
   font-weight: bold;
   transition: 0.3s ease;
@@ -19,7 +19,7 @@
 
 .tabs button:hover,
 .tabs button.active {
-  background: #228b22;
+  background: #4ade80;
   color: white;
 }
 
@@ -35,9 +35,11 @@
 .filters select {
   padding: 0.5rem 1rem;
   border-radius: 8px;
-  border: 1px solid #ccc;
+  border: 1px solid #475569;
   font-size: 1rem;
   min-width: 150px;
+  background-color: #1e293b;
+  color: #f8fafc;
 }
 
 .auction-grid {
@@ -50,17 +52,18 @@
 }
 
 .auction-card {
-  background-color: white;
-  border: 1px solid #ddd;
+  background: #1e293b;
+  border: 1px solid #334155;
   border-radius: 12px;
   padding: 1.5rem;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-  color: black;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  color: #f1f5f9;
   transition: transform 0.2s ease;
 }
 
 .auction-card:hover {
   transform: scale(1.02);
+  border-color: #4ade80;
 }
 
 .auction-title {
@@ -76,7 +79,7 @@
 
 .auction-endtime {
   font-size: 0.9rem;
-  color: #666;
+  color: #94a3b8;
   margin-top: 0.5rem;
 }
 
@@ -88,16 +91,16 @@
 
 /* Couleurs des raretés */
 .rarity.commun {
-  color: #228b22;
+  color: #4ade80;
 }
 .rarity.rare {
-  color: #1e90ff;
+  color: #60a5fa;
 }
 .rarity.épique {
-  color: #800080;
+  color: #a78bfa;
 }
 .rarity.légendaire {
-  color: #ffa500;
+  color: #facc15;
 }
 
 .artefact-img {
@@ -110,21 +113,29 @@
 }
 
 .create-btn {
-  background-color: #228b22;
+  background: linear-gradient(135deg, #4ade80, #22c55e);
   color: white;
   padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
+  border-radius: 8px;
   border: none;
   font-weight: bold;
   cursor: pointer;
   margin: auto;
+  transition: all 0.3s ease;
 }
 
 .create-btn:hover {
-  background-color: #2faa2f;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(74, 222, 128, 0.3);
 }
 
 .actions {
   text-align: center;
   margin-bottom: 1rem;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: #94a3b8;
 }
