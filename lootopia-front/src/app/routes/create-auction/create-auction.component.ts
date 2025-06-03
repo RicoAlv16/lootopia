@@ -10,7 +10,7 @@ import { FormsModule } from '@angular/forms';
   imports: [CommonModule, FormsModule],
   selector: 'app-create-auction',
   templateUrl: './create-auction.component.html',
-  styleUrls: ['./create-auction.component.scss'],
+  styleUrls: ['./create-auction.component.css'],
 })
 export class CreateAuctionComponent implements OnInit {
   @Output() close = new EventEmitter<void>();
@@ -21,6 +21,8 @@ export class CreateAuctionComponent implements OnInit {
   startingPrice = 0;
   durationInMinutes = 60;
 
+  userId: number | null = null;
+
   constructor(
     private auctionService: AuctionService,
     private artefactService: ArtefactService,
@@ -28,8 +30,15 @@ export class CreateAuctionComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const userId = 1;
-    this.artefactService.getMyArtefacts(userId).subscribe({
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    this.userId = user?.id;
+
+    if (!this.userId) {
+      alert("Utilisateur non authentifié.");
+      return;
+    }
+
+    this.artefactService.getMyArtefacts().subscribe({
       next: (data) => {
         this.artefacts = data;
       },
@@ -44,18 +53,15 @@ export class CreateAuctionComponent implements OnInit {
   }
 
   createAuction(): void {
-    if (!this.selectedArtefactId || this.startingPrice <= 0) {
+    if (!this.selectedArtefactId || this.startingPrice <= 0 || !this.userId) {
       alert('Veuillez remplir tous les champs.');
       return;
     }
-
-    const userId = 1;
 
     this.auctionService.createAuction({
       artefactId: this.selectedArtefactId,
       startingPrice: this.startingPrice,
       durationInMinutes: this.durationInMinutes,
-      userId,
     }).subscribe({
       next: () => {
         alert('Enchère créée avec succès !');

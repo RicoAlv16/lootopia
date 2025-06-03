@@ -15,6 +15,7 @@ import { ChassesAuxTresorsComponent } from '../chasses-aux-tresors/chasses-aux-t
 import { MesChassesComponent } from '../mes-chasses/mes-chasses.component';
 import { DashboardData, DashboardService } from '../dashboad/dashboard.service';
 import { ProfilesComponent } from '../profiles/profiles.component';
+import { AuctionListComponent } from '../auction-list/auction-list.component'; 
 
 @Component({
   selector: 'app-sidebar',
@@ -31,6 +32,7 @@ import { ProfilesComponent } from '../profiles/profiles.component';
     ChassesAuxTresorsComponent,
     MesChassesComponent,
     ProfilesComponent,
+    AuctionListComponent
   ],
   standalone: true,
   providers: [MessageService, ToastService],

@@ -12,15 +12,16 @@
 }
 
 .auction-card {
-  background: #fff;
-  padding: 2rem;
+  background: #1e293b;
+  padding: 1.5rem; /* réduit de 2rem à 1.5rem */
   border-radius: 16px;
-  max-width: 550px;
+  max-width: 412px; /* 550px - 25% ≈ 412px */
   width: 90%;
   position: relative;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-  color: #333;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  color: #f1f5f9;
   text-align: center;
+  border: 1px solid #334155;
 }
 
 .close-btn {
@@ -31,13 +32,14 @@
   border: none;
   background: none;
   cursor: pointer;
-  color: #999;
+  color: #94a3b8;
 }
 
 .title {
   font-size: 1.6rem;
   font-weight: bold;
   margin-bottom: 1rem;
+  color: #ffffff;
 }
 
 .image {
@@ -45,7 +47,7 @@
   max-height: 65%;
   object-fit: contain;
   border-radius: 16px;
-  background: #f9f9f9;
+  background: #334155;
   padding: 0.5rem;
   margin-bottom: 1rem;
   margin: auto;
@@ -54,7 +56,7 @@
 .description {
   font-size: 1rem;
   margin-bottom: 1rem;
-  color: #555;
+  color: #cbd5e1;
 }
 
 .rarity-label {
@@ -66,27 +68,28 @@
 
 /* Couleurs rareté */
 .rarity-label.commun {
-  color: #228b22;
+  color: #4ade80;
 }
 .rarity-label.rare {
-  color: #1e90ff;
+  color: #60a5fa;
 }
 .rarity-label.épique {
-  color: #800080;
+  color: #a78bfa;
 }
 .rarity-label.légendaire {
-  color: #ffa500;
+  color: #facc15;
 }
 
 .info {
   font-size: 0.95rem;
   margin-bottom: 1.5rem;
-  background: #f5f5f5;
+  background: #334155;
   padding: 0.8rem 1rem;
   border-radius: 8px;
   text-align: left;
   max-width: 85%;
   margin: auto;
+  color: #e2e8f0;
 }
 
 .info p {
@@ -103,7 +106,9 @@
 
 .bid-section input {
   padding: 0.5rem;
-  border: 1px solid #ccc;
+  border: 1px solid #475569;
+  background-color: #1e293b;
+  color: #f1f5f9;
   border-radius: 6px;
   width: 100px;
   text-align: center;
@@ -111,7 +116,7 @@
 
 .bid-section button {
   padding: 0.5rem 1rem;
-  background-color: #228b22;
+  background: linear-gradient(135deg, #4ade80, #22c55e);
   color: white;
   border: none;
   border-radius: 6px;
@@ -120,14 +125,14 @@
 }
 
 .bid-section button:hover {
-  background-color: #1a6d1a;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
 }
 
 .follow-button {
   margin-top: 1rem;
   background: none;
   border: none;
-  color: #ffaa00;
+  color: #facc15;
   font-size: 1.2rem;
   cursor: pointer;
 }

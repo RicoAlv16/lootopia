@@ -1,7 +1,8 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuctionService } from '../../shared/services/auction/auction.service';
+import { AuthService } from '../../shared/services/auth/auth.services';
 
 @Component({
   selector: 'app-auction-detail',
@@ -13,17 +14,25 @@ import { AuctionService } from '../../shared/services/auction/auction.service';
 export class AuctionDetailComponent implements OnInit, OnDestroy {
   @Input() auction: any;
   @Output() close = new EventEmitter<void>();
-  @Output() updated = new EventEmitter<void>(); // 🔥 nouveau
+  @Output() updated = new EventEmitter<void>();
 
   bidAmount: number = 0;
   countdown: string = '';
   intervalId: any;
   endTimeFormatted: string = '';
   isFollowed: boolean = false;
+  userId: number | null = null;
 
-  constructor(private auctionService: AuctionService) {}
+  private auctionService = inject(AuctionService);
+  private authService = inject(AuthService);
 
   ngOnInit(): void {
+    this.userId = this.authService.getUserId();
+    if (!this.userId) {
+      alert("Utilisateur non authentifié.");
+      return;
+    }
+
     this.updateBidAmount();
     this.formatEndDate();
     this.startCountdown();
@@ -66,11 +75,15 @@ export class AuctionDetailComponent implements OnInit, OnDestroy {
   }
 
   placeBid(): void {
-    const userId = 2; // à remplacer
+    if (!this.userId) {
+      alert("Utilisateur non authentifié.");
+      return;
+    }
+
     this.auctionService.placeBid(this.auction.id, this.bidAmount).subscribe({
       next: () => {
-        this.updated.emit(); // 🔥 informer le parent
-        this.close.emit();   // optionnel si tu veux fermer après
+        this.updated.emit();
+        this.close.emit();
       },
       error: err => alert("Erreur d'enchère : " + err.message)
     });
@@ -81,20 +94,25 @@ export class AuctionDetailComponent implements OnInit, OnDestroy {
   }
 
   toggleFollow(): void {
-    const userId = 2;
+    if (!this.userId) {
+      alert("Utilisateur non authentifié.");
+      return;
+    }
+
     const observable = this.isFollowed
-      ? this.auctionService.unfollowAuction(userId, this.auction.id)
-      : this.auctionService.followAuction(userId, this.auction.id);
+      ? this.auctionService.unfollowAuction(this.auction.id)
+      : this.auctionService.followAuction(this.auction.id);
 
     observable.subscribe(() => {
       this.isFollowed = !this.isFollowed;
-      this.updated.emit(); // 🔥 informer le parent
+      this.updated.emit();
     });
   }
 
   checkIfFollowed(): void {
-    const userId = 2;
-    this.auctionService.getFollowedAuctions(userId).subscribe((followed) => {
+    if (!this.userId) return;
+
+    this.auctionService.getFollowedAuctions().subscribe((followed) => {
       this.isFollowed = followed.some((a: any) => a.id === this.auction.id);
     });
   }

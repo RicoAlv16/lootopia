@@ -33,48 +33,72 @@ export class AuctionListComponent {
   activeTab: 'all' | 'mine' | 'followed' = 'all';
 
   selectedAuction: any = null;
+  showCreateForm = false;
 
-ngOnInit(): void {
-  const userId = 2; // à remplacer avec userService ou authService si nécessaire
-
-  this.auctionService.getAllAuctions().subscribe({
-    next: (allAuctions) => {
-      this.auctionService.getFollowedAuctions(userId).subscribe({
-        next: (followedAuctions) => {
-          const followedIds = new Set(followedAuctions.map(a => a.id));
-          
-          this.auctions = allAuctions.map(a => ({
-            ...a,
-            isFollowed: followedIds.has(a.id),
-            isMine: a.seller?.id === userId // si nécessaire pour le tab "mine"
-          }));
-
-          this.filter();
-        },
-        error: (err) => {
-          console.error('Erreur lors du chargement des enchères suivies', err);
-          this.auctions = allAuctions;
-          this.filter();
-        }
-      });
-    },
-    error: (err) => {
-      console.error('Erreur lors du chargement des enchères', err);
-    }
-  });
-}
-
+  ngOnInit(): void {
+    this.loadAuctionsByTab();
+  }
 
   setTab(tab: 'all' | 'mine' | 'followed'): void {
     this.activeTab = tab;
-    this.filter();
+    this.loadAuctionsByTab();
+  }
+
+  loadAuctionsByTab(): void {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const userId = user?.id;
+
+    if (!userId) {
+      console.error('Utilisateur non connecté');
+      return;
+    }
+
+    if (this.activeTab === 'mine') {
+      this.auctionService.getMyAuctions().subscribe({
+        next: (mine) => {
+          this.auctions = mine.map(a => ({ ...a, isMine: true }));
+          this.filter();
+        },
+        error: err => console.error('Erreur chargement mes enchères', err)
+      });
+    } else if (this.activeTab === 'followed') {
+      this.auctionService.getFollowedAuctions().subscribe({
+        next: (followed) => {
+          this.auctions = followed.map(a => ({ ...a, isFollowed: true }));
+          this.filter();
+        },
+        error: err => console.error('Erreur chargement enchères suivies', err)
+      });
+    } else {
+      this.auctionService.getAllAuctions().subscribe({
+        next: (all) => {
+          this.auctionService.getFollowedAuctions().subscribe({
+            next: (followed) => {
+              const followedIds = new Set(followed.map(a => a.id));
+              this.auctions = all.map(a => ({
+                ...a,
+                isMine: a.seller?.id === userId,
+                isFollowed: followedIds.has(a.id),
+              }));
+              this.filter();
+            },
+            error: err => {
+              console.error('Erreur chargement suivis', err);
+              this.auctions = all;
+              this.filter();
+            }
+          });
+        },
+        error: err => console.error('Erreur chargement enchères', err)
+      });
+    }
   }
 
   filter(): void {
     this.filteredAuctions = this.auctions.filter(a => {
       const nameMatch = a.artefact.loot.name.toLowerCase().includes(this.searchName.toLowerCase());
       const priceMatch = (!this.priceMin || a.currentBid >= this.priceMin) &&
-                        (!this.priceMax || a.currentBid <= this.priceMax);
+                         (!this.priceMax || a.currentBid <= this.priceMax);
       const rarityMatch = !this.rarity || a.artefact.loot.rarity === this.rarity;
 
       const tabMatch =
@@ -86,7 +110,6 @@ ngOnInit(): void {
     });
   }
 
-
   openAuctionDetail(auction: any): void {
     this.selectedAuction = auction;
   }
@@ -96,32 +119,8 @@ ngOnInit(): void {
   }
 
   refreshAuctions(): void {
-    const userId = 2;
-    this.auctionService.getAllAuctions().subscribe({
-      next: (allAuctions) => {
-        this.auctionService.getFollowedAuctions(userId).subscribe({
-          next: (followedAuctions) => {
-            const followedIds = new Set(followedAuctions.map(a => a.id));
-
-            this.auctions = allAuctions.map(a => ({
-              ...a,
-              isFollowed: followedIds.has(a.id),
-              isMine: a.seller?.id === userId
-            }));
-
-            this.filter();
-          },
-          error: () => {
-            this.auctions = allAuctions;
-            this.filter();
-          }
-        });
-      },
-      error: (err) => console.error('Erreur refresh', err)
-    });
+    this.loadAuctionsByTab();
   }
-
-  showCreateForm = false;
 
   openCreateAuction(): void {
     this.showCreateForm = true;
@@ -129,6 +128,6 @@ ngOnInit(): void {
 
   closeCreateAuction(): void {
     this.showCreateForm = false;
-    this.refreshAuctions(); // Pour recharger les données après création
+    this.refreshAuctions(); // Recharge les données après création
   }
 }

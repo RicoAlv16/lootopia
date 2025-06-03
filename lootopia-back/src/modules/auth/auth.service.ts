@@ -103,18 +103,20 @@ export class AuthService {
       await this.profileRepository.save(profile);
 
       const payload = {
+        sub: profile.user.id,
         email: profile.user.email,
-        sub: profile.id,
         roles: profile.user.roles.map((theRole) => theRole.role),
       };
       const access_token = this.jwtService.sign(payload);
 
       return {
+        id: profile.user.id,
         access_token,
         nickname: profile.user.nickname,
         email: profile.user.email,
         roles: profile.user.roles.map((theRole) => theRole.role),
       };
+
     } catch (error) {
       throw new HttpException(
         `Erreur lors de la vérification du code OPT: ${error.message}`,
