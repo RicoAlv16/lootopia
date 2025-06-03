@@ -1,9 +1,10 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
 import { AuctionService } from '../../shared/services/auction/auction.service';
 import { ArtefactService } from '../../shared/services/auction/artefact.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ToastService } from '../../shared/services/toast/toast.service'; // ← importe ton service
 
 @Component({
   standalone: true,
@@ -23,6 +24,9 @@ export class CreateAuctionComponent implements OnInit {
 
   userId: number | null = null;
 
+  // ✅ Injection du service toast
+  private toastService = inject(ToastService);
+
   constructor(
     private auctionService: AuctionService,
     private artefactService: ArtefactService,
@@ -34,7 +38,7 @@ export class CreateAuctionComponent implements OnInit {
     this.userId = user?.id;
 
     if (!this.userId) {
-      alert("Utilisateur non authentifié.");
+      this.toastService.showServerError("Utilisateur non authentifié.");
       return;
     }
 
@@ -44,6 +48,7 @@ export class CreateAuctionComponent implements OnInit {
       },
       error: (err) => {
         console.error('Erreur chargement artefacts', err);
+        this.toastService.showServerError("Erreur lors du chargement des artefacts.");
       },
     });
   }
@@ -54,7 +59,7 @@ export class CreateAuctionComponent implements OnInit {
 
   createAuction(): void {
     if (!this.selectedArtefactId || this.startingPrice <= 0 || !this.userId) {
-      alert('Veuillez remplir tous les champs.');
+      this.toastService.showServerError("Veuillez remplir tous les champs.");
       return;
     }
 
@@ -64,10 +69,13 @@ export class CreateAuctionComponent implements OnInit {
       durationInMinutes: this.durationInMinutes,
     }).subscribe({
       next: () => {
-        alert('Enchère créée avec succès !');
+        this.toastService.showSuccess("Enchère créée avec succès !");
         this.close.emit();
       },
-      error: (err) => alert(err.error?.message || 'Erreur'),
+      error: (err) => {
+        const message = err.error?.message || "Erreur lors de la création de l'enchère.";
+        this.toastService.showServerError(message);
+      },
     });
   }
 

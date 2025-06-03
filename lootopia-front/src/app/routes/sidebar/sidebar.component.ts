@@ -16,6 +16,7 @@ import { MesChassesComponent } from '../mes-chasses/mes-chasses.component';
 import { DashboardData, DashboardService } from '../dashboad/dashboard.service';
 import { ProfilesComponent } from '../profiles/profiles.component';
 import { AuctionListComponent } from '../auction-list/auction-list.component'; 
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-sidebar',
@@ -32,7 +33,9 @@ import { AuctionListComponent } from '../auction-list/auction-list.component';
     ChassesAuxTresorsComponent,
     MesChassesComponent,
     ProfilesComponent,
-    AuctionListComponent
+    AuctionListComponent,
+    ToastModule
+
   ],
   standalone: true,
   providers: [MessageService, ToastService],

@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { AuctionService } from '../../shared/services/auction/auction.service';
 import { AuctionDetailComponent } from '../auction/auction-detail.component';
 import { CreateAuctionComponent } from '../create-auction/create-auction.component';
+import { ToastService } from '../../shared/services/toast/toast.service';
 
 @Component({
   selector: 'app-auction-list',
@@ -14,6 +15,7 @@ import { CreateAuctionComponent } from '../create-auction/create-auction.compone
 })
 export class AuctionListComponent {
   private auctionService = inject(AuctionService);
+  private toastService = inject(ToastService);
 
   auctions: any[] = [];
   filteredAuctions: any[] = [];
@@ -49,7 +51,7 @@ export class AuctionListComponent {
     const userId = user?.id;
 
     if (!userId) {
-      console.error('Utilisateur non connecté');
+      this.toastService.showServerError('Utilisateur non connecté');
       return;
     }
 
@@ -59,7 +61,7 @@ export class AuctionListComponent {
           this.auctions = mine.map(a => ({ ...a, isMine: true }));
           this.filter();
         },
-        error: err => console.error('Erreur chargement mes enchères', err)
+        error: () => this.toastService.showServerError('Erreur chargement mes enchères')
       });
     } else if (this.activeTab === 'followed') {
       this.auctionService.getFollowedAuctions().subscribe({
@@ -67,7 +69,7 @@ export class AuctionListComponent {
           this.auctions = followed.map(a => ({ ...a, isFollowed: true }));
           this.filter();
         },
-        error: err => console.error('Erreur chargement enchères suivies', err)
+        error: () => this.toastService.showServerError('Erreur chargement enchères suivies')
       });
     } else {
       this.auctionService.getAllAuctions().subscribe({
@@ -82,14 +84,14 @@ export class AuctionListComponent {
               }));
               this.filter();
             },
-            error: err => {
-              console.error('Erreur chargement suivis', err);
+            error: () => {
+              this.toastService.showServerError('Erreur chargement des suivis');
               this.auctions = all;
               this.filter();
             }
           });
         },
-        error: err => console.error('Erreur chargement enchères', err)
+        error: () => this.toastService.showServerError('Erreur chargement enchères')
       });
     }
   }

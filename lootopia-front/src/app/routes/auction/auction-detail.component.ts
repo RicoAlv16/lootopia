@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuctionService } from '../../shared/services/auction/auction.service';
 import { AuthService } from '../../shared/services/auth/auth.services';
+import { ToastService } from '../../shared/services/toast/toast.service';
 
 @Component({
   selector: 'app-auction-detail',
@@ -25,6 +26,7 @@ export class AuctionDetailComponent implements OnInit, OnDestroy {
 
   private auctionService = inject(AuctionService);
   private authService = inject(AuthService);
+  private toastService = inject(ToastService);
 
   ngOnInit(): void {
     this.userId = this.authService.getUserId();
@@ -76,16 +78,23 @@ export class AuctionDetailComponent implements OnInit, OnDestroy {
 
   placeBid(): void {
     if (!this.userId) {
-      alert("Utilisateur non authentifié.");
+      this.toastService.showServerError("Utilisateur non authentifié.");
       return;
     }
 
     this.auctionService.placeBid(this.auction.id, this.bidAmount).subscribe({
       next: () => {
+        this.toastService.showSuccess("Offre placée avec succès !");
         this.updated.emit();
         this.close.emit();
       },
-      error: err => alert("Erreur d'enchère : " + err.message)
+      error: err => {
+        const message = Array.isArray(err.error?.message)
+          ? err.error.message.join('\n')
+          : err.error?.message || "Une erreur est survenue lors de l’enchère.";
+
+        this.toastService.showServerError("Erreur d'enchère : " + message);
+      }
     });
   }
 
@@ -95,7 +104,7 @@ export class AuctionDetailComponent implements OnInit, OnDestroy {
 
   toggleFollow(): void {
     if (!this.userId) {
-      alert("Utilisateur non authentifié.");
+      this.toastService.showServerError("Utilisateur non authentifié.");
       return;
     }
 
@@ -103,9 +112,20 @@ export class AuctionDetailComponent implements OnInit, OnDestroy {
       ? this.auctionService.unfollowAuction(this.auction.id)
       : this.auctionService.followAuction(this.auction.id);
 
-    observable.subscribe(() => {
-      this.isFollowed = !this.isFollowed;
-      this.updated.emit();
+    observable.subscribe({
+      next: () => {
+        this.isFollowed = !this.isFollowed;
+        this.updated.emit();
+
+        if (this.isFollowed) {
+          this.toastService.showSuccess("Enchère suivie avec succès");
+        } else {
+          this.toastService.showSuccess("Vous ne suivez plus l’enchère");
+        }
+      },
+      error: () => {
+        this.toastService.showServerError("Une erreur est survenue lors du suivi");
+      }
     });
   }
 

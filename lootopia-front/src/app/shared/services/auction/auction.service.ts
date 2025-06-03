@@ -42,6 +42,6 @@ export class AuctionService {
   }
 
   unfollowAuction(auctionId: number): Observable<void> {
-    return this.http.delete<void>(`${this.followBaseUrl}/unfollow?auctionId=${auctionId}`);
+    return this.http.delete<void>(`${this.followBaseUrl}/unfollow/${auctionId}`);
   }
 }
