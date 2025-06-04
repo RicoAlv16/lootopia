@@ -38,11 +38,12 @@
 }
 
 .artefact-img {
-  width: 100%;
+  width: fit-content;
   height: 180px;
   object-fit: contain;
-  border-radius: 8px;
-  margin-bottom: 1rem;
+  border-radius: 20px;
+  margin : auto;
+  margin-bottom: 10px;
 }
 
 .auction-title {
