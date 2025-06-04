@@ -83,6 +83,8 @@ export class AuctionManagementService {
       if (auction.currentBidder) {
         // Transfert de propriété
         artefact.owner = auction.currentBidder;
+        artefact.obtainedAt = new Date();
+        artefact.obtentionMethod = 'enchère';
 
         // Calcul de la taxe
         const taxRate = 0.05;

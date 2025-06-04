@@ -18,8 +18,9 @@ export class UserInventoryComponent implements OnInit {
   artefacts: any[] = [];
   filteredArtefacts: any[] = [];
 
-  searchName = '';
-  rarity: string = '';
+  searchQuery = '';
+  rarityFilter = '';
+  sortOrder: 'recent' | 'oldest' = 'recent';
 
   rarities = ['Commun', 'Rare', 'Épique', 'Légendaire'];
 
@@ -28,7 +29,7 @@ export class UserInventoryComponent implements OnInit {
   }
 
   loadArtefacts(): void {
-    this.artefactService.getMyArtefacts().subscribe({
+    this.artefactService.getAllMyArtefacts().subscribe({
       next: (data) => {
         this.artefacts = data;
         this.filter();
@@ -40,10 +41,24 @@ export class UserInventoryComponent implements OnInit {
   }
 
   filter(): void {
-    this.filteredArtefacts = this.artefacts.filter(a => {
-      const nameMatch = a.loot.name.toLowerCase().includes(this.searchName.toLowerCase());
-      const rarityMatch = !this.rarity || a.loot.rarity === this.rarity;
-      return nameMatch && rarityMatch;
-    });
+    const query = this.searchQuery.toLowerCase().trim();
+
+    this.filteredArtefacts = this.artefacts
+      .filter(a => {
+        const nameMatch = a.loot.name.toLowerCase().includes(query);
+        const date = new Date(a.obtainedAt);
+        const dateStr = date.toLocaleDateString('fr-FR');
+        const isoDate = date.toISOString().split('T')[0];
+        const dateMatch = dateStr.includes(query) || isoDate.includes(query);
+
+        const rarityMatch = !this.rarityFilter || a.loot.rarity === this.rarityFilter;
+
+        return (nameMatch || dateMatch) && rarityMatch;
+      })
+      .sort((a, b) => {
+        const dateA = new Date(a.obtainedAt).getTime();
+        const dateB = new Date(b.obtainedAt).getTime();
+        return this.sortOrder === 'recent' ? dateB - dateA : dateA - dateB;
+      });
   }
 }
