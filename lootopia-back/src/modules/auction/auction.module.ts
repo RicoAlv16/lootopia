@@ -8,13 +8,11 @@ import { FollowedAuction } from 'src/shared/entities/followed-auction.entity';
 
 import { AuctionController } from './auction.controller';
 import { FollowAuctionController } from './follow-auction.controller';
-import { ArtefactController } from './artefact.controller';
 
 import { AuctionBiddingService } from './auction-bidding.service';
 import { AuctionManagementService } from './auction-management.service';
 import { AuctionQueryService } from './auction-query.service';
 import { FollowAuctionService } from './follow-auction.service';
-import { ArtefactService } from './artefact.service';
 
 import { ProfileModule } from '../profile/profile.module';
 
@@ -26,7 +24,6 @@ import { ProfileModule } from '../profile/profile.module';
   controllers: [
     AuctionController, 
     FollowAuctionController,
-    ArtefactController
   ],
 
   providers: [
@@ -34,14 +31,12 @@ import { ProfileModule } from '../profile/profile.module';
     AuctionManagementService,
     AuctionQueryService,
     FollowAuctionService,
-    ArtefactService
   ],
   exports: [
     AuctionBiddingService,
     AuctionManagementService,
     AuctionQueryService,
     FollowAuctionService,
-    ArtefactService
   ],
 })
 export class AuctionModule {}
