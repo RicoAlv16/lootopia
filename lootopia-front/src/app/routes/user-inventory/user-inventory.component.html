@@ -6,18 +6,6 @@
     [(ngModel)]="searchName"
     (input)="filter()" />
 
-  <input
-    type="number"
-    placeholder="Prix min"
-    [(ngModel)]="priceMin"
-    (input)="filter()" />
-
-  <input
-    type="number"
-    placeholder="Prix max"
-    [(ngModel)]="priceMax"
-    (input)="filter()" />
-
   <select [(ngModel)]="rarity" (change)="filter()">
     <option value="">Toutes raretés</option>
     <option *ngFor="let r of rarities" [value]="r">{{ r }}</option>

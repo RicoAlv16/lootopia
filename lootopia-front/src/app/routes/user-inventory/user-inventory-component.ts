@@ -19,8 +19,6 @@ export class UserInventoryComponent implements OnInit {
   filteredArtefacts: any[] = [];
 
   searchName = '';
-  priceMin: number | null = null;
-  priceMax: number | null = null;
   rarity: string = '';
 
   rarities = ['Commun', 'Rare', 'Épique', 'Légendaire'];
@@ -44,12 +42,8 @@ export class UserInventoryComponent implements OnInit {
   filter(): void {
     this.filteredArtefacts = this.artefacts.filter(a => {
       const nameMatch = a.loot.name.toLowerCase().includes(this.searchName.toLowerCase());
-      const price = a.estimatedPrice || 0;
-      const priceMatch = (!this.priceMin || price >= this.priceMin) &&
-                         (!this.priceMax || price <= this.priceMax);
       const rarityMatch = !this.rarity || a.loot.rarity === this.rarity;
-
-      return nameMatch && priceMatch && rarityMatch;
+      return nameMatch && rarityMatch;
     });
   }
 }
