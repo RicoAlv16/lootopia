@@ -16,6 +16,7 @@ import { MesChassesComponent } from '../mes-chasses/mes-chasses.component';
 import { DashboardData, DashboardService } from '../dashboad/dashboard.service';
 import { ProfilesComponent } from '../profiles/profiles.component';
 import { AuctionListComponent } from '../auction-list/auction-list.component'; 
+import { UserInventoryComponent } from '../user-inventory/user-inventory-component';
 import { ToastModule } from 'primeng/toast';
 
 @Component({
@@ -34,6 +35,7 @@ import { ToastModule } from 'primeng/toast';
     MesChassesComponent,
     ProfilesComponent,
     AuctionListComponent,
+    UserInventoryComponent,
     ToastModule
 
   ],

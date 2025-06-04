@@ -19,4 +19,14 @@ export class ArtefactService {
       relations: ['loot'],
     });
   }
+
+  async getAllArtefactsByUser(userId: number): Promise<Artefact[]> {
+    return this.artefactRepo.find({
+      where: {
+        owner: { id: userId },
+      },
+      relations: ['loot'],
+    });
+  }
+
 }

@@ -18,4 +18,10 @@ export class ArtefactController {
     const userId = req.user['userId'];
     return this.artefactService.getArtefactsByUser(userId);
   }
+
+  @Get('my/all')
+  async getAllMyArtefacts(@Req() req: Request) {
+    const userId = req.user['userId'];
+    return this.artefactService.getAllArtefactsByUser(userId);
+  }
 }

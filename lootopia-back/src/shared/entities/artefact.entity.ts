@@ -15,4 +15,11 @@ export class Artefact {
 
   @Column({ default: false })
   isInAuction: boolean;
+
+  @Column({ type: 'timestamp', nullable: true })
+  obtainedAt: Date;
+
+  @Column({ type: 'varchar', nullable: true })
+  obtentionMethod: 'enchère' | 'chasse';
+
 }

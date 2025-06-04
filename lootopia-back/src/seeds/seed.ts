@@ -29,7 +29,7 @@ async function seed() {
   const startIndex = lastUser ? lastUser.id + 1 : 1;
 
   // 👤 Création des utilisateurs + profils
-  const numberOfUsersToCreate = 2;
+  const numberOfUsersToCreate = 3;
   for (let i = 0; i < numberOfUsersToCreate; i++) {
     const userIndex = startIndex + i;
     const rawPassword = `Password${userIndex}*`;
@@ -104,6 +104,8 @@ async function seed() {
       loot,
       owner,
       isInAuction: true,
+      obtainedAt: new Date(), // Ajout de la date d'obtention
+      obtentionMethod: 'enchère', // Méthode d'obtention
     });
     await artefactRepo.save(artefact);
 
@@ -125,11 +127,11 @@ async function seed() {
     console.log(`✅ Artefact ${loot.name} (image ${loot.image}) attribué à ${owner.nickname}`);
   }
 
-  console.log('🎯 Seeding terminé avec succès.');
-  process.exit(0);
-}
+    console.log('🎯 Seeding terminé avec succès.');
+    process.exit(0);
+  }
 
-seed().catch((err) => {
-  console.error('❌ Erreur pendant le seeding :', err);
-  process.exit(1);
+  seed().catch((err) => {
+    console.error('❌ Erreur pendant le seeding :', err);
+    process.exit(1);
 });
