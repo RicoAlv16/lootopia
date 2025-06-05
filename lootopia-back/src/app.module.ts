@@ -13,6 +13,7 @@ import { AuctionModule } from './modules/auction/auction.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { HuntsModule } from './modules/hunts/hunts.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
+import { ArtefactModule } from './modules/artefacts/artefact.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { DashboardModule } from './modules/dashboard/dashboard.module';
     ScheduleModule.forRoot(),
     HuntsModule,
     DashboardModule,
+    ArtefactModule
   ],
   controllers: [AppController],
   providers: [AppService],
