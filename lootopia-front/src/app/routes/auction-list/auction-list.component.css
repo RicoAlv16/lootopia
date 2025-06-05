@@ -1,0 +1,141 @@
+.tabs {
+  display: flex;
+  gap: 1rem;
+  padding: 1.5rem 2rem 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.tabs button {
+  background: transparent;
+  border: 2px solid #4ade80;
+  color: #4ade80;
+  padding: 0.5rem 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s ease;
+}
+
+.tabs button:hover,
+.tabs button.active {
+  background: #4ade80;
+  color: white;
+}
+
+.filters {
+  display: flex;
+  gap: 1rem;
+  padding: 0 2rem 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.filters input,
+.filters select {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #475569;
+  font-size: 1rem;
+  min-width: 150px;
+  background-color: #1e293b;
+  color: #f8fafc;
+}
+
+.auction-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.auction-card {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  color: #f1f5f9;
+  transition: transform 0.2s ease;
+}
+
+.auction-card:hover {
+  transform: scale(1.02);
+  border-color: #4ade80;
+}
+
+.auction-title {
+  font-weight: bold;
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+}
+
+.auction-bid {
+  font-weight: bold;
+  margin-top: 0.5rem;
+}
+
+.auction-endtime {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  margin-top: 0.5rem;
+}
+
+.rarity {
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-top: 0.5rem;
+}
+
+/* Couleurs des raretés */
+.rarity.commun {
+  color: #4ade80;
+}
+.rarity.rare {
+  color: #60a5fa;
+}
+.rarity.épique {
+  color: #a78bfa;
+}
+.rarity.légendaire {
+  color: #facc15;
+}
+
+.artefact-img {
+  max-width: 100%;
+  max-height: 100%;
+  display: block;
+  margin: 0 auto 1rem;
+  object-fit: contain;
+  border-radius: 12px;
+}
+
+.create-btn {
+  background: linear-gradient(135deg, #4ade80, #22c55e);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  margin: auto;
+  transition: all 0.3s ease;
+}
+
+.create-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(74, 222, 128, 0.3);
+}
+
+.actions {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: #94a3b8;
+}

@@ -1,0 +1,808 @@
+@if (isPaymentMethode) {
+  <ng-container>
+    <p-dialog
+      maskStyleClass="backdrop-blur-sm"
+      [(visible)]="visible"
+      styleClass="!border-0 !bg-transparent">
+      <ng-template #headless>
+        <div class="flex flex-col px-8 py-8 gap-6 rounded-2xl modal-content">
+          <h1 class="text-center text-xl">Mode de paiement</h1>
+          <table>
+            @if (paymentMethods_S()) {
+              <tbody>
+                @for (item of paymentMethods_S(); track item.keyword) {
+                  <tr (click)="onClickPaymentMode(item.keyword)">
+                    <td class="py-3 px-3">
+                      <img
+                        src="{{ item.logo }}"
+                        alt="Card Logo"
+                        class="w-20 h-15 rounded-md" />
+                    </td>
+                    <td class="px-8">{{ item.name }}</td>
+                    <td class="px-3">
+                      <img
+                        src="{{ item.flag }}"
+                        alt="France Flag"
+                        class="w-10 h-10 rounded-md" />
+                    </td>
+                    <td class="hidden">{{ item.keyword }}</td>
+                  </tr>
+                }
+              </tbody>
+            }
+          </table>
+        </div>
+      </ng-template>
+    </p-dialog>
+  </ng-container>
+}
+
+@if (paymentStatus === 'payment-success') {
+  <ng-container>
+    <p-dialog
+      maskStyleClass="backdrop-blur-sm"
+      [(visible)]="visible"
+      styleClass="!border-0 !bg-black/70">
+      <ng-template #headless>
+        <div class="flex flex-col items-center mt-8 py-8 px-6">
+          <svg
+            width="240px"
+            height="240px"
+            viewBox="0 0 240 240"
+            xmlns="http://www.w3.org/2000/svg">
+            <!-- Fond circulaire -->
+            <circle cx="120" cy="120" r="120" fill="#BAB476" />
+
+            <!-- Carte bancaire -->
+            <g transform="translate(60, 80)">
+              <rect
+                x="0"
+                y="0"
+                width="120"
+                height="80"
+                rx="10"
+                fill="#E7F0F5"
+                stroke="#BFDBE5"
+                stroke-width="2" />
+              <!-- Bande magnétique -->
+              <rect x="0" y="10" width="120" height="15" fill="#92C8D6" />
+              <!-- Puce -->
+              <rect
+                x="10"
+                y="35"
+                width="20"
+                height="15"
+                fill="#BFDBE5"
+                rx="2" />
+              <!-- Numéro de carte -->
+              <text x="40" y="50" font-size="12" fill="#004B70">
+                1234 5678 9012 3456
+              </text>
+            </g>
+
+            <!-- Cercle de validation -->
+            <circle
+              cx="180"
+              cy="180"
+              r="20"
+              stroke="#19AB4B"
+              stroke-width="4"
+              fill="none"
+              stroke-dasharray="125.6"
+              stroke-dashoffset="125.6">
+              <animate
+                attributeName="stroke-dashoffset"
+                from="125.6"
+                to="0"
+                dur="0.45s"
+                fill="freeze"
+                repeatCount="1" />
+            </circle>
+
+            <!-- Coche de validation -->
+            <polyline
+              points="175,180 180,185 190,170"
+              fill="none"
+              stroke="#19AB4B"
+              stroke-width="4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="30"
+              stroke-dashoffset="30">
+              <animate
+                attributeName="stroke-dashoffset"
+                from="30"
+                to="0"
+                dur="0.45s"
+                fill="freeze"
+                repeatCount="1" />
+            </polyline>
+          </svg>
+
+          <h1 class="text-white text-center text-xl my-4">Bien jouer!</h1>
+          <span class="text-white"
+            >Votre paiement est bien éffectué, votre compte couronnes a été
+            crédité.</span
+          >
+          <div class="mt-3 pt-3">
+            <p-button
+              label="OK"
+              (click)="closePaymentCheckoutModal()"
+              [text]="true"
+              styleClass="p-4 text-primary-500 border border-white/30 hover:bg-white/10 py-2 px-4"
+              class="w-full" />
+          </div>
+        </div>
+      </ng-template>
+    </p-dialog>
+  </ng-container>
+}
+@if (paymentStatus === 'payment-cancel') {
+  <ng-container>
+    <p-dialog
+      maskStyleClass="backdrop-blur-sm"
+      [(visible)]="visible"
+      styleClass="!border-0 !bg-black/70">
+      <ng-template #headless>
+        <div class="flex flex-col items-center mt-8 py-8 px-6">
+          <svg
+            width="240px"
+            height="240px"
+            viewBox="0 0 240 240"
+            xmlns="http://www.w3.org/2000/svg">
+            <!-- Fond circulaire -->
+            <circle cx="120" cy="120" r="120" fill="#F8D7DA" />
+
+            <!-- Carte bancaire -->
+            <g transform="translate(60, 80)">
+              <rect
+                x="0"
+                y="0"
+                width="120"
+                height="80"
+                rx="10"
+                fill="#F1F1F1"
+                stroke="#D9D9D9"
+                stroke-width="2" />
+              <!-- Bande magnétique -->
+              <rect x="0" y="10" width="120" height="15" fill="#D88C8C" />
+              <!-- Puce -->
+              <rect
+                x="10"
+                y="35"
+                width="20"
+                height="15"
+                fill="#D9A3A3"
+                rx="2" />
+              <!-- Numéro de carte -->
+              <text x="40" y="50" font-size="12" fill="#AA3E3E">
+                4321 8765 2109 6543
+              </text>
+            </g>
+
+            <!-- Cercle d'erreur -->
+            <circle
+              cx="180"
+              cy="180"
+              r="20"
+              stroke="#DC3545"
+              stroke-width="4"
+              fill="none"
+              stroke-dasharray="125.6"
+              stroke-dashoffset="125.6">
+              <animate
+                attributeName="stroke-dashoffset"
+                from="125.6"
+                to="0"
+                dur="0.45s"
+                fill="freeze"
+                repeatCount="1" />
+            </circle>
+
+            <!-- Croix (X) -->
+            <g stroke="#DC3545" stroke-width="4" stroke-linecap="round">
+              <!-- Barre diagonale 1 -->
+              <line
+                x1="172"
+                y1="172"
+                x2="188"
+                y2="188"
+                stroke-dasharray="22.6"
+                stroke-dashoffset="22.6">
+                <animate
+                  attributeName="stroke-dashoffset"
+                  from="22.6"
+                  to="0"
+                  dur="0.3s"
+                  begin="0.5s"
+                  fill="freeze" />
+              </line>
+              <!-- Barre diagonale 2 -->
+              <line
+                x1="188"
+                y1="172"
+                x2="172"
+                y2="188"
+                stroke-dasharray="22.6"
+                stroke-dashoffset="22.6">
+                <animate
+                  attributeName="stroke-dashoffset"
+                  from="22.6"
+                  to="0"
+                  dur="0.3s"
+                  begin="0.8s"
+                  fill="freeze" />
+              </line>
+            </g>
+          </svg>
+
+          <h1 class="text-white text-center text-xl my-4">Oh zut!</h1>
+          <span class="text-white"
+            >Votre paiement a échoué, votre compte couronnes n'a pas été
+            crédité.</span
+          >
+          <div class="mt-3 pt-3">
+            <p-button
+              label="OK"
+              (click)="closePaymentCheckoutModal()"
+              [text]="true"
+              styleClass="p-4 text-primary-500 border border-white/30 hover:bg-white/10 py-2 px-4"
+              class="w-full" />
+          </div>
+        </div>
+      </ng-template>
+    </p-dialog>
+  </ng-container>
+}
+
+@if (isSuccessModal) {
+  <ng-container>
+    <p-dialog
+      maskStyleClass="backdrop-blur-sm"
+      [(visible)]="visible"
+      styleClass="!border-0 !bg-transparent">
+      <ng-template #headless>
+        <div class="flex flex-col px-8 py-8 gap-6 rounded-2xl modal-content">
+          <h1 class="text-center text-xl">Bien jouer!</h1>
+          <span class="p-text-secondary block mb-2">{{
+            messageSiginSuccess
+          }}</span>
+          <span class="p-text-secondary block mb-8">{{
+            messageSiginValidate
+          }}</span>
+          <div class="flex justify-center">
+            <p-button
+              label="Fermer"
+              (click)="visible = false"
+              [text]="true"
+              styleClass="!p-4 w-full !text-primary-50 !border !border-white/30
+            hover:!bg-white/10"
+              class="w-full" />
+          </div>
+        </div>
+      </ng-template>
+    </p-dialog>
+  </ng-container>
+}
+
+@if (isOPTModal) {
+  <ng-container>
+    <p-toast />
+    <p-dialog
+      maskStyleClass="backdrop-blur-sm"
+      [(visible)]="visible"
+      styleClass="!border-0 !bg-black">
+      <ng-template #headless>
+        <div class="flex flex-col px-8 py-8 gap-6 rounded-2xl modal-content">
+          <div class="font-bold text-xl mb-2">Validation MFA</div>
+          <p class="text-muted-color block mb-8">
+            Entrez le code de validation
+          </p>
+          <div class="text-muted-color">
+            @if (countdown) {
+              Expire dans {{ countdown }}
+            } @else {
+              <span class="text-red-400">Code expiré</span>
+            }
+          </div>
+          <p-inputotp
+            [(ngModel)]="codeOPT"
+            [integerOnly]="true"
+            [length]="6"
+            size="large"
+            (ngModelChange)="codeOPTChange.emit($event)" />
+          <div class="flex justify-between mt-8 self-stretch">
+            <p-button
+              label="Renvoyer Code"
+              (click)="resendCode()"
+              [link]="true"
+              class="p-0" />
+            <p-button
+              label="Valider Code"
+              (click)="onClickValidateCode()"
+              [disabled]="!codeOPT || codeOPT.toString().length !== 6" />
+          </div>
+        </div>
+      </ng-template>
+    </p-dialog>
+  </ng-container>
+}
+
+@if (isCreateHuntModal) {
+  <ng-container>
+    <p-dialog
+      maskStyleClass="backdrop-blur-sm"
+      [(visible)]="visible"
+      styleClass="!border-0 !bg-transparent !w-full !max-w-4xl">
+      <ng-template #headless>
+        <div
+          class="flex flex-col px-8 py-8 gap-6 rounded-2xl modal-content max-h-[80vh] overflow-y-auto">
+          <h1 class="text-center text-2xl font-bold mb-4">
+            Créer une Chasse au Trésor
+          </h1>
+
+          <form class="space-y-6">
+            <!-- Informations de base -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="space-y-2 w-xl">
+                <label for="huntTitle" class="block text-sm font-medium"
+                  >Titre de la chasse *</label
+                >
+                <input
+                  type="text"
+                  pInputText
+                  class="w-full"
+                  placeholder="Entrez le titre de votre chasse"
+                  [(ngModel)]="huntForm.title"
+                  name="title" />
+              </div>
+
+              <div class="space-y-2">
+                <label for="duration" class="block text-sm font-medium"
+                  >Durée (minutes) *</label
+                >
+                <p-inputNumber
+                  [(ngModel)]="huntForm.duration"
+                  name="duration"
+                  [min]="15"
+                  [max]="480"
+                  suffix=" min"
+                  class="w-full" />
+              </div>
+            </div>
+
+            <div class="space-y-2">
+              <label for="huntTitle" class="block text-sm font-medium"
+                >Description *</label
+              >
+              <textarea
+                pInputTextarea
+                rows="3"
+                class="w-full"
+                placeholder="Décrivez votre chasse au trésor..."
+                [(ngModel)]="huntForm.description"
+                name="description"></textarea>
+            </div>
+
+            <!-- Type de monde -->
+            <div class="space-y-2">
+              <label for="huntTitle" class="block text-sm font-medium"
+                >Type de monde *</label
+              >
+              <p-selectButton
+                [(ngModel)]="huntForm.worldType"
+                name="worldType"
+                [options]="worldTypeOptions"
+                optionLabel="label"
+                optionValue="value"
+                class="w-full" />
+            </div>
+
+            <!-- Paramètres de participation -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div class="space-y-2">
+                <label for="huntTitle" class="block text-sm font-medium"
+                  >Mode *</label
+                >
+                <p-dropdown
+                  [(ngModel)]="huntForm.mode"
+                  name="mode"
+                  [options]="modeOptions"
+                  optionLabel="label"
+                  optionValue="value"
+                  placeholder="Sélectionner"
+                  class="w-full" />
+              </div>
+
+              <div class="space-y-2">
+                <label for="huntTitle" class="block text-sm font-medium"
+                  >Nombre de participants max</label
+                >
+                <p-inputNumber
+                  [(ngModel)]="huntForm.maxParticipants"
+                  name="maxParticipants"
+                  [min]="1"
+                  [max]="100"
+                  class="w-full" />
+              </div>
+
+              <div class="space-y-2">
+                <label for="huntTitle" class="block text-sm font-medium"
+                  >Frais de participation (C)</label
+                >
+                <p-inputNumber
+                  [(ngModel)]="huntForm.participationFee"
+                  name="participationFee"
+                  [min]="0"
+                  [max]="500"
+                  mode="currency"
+                  currency="EUR"
+                  locale="fr-FR"
+                  class="w-full" />
+              </div>
+            </div>
+
+            <!-- Options -->
+            <div class="space-y-4">
+              <div class="flex items-center space-x-2">
+                <p-checkbox
+                  [(ngModel)]="huntForm.chatEnabled"
+                  name="chatEnabled"
+                  [binary]="true" />
+                <label for="huntTitle" class="text-sm font-medium"
+                  >Activer le chat</label
+                >
+              </div>
+
+              <div class="flex items-center space-x-2">
+                <p-checkbox
+                  [(ngModel)]="huntForm.interactiveMap"
+                  name="interactiveMap"
+                  [binary]="true" />
+                <label for="huntTitle" class="text-sm font-medium"
+                  >Carte interactive</label
+                >
+              </div>
+            </div>
+
+            <!-- Configuration de la carte interactive -->
+            @if (huntForm.interactiveMap) {
+              <p-card class="p-4 rounded-lg space-y-4">
+                <h3 class="font-medium text-lg">Configuration de la carte</h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div class="space-y-2">
+                    <label for="huntTitle" class="block text-sm font-medium"
+                      >Nom de la carte</label
+                    >
+                    <input
+                      type="text"
+                      pInputText
+                      class="w-full"
+                      placeholder="Nom de votre carte"
+                      [(ngModel)]="huntForm.mapConfig.name"
+                      name="mapName" />
+                  </div>
+
+                  <div class="space-y-2">
+                    <label for="huntTitle" class="block text-sm font-medium"
+                      >Skin de la carte</label
+                    >
+                    <p-dropdown
+                      [(ngModel)]="huntForm.mapConfig.skin"
+                      name="mapSkin"
+                      [options]="mapSkinOptions"
+                      optionLabel="label"
+                      optionValue="value"
+                      placeholder="Choisir un style"
+                      class="w-full" />
+                  </div>
+
+                  <div class="space-y-2">
+                    <label for="huntTitle" class="block text-sm font-medium"
+                      >Zone géographique</label
+                    >
+                    <input
+                      type="text"
+                      pInputText
+                      class="w-full"
+                      placeholder="Ex: Paris, France"
+                      [(ngModel)]="huntForm.mapConfig.zone"
+                      name="mapZone" />
+                  </div>
+
+                  <div class="space-y-2">
+                    <label for="huntTitle" class="block text-sm font-medium"
+                      >Échelle (km)</label
+                    >
+                    <p-inputNumber
+                      [(ngModel)]="huntForm.mapConfig.scale"
+                      name="mapScale"
+                      [min]="0.1"
+                      [max]="50"
+                      [step]="0.1"
+                      suffix=" km"
+                      class="w-full" />
+                  </div>
+                </div>
+              </p-card>
+            }
+
+            <!-- Étapes -->
+            <p-card styleClass="mb-6">
+              <div class="flex justify-between items-center">
+                <h3 class="font-medium text-lg">Étapes de la chasse</h3>
+                <!-- Garder seulement le bouton d'ajout -->
+                <p-button
+                  label="Ajouter une étape"
+                  icon="pi pi-plus"
+                  (click)="addStepMethod()"
+                  [outlined]="true"
+                  size="small" />
+              </div>
+
+              <!-- La boucle @for avec les boutons de suppression à l'intérieur -->
+              @for (
+                step of huntForm.steps;
+                track step.riddle;
+                let index = $index
+              ) {
+                <div class="p-4 rounded-lg space-y-4">
+                  <div class="flex justify-between items-center">
+                    <h4 class="font-medium">Étape {{ index + 1 }}</h4>
+                    <!-- Bouton de suppression DANS la boucle -->
+                    <p-button
+                      icon="pi pi-trash"
+                      (click)="removeStepMethod(index)"
+                      [text]="true"
+                      severity="danger"
+                      size="small" />
+                  </div>
+
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                      <label for="huntTitle" class="block text-sm font-medium"
+                        >Énigme/Question</label
+                      >
+                      <textarea
+                        pInputTextarea
+                        rows="2"
+                        class="w-full"
+                        placeholder="Votre énigme..."
+                        [(ngModel)]="step.riddle"
+                        [name]="'stepRiddle' + $index"></textarea>
+                    </div>
+
+                    <div class="space-y-2">
+                      <label for="huntTitle" class="block text-sm font-medium"
+                        >Type de validation</label
+                      >
+                      <p-dropdown
+                        [(ngModel)]="step.validationType"
+                        [name]="'stepValidation' + $index"
+                        [options]="validationTypeOptions"
+                        optionLabel="label"
+                        optionValue="value"
+                        placeholder="Type de validation"
+                        class="w-full" />
+                    </div>
+
+                    <div class="space-y-2">
+                      <label for="huntTitle" class="block text-sm font-medium"
+                        >Réponse/Clé</label
+                      >
+                      <input
+                        type="text"
+                        pInputText
+                        class="w-full"
+                        placeholder="Réponse attendue"
+                        [(ngModel)]="step.answer"
+                        [name]="'stepAnswer' + $index" />
+                    </div>
+
+                    <div class="flex items-center space-x-2 pt-6">
+                      <p-checkbox
+                        [(ngModel)]="step.hasMap"
+                        [name]="'stepHasMap' + $index"
+                        [binary]="true" />
+                      <label for="huntTitle" class="text-sm font-medium"
+                        >Carte facultative</label
+                      >
+                    </div>
+                  </div>
+                </div>
+              }
+            </p-card>
+
+            <!-- Repères -->
+            <p-card styleClass="mb-6">
+              <div class="flex justify-between items-center">
+                <h3 class="font-medium text-lg">Repères (Réalité Augmentée)</h3>
+                <p-button
+                  label="Ajouter un repère"
+                  icon="pi pi-plus"
+                  (click)="addLandmarkMethod()"
+                  [outlined]="true"
+                  size="small" />
+              </div>
+
+              <!-- Pour les repères -->
+              @for (
+                landmark of huntForm.landmarks;
+                track landmark.name;
+                let index = $index
+              ) {
+                <div class="p-4 rounded-lg space-y-4">
+                  <div class="flex justify-between items-center">
+                    <h4 class="font-medium">Repère {{ index + 1 }}</h4>
+                    <p-button
+                      icon="pi pi-trash"
+                      (click)="removeLandmarkMethod(index)"
+                      [text]="true"
+                      severity="danger"
+                      size="small" />
+                  </div>
+
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="space-y-2">
+                      <label for="huntTitle" class="block text-sm font-medium"
+                        >Nom du repère</label
+                      >
+                      <input
+                        type="text"
+                        pInputText
+                        class="w-full"
+                        placeholder="Nom du repère"
+                        [(ngModel)]="landmark.name"
+                        [name]="'landmarkName' + $index" />
+                    </div>
+
+                    <div class="space-y-2">
+                      <label for="huntTitle" class="block text-sm font-medium"
+                        >Latitude</label
+                      >
+                      <p-inputNumber
+                        [(ngModel)]="landmark.latitude"
+                        [name]="'landmarkLat' + $index"
+                        [minFractionDigits]="6"
+                        [maxFractionDigits]="6"
+                        class="w-full" />
+                    </div>
+
+                    <div class="space-y-2">
+                      <label for="huntTitle" class="block text-sm font-medium"
+                        >Longitude</label
+                      >
+                      <p-inputNumber
+                        [(ngModel)]="landmark.longitude"
+                        [name]="'landmarkLng' + $index"
+                        [minFractionDigits]="6"
+                        [maxFractionDigits]="6"
+                        class="w-full" />
+                    </div>
+                  </div>
+
+                  <div class="space-y-2">
+                    <label for="huntTitle" class="block text-sm font-medium"
+                      >Description</label
+                    >
+                    <textarea
+                      pInputTextarea
+                      rows="2"
+                      class="w-full"
+                      placeholder="Description du repère..."
+                      [(ngModel)]="landmark.description"
+                      [name]="'landmarkDesc' + $index"></textarea>
+                  </div>
+                </div>
+              }
+            </p-card>
+
+            <!-- Récompenses -->
+            <p-card styleClass="mb-6">
+              <h3 class="font-medium text-lg">Récompenses</h3>
+
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="space-y-2">
+                  <label for="huntTitle" class="block text-sm font-medium"
+                    >1ère place (C)</label
+                  >
+                  <p-inputNumber
+                    [(ngModel)]="huntForm.rewards.first"
+                    name="rewardFirst"
+                    [min]="0"
+                    mode="currency"
+                    currency="EUR"
+                    locale="fr-FR"
+                    class="w-full" />
+                </div>
+
+                <div class="space-y-2">
+                  <label for="huntTitle" class="block text-sm font-medium"
+                    >2ème place (C)</label
+                  >
+                  <p-inputNumber
+                    [(ngModel)]="huntForm.rewards.second"
+                    name="rewardSecond"
+                    [min]="0"
+                    mode="currency"
+                    currency="EUR"
+                    locale="fr-FR"
+                    class="w-full" />
+                </div>
+
+                <div class="space-y-2">
+                  <label for="huntTitle" class="block text-sm font-medium"
+                    >3ème place (C)</label
+                  >
+                  <p-inputNumber
+                    [(ngModel)]="huntForm.rewards.third"
+                    name="rewardThird"
+                    [min]="0"
+                    mode="currency"
+                    currency="EUR"
+                    locale="fr-FR"
+                    class="w-full" />
+                </div>
+              </div>
+            </p-card>
+
+            <!-- Paramètres avancés -->
+            <p-card styleClass="mb-6">
+              <h3 class="font-medium text-lg">Paramètres avancés</h3>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-2">
+                  <label for="huntTitle" class="block text-sm font-medium"
+                    >Délai entre fouilles (minutes)</label
+                  >
+                  <p-inputNumber
+                    [(ngModel)]="huntForm.searchDelay"
+                    name="searchDelay"
+                    [min]="0"
+                    [max]="60"
+                    suffix=" min"
+                    class="w-full" />
+                </div>
+
+                <div class="space-y-2">
+                  <label for="huntTitle" class="block text-sm font-medium"
+                    >Coût par fouille (C)</label
+                  >
+                  <p-inputNumber
+                    [(ngModel)]="huntForm.searchCost"
+                    name="searchCost"
+                    [min]="0"
+                    [max]="10"
+                    mode="currency"
+                    currency="EUR"
+                    locale="fr-FR"
+                    class="w-full" />
+                </div>
+              </div>
+            </p-card>
+
+            <!-- Boutons d'action -->
+            <div class="flex justify-end space-x-4 pt-6 border-t">
+              <p-button
+                label="Annuler"
+                (click)="closeDialog()"
+                [outlined]="true"
+                severity="secondary" />
+              <p-button
+                label="Sauvegarder comme brouillon"
+                (click)="saveDraftMethod()"
+                [outlined]="true" />
+              <p-button
+                [label]="createButtonText"
+                (click)="createHuntMethod()"
+                [loading]="isLoading()"
+                [disabled]="isLoading()"
+                icon="pi pi-check" />
+            </div>
+          </form>
+        </div>
+      </ng-template>
+    </p-dialog>
+  </ng-container>
+}

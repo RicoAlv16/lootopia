@@ -1,0 +1,56 @@
+<!-- Onglets -->
+<div class="tabs">
+  <button *ngFor="let tab of tabs"
+          [class.active]="activeTab === tab.key"
+          (click)="setTab(tab.key)">
+    {{ tab.label }}
+  </button>
+</div>
+
+<!-- Filtres -->
+<div class="filters">
+  <input type="text" placeholder="Recherche par nom" [(ngModel)]="searchName" (input)="filter()" />
+  <input type="number" placeholder="Prix min" [(ngModel)]="priceMin" (input)="filter()" />
+  <input type="number" placeholder="Prix max" [(ngModel)]="priceMax" (input)="filter()" />
+  <select [(ngModel)]="rarity" (change)="filter()">
+    <option value="">Toutes raretés</option>
+    <option *ngFor="let r of rarities" [value]="r">{{ r }}</option>
+  </select>
+</div>
+
+<!-- Bouton création (uniquement dans l'onglet "mine") -->
+<div class="actions" *ngIf="activeTab === 'mine'">
+  <button class="create-btn" (click)="openCreateAuction()">+ Créer une enchère</button>
+</div>
+
+<!-- Grille des enchères -->
+<div class="auction-grid">
+  <div class="auction-card" *ngFor="let auction of filteredAuctions" (click)="openAuctionDetail(auction)">
+    <img class="artefact-img" [src]="'http://localhost:3000' + auction.artefact.loot.image" alt="{{ auction.artefact.loot.name }}" />
+    
+    <div class="auction-title">{{ auction.artefact.loot.name }}</div>
+    <div>
+      Prix actuel : {{
+        auction.currentBid > 0 ? auction.currentBid : auction.startingPrice
+      }} couronnes
+    </div>
+    <div class="rarity {{ auction.artefact.loot.rarity.toLowerCase() }}">{{ auction.artefact.loot.rarity }}</div>
+    <div class="auction-endtime">
+      Fin : {{ auction.endTime | date: 'dd/MM/yyyy HH:mm' }}
+    </div>
+  </div>
+</div>
+
+<!-- Modale détails -->
+<app-auction-detail
+  *ngIf="selectedAuction"
+  [auction]="selectedAuction"
+  (close)="closeAuctionDetail()"
+  (updated)="refreshAuctions()"
+></app-auction-detail>
+
+<!-- Formulaire de création -->
+<app-create-auction
+  *ngIf="showCreateForm"
+  (close)="closeCreateAuction()"
+></app-create-auction>

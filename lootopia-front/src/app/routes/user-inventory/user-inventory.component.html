@@ -1,0 +1,38 @@
+<!-- Filtres -->
+<div class="filters">
+  <input
+    type="text"
+    placeholder="Rechercher par nom ou date (dd/mm/yyyy)"
+    [(ngModel)]="searchQuery"
+    (input)="filter()" />
+
+  <select [(ngModel)]="rarityFilter" (change)="filter()">
+    <option value="">Toutes les raretés</option>
+    <option *ngFor="let r of rarities" [value]="r">{{ r }}</option>
+  </select>
+
+  <select [(ngModel)]="sortOrder" (change)="filter()">
+    <option value="recent">Les plus récents</option>
+    <option value="oldest">Les plus anciens</option>
+  </select>
+</div>
+
+<!-- Grille des artéfacts -->
+<div class="auction-grid">
+  <div class="auction-card" *ngFor="let artefact of filteredArtefacts">
+    <img
+      class="artefact-img"
+      [src]="'http://localhost:3000' + artefact.loot.image"
+      alt="{{ artefact.loot.name }}" />
+
+    <div class="auction-title">{{ artefact.loot.name }}</div>
+
+    <div class="rarity {{ artefact.loot.rarity.toLowerCase() }}">
+      {{ artefact.loot.rarity }}
+    </div>
+
+    <div class="obtention-info">
+      Obtenu le : {{ artefact.obtainedAt | date: 'dd/MM/yyyy' }} par {{ artefact.obtentionMethod }}
+    </div>
+  </div>
+</div>

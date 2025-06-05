@@ -1,0 +1,145 @@
+<app-modal
+  [(visible)]="visiblePaymentStatusModal"
+  [paymentStatus]="paymentStatus">
+</app-modal>
+<p-toast></p-toast>
+
+<section id="topbar">
+  <div class="top-bar flex justify-between items-center px-8 top-0 w-full">
+    <div class="flex flex-row items-center">
+      <img
+        src="icons/lootopia_icon.webp"
+        alt="logo"
+        class="w-13 h-13 rounded-full"
+        draggable="false" />
+      <div class="flex flex-row ml-4">
+        <h1 class="text-lg text-white font-bold">Lootopia</h1>
+        <span
+          class="inline-flex items-center rounded-md ml-2 px-2 py-1 text-xs font-medium ring-1 ring-surface-700 ring-inset"
+          >beta</span
+        >
+      </div>
+    </div>
+
+    <a
+      pstyleclass="@next"
+      enterfromclass="hidden"
+      leavetoclass="hidden"
+      class="cursor-pointer block lg:hidden text-white"
+      ><i class="pi pi-bars !text-4xl"></i
+    ></a>
+    <div
+      id="menu"
+      class="items-center grow hidden lg:flex absolute lg:static w-full lg:px-0 z-30 shadow lg:shadow-none animate-fadein bg-surface-0 lg:!bg-transparent"
+      style="top: 68px; right: 0%">
+      <ul
+        class="list-none p-4 lg:p-0 m-0 ml-auto flex lg:items-center select-none flex-col lg:flex-row cursor-pointer">
+        <li>
+          <p-message severity="success" size="small">
+            <ng-template #icon> 👑 </ng-template>
+            <span class="ml-2">{{ couronnes }}</span>
+          </p-message>
+        </li>
+        <li>
+          <p-message
+            severity="secondary"
+            icon="pi pi-bolt"
+            text="{{ artifactsCount }}"
+            size="small"
+            styleClass="ml-8" />
+        </li>
+        <li>
+          <!-- Ajout du bouton de basculement de thème -->
+          <p-button
+            (click)="toggleDarkMode()"
+            [severity]="isDarkMode ? 'secondary' : 'primary'"
+            class="flex items-center justify-center ml-8 w-10 h-10 rounded-full transition-colors duration-200">
+            <i [class]="isDarkMode ? 'pi pi-sun' : 'pi pi-moon'"></i>
+          </p-button>
+        </li>
+        <li>
+          <a
+            pstyleclass="#menu"
+            enterfromclass="hidden"
+            leavetoclass="hidden"
+            class="flex m-0 md:ml-8 px-0 py-4 px-4 lg:!text-surface-0 text-surface-900 leading-normal">
+            <i
+              class="pi pi-bell text-2xl"
+              badgeSize="small"
+              severity="danger"
+              pBadge
+              [badgeStyleClass]="'text-white'"
+              value="0"></i>
+          </a>
+        </li>
+        <li>
+          <div class="flex flex-row items-center ml-8">
+            <img
+              src="https://cdnb.artstation.com/p/assets/images/images/014/542/275/large/mariel-clariz-rogero-yhel-original-defaultsize-copy.jpg?1544424133"
+              alt="logo"
+              class="w-10 h-10 rounded-full"
+              draggable="false" />
+            <div class="flex flex-col ml-3">
+              <div class="flex flex-row gap-2">
+                <h3 class="text-surface-300">{{ nickname }}</h3>
+                <span
+                  class="inline-flex items-center rounded-md bg-blue-700 px-2 py-1 text-xs font-medium ring-1 ring-blue-600/20 ring-inset"
+                  >PAR</span
+                >
+              </div>
+              <div class="flex flex-row items-center">
+                <span class="bg-orange-400 w-2 h-2 rounded-full"></span>
+                <span class="text-surface-300 ml-1">En ligne</span>
+              </div>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="dashboard-content">
+  <div id="layout-menu" class="flex flex-row gap-4">
+    <!-- le menu de gauche -->
+    <div
+      id="menu-gauche"
+      class="flex-none shadow-[10px_0_20px_-5px_#181818]"
+      style="border-right: 1px solid #2a2a2b">
+      <p-menu [model]="items" />
+    </div>
+    <!-- FIN menu de gauche -->
+
+    <!-- le corps des composents -->
+    <div id="all-contents" class="flex-auto">
+      @if (itemToShow === 'pricing') {
+        <app-pricing></app-pricing>
+      }
+      @if (itemToShow === 'dashboard') {
+        <app-dashboad></app-dashboad>
+      }
+      @if (itemToShow === 'artefacts') {
+        <app-user-inventory></app-user-inventory>
+      }
+      @if (itemToShow === 'creer-chasses') {
+        <app-chasses></app-chasses>
+      }
+
+      @if (itemToShow === 'chasses-aux-tresors') {
+        <app-chasses-aux-tresors></app-chasses-aux-tresors>
+      }
+      @if (itemToShow === 'mes-chasses') {
+        <app-mes-chasses></app-mes-chasses>
+      }
+      @if (itemToShow === 'profiles') {
+        <app-profiles></app-profiles>
+      }
+
+      @if (itemToShow === 'hotel-de-ventes') {
+        <app-auction-list></app-auction-list>
+      }
+
+    </div>
+    <!-- FIN du corps des composents -->
+  </div>
+</section>
