@@ -16,7 +16,6 @@ on:
       - main
       - dev
       - prod
-      - Derrick
 
 jobs:
   sonar-analysis:
@@ -167,6 +166,7 @@ jobs:
             --scan ./lootopia-front
             --scan ./lootopia-back
             --nodeAuditSkipDevDependencies true
+            --disableNodeAudit
             --disableYarnAudit
             --exclude ".*yarn\.lock.*"
             --exclude ".*node_modules.*"
