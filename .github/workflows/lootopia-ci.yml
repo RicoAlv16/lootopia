@@ -68,13 +68,13 @@ jobs:
         run: |
           cd ./lootopia-back
           # Tests spécifiques fonctionnels
-          npm run test -- --testPathPattern="auth\.controller\.spec\.ts|auth\.service\.spec\.ts" --coverage
+          npm run test -- --coverage --watchAll=false
 
       - name: Tests unitaires Frontend
         run: |
           cd ./lootopia-front
           # Exclusion des fichiers problématiques et tests spécifiques
-          npm run test -- --include="**/hunt.service.spec.ts" --watch=false --browsers=ChromeHeadless --code-coverage
+          npm run test -- --watch=false --browsers=ChromeHeadless --code-coverage
 
       - name: Upload des rapports de couverture
         uses: actions/upload-artifact@v4
