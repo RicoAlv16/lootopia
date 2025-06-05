@@ -8,10 +8,13 @@ import {
   Req,
 } from '@nestjs/common';
 import { StripeService } from './stripe.service';
+import { UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from '../../guards/jwt-auth.guard';
 import { Request } from 'express';
 import Stripe from 'stripe';
 
 @Controller('stripe')
+@UseGuards(JwtAuthGuard)
 export class StripeController {
   constructor(private readonly stripeService: StripeService) {}
 

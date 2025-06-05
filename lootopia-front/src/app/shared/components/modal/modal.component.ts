@@ -119,7 +119,7 @@ export class ModalComponent implements OnInit {
       this.countdown = time;
     });
     if (this.verifyCredentials) {
-      this.decompteurService.startCountdown(5);
+      this.decompteurService.startCountdown(6);
     }
   }
 
