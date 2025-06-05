@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { CreateAuctionComponent } from './create-auction.component';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -71,20 +71,24 @@ describe('CreateAuctionComponent', () => {
     expect(mockToastService.showServerError).toHaveBeenCalledWith('Veuillez remplir tous les champs.');
   });
 
-  it('devrait appeler createAuction et afficher un succès', () => {
+  it('devrait appeler createAuction et afficher un succès', fakeAsync(() => {
     component.selectedArtefactId = 1;
     component.startingPrice = 100;
     component.durationInMinutes = 60;
     component.userId = 1;
-
+  
     component.createAuction();
+  
     expect(mockAuctionService.createAuction).toHaveBeenCalledWith({
       artefactId: 1,
       startingPrice: 100,
       durationInMinutes: 60
     });
+    
+    tick(); // Simule l'écoulement du temps pour résoudre l'Observable
+    
     expect(mockToastService.showSuccess).toHaveBeenCalledWith('Enchère créée avec succès !');
-  });
+  }));
 
   it('devrait afficher une erreur si createAuction échoue', () => {
     mockAuctionService.createAuction.and.returnValue(throwError(() => ({
