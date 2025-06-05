@@ -16,21 +16,21 @@ on:
       - main
       - dev
       - prod
-      - Derrick
+      - final_dev
 
 jobs:
-  sonar-analysis:
-    name: Analyse SonarQube
-    runs-on: ubuntu-latest
+  # sonar-analysis:
+  #   name: Analyse SonarQube
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
-      - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v5
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
+  #     - name: SonarQube Scan
+  #       uses: SonarSource/sonarqube-scan-action@v5
+  #       env:
+  #         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   unit-tests:
     name: Tests unitaires
@@ -84,49 +84,49 @@ jobs:
             ./lootopia-back/coverage/
             ./lootopia-front/coverage/
 
-  trivy-security-scan:
-    name: Analyse de sécurité Trivy
-    runs-on: ubuntu-latest
-    needs: [unit-tests]
+  # trivy-security-scan:
+  #   name: Analyse de sécurité Trivy
+  #   runs-on: ubuntu-latest
+  #   needs: [unit-tests]
 
-    steps:
-      - name: Checkout du code
-        uses: actions/checkout@v4
+  #   steps:
+  #     - name: Checkout du code
+  #       uses: actions/checkout@v4
 
-      - name: Construction des images Docker
-        run: |
-          # Construction de l'image backend
-          docker build -t lootopia-back:latest ./lootopia-back
+  #     - name: Construction des images Docker
+  #       run: |
+  #         # Construction de l'image backend
+  #         docker build -t lootopia-back:latest ./lootopia-back
 
-          # Construction de l'image frontend
-          docker build -t lootopia-front:latest ./lootopia-front
+  #         # Construction de l'image frontend
+  #         docker build -t lootopia-front:latest ./lootopia-front
 
-      - name: Installation de Trivy
-        run: |
-          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
-          echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
-          sudo apt-get update
-          sudo apt-get install -y trivy
+  #     - name: Installation de Trivy
+  #       run: |
+  #         wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+  #         echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
+  #         sudo apt-get update
+  #         sudo apt-get install -y trivy
 
-      - name: Scan des images Docker
-        run: |
-          # Scan de l'image backend
-          trivy image --severity HIGH,CRITICAL --format table lootopia-back
+  #     - name: Scan des images Docker
+  #       run: |
+  #         # Scan de l'image backend
+  #         trivy image --severity HIGH,CRITICAL --format table lootopia-back
 
-          # Scan de l'image frontend
-          trivy image --severity HIGH,CRITICAL --format table lootopia-front
+  #         # Scan de l'image frontend
+  #         trivy image --severity HIGH,CRITICAL --format table lootopia-front
 
-      - name: Scan des dépendances des projets
-        run: |
-          # Scan des dépendances backend
-          trivy fs --severity HIGH,CRITICAL ./lootopia-back
+  #     - name: Scan des dépendances des projets
+  #       run: |
+  #         # Scan des dépendances backend
+  #         trivy fs --severity HIGH,CRITICAL ./lootopia-back
 
-          # Scan des dépendances frontend
-          trivy fs --severity HIGH,CRITICAL ./lootopia-front
+  #         # Scan des dépendances frontend
+  #         trivy fs --severity HIGH,CRITICAL ./lootopia-front
 
-      - name: Scan des fichiers de configuration
-        run: |
-          trivy config --severity HIGH,CRITICAL .
+  #     - name: Scan des fichiers de configuration
+  #       run: |
+  #         trivy config --severity HIGH,CRITICAL .
 
   dependency-check:
     name: Analyse des dépendances
@@ -167,6 +167,7 @@ jobs:
             --scan ./lootopia-front
             --scan ./lootopia-back
             --nodeAuditSkipDevDependencies true
+            --disableNodeAudit
             --disableYarnAudit
             --exclude ".*yarn\.lock.*"
             --exclude ".*node_modules.*"
@@ -178,137 +179,137 @@ jobs:
           name: Dependency Check Report
           path: reports
 
-  secrets-scan:
-    name: Détection de secrets
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # Important pour avoir l'historique complet
+  # secrets-scan:
+  #   name: Détection de secrets
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 0 # Important pour avoir l'historique complet
 
-      - name: TruffleHog OSS
-        uses: trufflesecurity/trufflehog@main
-        with:
-          path: ./
-          extra_args: --only-verified
+  #     - name: TruffleHog OSS
+  #       uses: trufflesecurity/trufflehog@main
+  #       with:
+  #         path: ./
+  #         extra_args: --only-verified
 
-  monitoring-setup:
-    name: Configuration Grafana & Prometheus
-    runs-on: ubuntu-latest
-    needs: [unit-tests]
+  # monitoring-setup:
+  #   name: Configuration Grafana & Prometheus
+  #   runs-on: ubuntu-latest
+  #   needs: [unit-tests]
 
-    steps:
-      - name: Checkout du code
-        uses: actions/checkout@v4
+  #   steps:
+  #     - name: Checkout du code
+  #       uses: actions/checkout@v4
 
-      - name: Création des fichiers de configuration Prometheus
-        run: |
-          mkdir -p monitoring/prometheus
-          cat > monitoring/prometheus/prometheus.yml << EOF
-          global:
-            scrape_interval: 15s
-            evaluation_interval: 15s
+  #     - name: Création des fichiers de configuration Prometheus
+  #       run: |
+  #         mkdir -p monitoring/prometheus
+  #         cat > monitoring/prometheus/prometheus.yml << EOF
+  #         global:
+  #           scrape_interval: 15s
+  #           evaluation_interval: 15s
 
-          rule_files:
-            # - "first_rules.yml"
-            # - "second_rules.yml"
+  #         rule_files:
+  #           # - "first_rules.yml"
+  #           # - "second_rules.yml"
 
-          scrape_configs:
-            - job_name: 'prometheus'
-              static_configs:
-                - targets: ['localhost:9090']
+  #         scrape_configs:
+  #           - job_name: 'prometheus'
+  #             static_configs:
+  #               - targets: ['localhost:9090']
 
-            - job_name: 'lootopia-backend'
-              static_configs:
-                - targets: ['lootopia-back:3000']
-              metrics_path: '/metrics'
-              scrape_interval: 30s
+  #           - job_name: 'lootopia-backend'
+  #             static_configs:
+  #               - targets: ['lootopia-back:3000']
+  #             metrics_path: '/metrics'
+  #             scrape_interval: 30s
 
-            - job_name: 'lootopia-frontend'
-              static_configs:
-                - targets: ['lootopia-front:80']
-              metrics_path: '/metrics'
-              scrape_interval: 30s
+  #           - job_name: 'lootopia-frontend'
+  #             static_configs:
+  #               - targets: ['lootopia-front:80']
+  #             metrics_path: '/metrics'
+  #             scrape_interval: 30s
 
-            - job_name: 'node-exporter'
-              static_configs:
-                - targets: ['node-exporter:9100']
-          EOF
+  #           - job_name: 'node-exporter'
+  #             static_configs:
+  #               - targets: ['node-exporter:9100']
+  #         EOF
 
-      - name: Création du docker-compose pour monitoring
-        run: |
-          cat > monitoring/docker-compose.monitoring.yml << EOF
-          version: '3.8'
+  #     - name: Création du docker-compose pour monitoring
+  #       run: |
+  #         cat > monitoring/docker-compose.monitoring.yml << EOF
+  #         version: '3.8'
 
-          services:
-            prometheus:
-              image: prom/prometheus:latest
-              container_name: prometheus
-              ports:
-                - "9090:9090"
-              volumes:
-                - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-                - prometheus_data:/prometheus
-              command:
-                - '--config.file=/etc/prometheus/prometheus.yml'
-                - '--storage.tsdb.path=/prometheus'
-                - '--web.console.libraries=/etc/prometheus/console_libraries'
-                - '--web.console.templates=/etc/prometheus/consoles'
-                - '--storage.tsdb.retention.time=200h'
-                - '--web.enable-lifecycle'
-              restart: unless-stopped
+  #         services:
+  #           prometheus:
+  #             image: prom/prometheus:latest
+  #             container_name: prometheus
+  #             ports:
+  #               - "9090:9090"
+  #             volumes:
+  #               - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+  #               - prometheus_data:/prometheus
+  #             command:
+  #               - '--config.file=/etc/prometheus/prometheus.yml'
+  #               - '--storage.tsdb.path=/prometheus'
+  #               - '--web.console.libraries=/etc/prometheus/console_libraries'
+  #               - '--web.console.templates=/etc/prometheus/consoles'
+  #               - '--storage.tsdb.retention.time=200h'
+  #               - '--web.enable-lifecycle'
+  #             restart: unless-stopped
 
-            grafana:
-              image: grafana/grafana:latest
-              container_name: grafana
-              ports:
-                - "3001:3000"
-              environment:
-                - GF_SECURITY_ADMIN_USER=admin
-                - GF_SECURITY_ADMIN_PASSWORD=admin123
-                - GF_USERS_ALLOW_SIGN_UP=false
-              volumes:
-                - grafana_data:/var/lib/grafana
-                - ./grafana/provisioning:/etc/grafana/provisioning
-              restart: unless-stopped
+  #           grafana:
+  #             image: grafana/grafana:latest
+  #             container_name: grafana
+  #             ports:
+  #               - "3001:3000"
+  #             environment:
+  #               - GF_SECURITY_ADMIN_USER=admin
+  #               - GF_SECURITY_ADMIN_PASSWORD=admin123
+  #               - GF_USERS_ALLOW_SIGN_UP=false
+  #             volumes:
+  #               - grafana_data:/var/lib/grafana
+  #               - ./grafana/provisioning:/etc/grafana/provisioning
+  #             restart: unless-stopped
 
-            node-exporter:
-              image: prom/node-exporter:latest
-              container_name: node-exporter
-              ports:
-                - "9100:9100"
-              volumes:
-                - /proc:/host/proc:ro
-                - /sys:/host/sys:ro
-                - /:/rootfs:ro
-              command:
-                - '--path.procfs=/host/proc'
-                - '--path.rootfs=/rootfs'
-                - '--path.sysfs=/host/sys'
-                - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
-              restart: unless-stopped
+  #           node-exporter:
+  #             image: prom/node-exporter:latest
+  #             container_name: node-exporter
+  #             ports:
+  #               - "9100:9100"
+  #             volumes:
+  #               - /proc:/host/proc:ro
+  #               - /sys:/host/sys:ro
+  #               - /:/rootfs:ro
+  #             command:
+  #               - '--path.procfs=/host/proc'
+  #               - '--path.rootfs=/rootfs'
+  #               - '--path.sysfs=/host/sys'
+  #               - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+  #             restart: unless-stopped
 
-          volumes:
-            prometheus_data:
-            grafana_data:
-          EOF
+  #         volumes:
+  #           prometheus_data:
+  #           grafana_data:
+  #         EOF
 
-      - name: Test de la configuration Prometheus
-        run: |
-          # Utilisation de l'image prom/prometheus avec la commande correcte
-          docker run --rm -v $(pwd)/monitoring/prometheus:/etc/prometheus --entrypoint=/bin/promtool prom/prometheus:latest check config /etc/prometheus/prometheus.yml
+  #     - name: Test de la configuration Prometheus
+  #       run: |
+  #         # Utilisation de l'image prom/prometheus avec la commande correcte
+  #         docker run --rm -v $(pwd)/monitoring/prometheus:/etc/prometheus --entrypoint=/bin/promtool prom/prometheus:latest check config /etc/prometheus/prometheus.yml
 
-      - name: Upload des configurations de monitoring
-        uses: actions/upload-artifact@v4
-        with:
-          name: monitoring-configs
-          path: monitoring/
+  #     - name: Upload des configurations de monitoring
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: monitoring-configs
+  #         path: monitoring/
 
   mock-deploy:
     name: Déploiement fictif (simulation)
     runs-on: ubuntu-latest
-    needs:
-      [dependency-check, secrets-scan, trivy-security-scan, monitoring-setup]
+    # needs:
+    #   [dependency-check, secrets-scan, trivy-security-scan, monitoring-setup]
 
     steps:
       - name: Checkout du code

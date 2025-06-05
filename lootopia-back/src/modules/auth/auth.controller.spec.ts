@@ -90,6 +90,7 @@ describe('AuthController', () => {
       // Arrange
       const otpData = { codeOPT: '123456' };
       const expectedResponse: LoginRespDto = {
+        id: 1,
         access_token: 'jwt-token',
         nickname: 'testuser',
         email: 'test@example.com',
