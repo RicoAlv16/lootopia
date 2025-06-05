@@ -1,11 +1,13 @@
 import { Controller, Post, Body, Logger, Get } from '@nestjs/common';
 import { HuntsService } from './hunts.service';
 import { CreateHuntDto } from '../../shared/dto/create-hunt.dto';
-// import { JwtAuthGuard } from '../../guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../../guards/jwt-auth.guard';
+import { UseGuards } from '@nestjs/common';
 import { Hunt } from 'src/shared/entities/hunt.entity';
 import { HuntParticipation } from 'src/shared/entities/hunt-participation.entity';
 
 @Controller('hunts')
+@UseGuards(JwtAuthGuard)
 export class HuntsController {
   private readonly logger = new Logger(HuntsController.name);
   constructor(private readonly huntsService: HuntsService) {}

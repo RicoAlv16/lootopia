@@ -1,9 +1,12 @@
 import { Body, Controller, Logger, Post } from '@nestjs/common';
 import { UsersService } from './users.service';
+import { JwtAuthGuard } from'src/auth/jwt-auth.guard';
+import { UseGuards } from '@nestjs/common';
 import { CreateUserDto } from 'src/shared/dto/create-user.dto';
 import { UsersEntity } from 'src/shared/entities/users.entity';
 
 @Controller('users')
+@UseGuards(JwtAuthGuard)
 export class UsersController {
   private readonly logger = new Logger(UsersController.name);
   constructor(private readonly usersService: UsersService) {}

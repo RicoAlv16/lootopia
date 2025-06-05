@@ -1,0 +1,40 @@
+services:
+  # Build de l'application front Angular
+  front-app:
+    build:
+      context: ./lootopia-front
+      dockerfile: Dockerfile
+    ports:
+      - "4200:4200"
+    # depends_on:
+    #   - api
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true # Pour le hot-reload
+    volumes:
+      - ./lootopia-front:/app
+      - /app/node_modules
+    stdin_open: true
+    tty: true
+
+# Build de l'application back NestJs
+back-app:
+  build:
+    context: ./lootopia-back
+    dockerfile: Dockerfile
+  ports:
+    - "3000:3000"
+  # depends_on:
+  #   - api
+  environment:
+    - NODE_ENV=development
+    - CHOKIDAR_USEPOLLING=true # Pour le hot-reload
+  volumes:
+    - ./lootopia-back:/app
+    - /app/node_modules
+  stdin_open: true
+  tty: true
+
+networks:
+  default:
+    driver: bridge

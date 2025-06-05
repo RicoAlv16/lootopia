@@ -1,11 +1,11 @@
 import { Controller, Put, Body, Post } from '@nestjs/common';
-// import { UseGuards } from '@nestjs/common';
-// import { JwtAuthGuard } from '../../guards/jwt-auth.guard';
+import { UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from '../../guards/jwt-auth.guard';
 import { DashboardService } from './dashboard.service';
 import { UpdateDashboardDataDto } from '../../shared/dto/dashboard-data.dto';
 
 @Controller('dashboard')
-// @UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard)
 export class DashboardController {
   constructor(private readonly dashboardService: DashboardService) {}
 
